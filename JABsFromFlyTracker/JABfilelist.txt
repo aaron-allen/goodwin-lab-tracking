@@ -1,7 +1,7 @@
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Approaching.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Contact.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Copulation.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Encircling.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Turning.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\WingGesture.jab
-C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Facing.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Approaching.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Contact.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Copulation.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Encircling.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Turning.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/WingGesture.jab
+/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/Facing.jab

@@ -1,5 +1,5 @@
 # Aaron M Allen, 2018.06.20
-
+#
 # This script does the following;
 #		1. Pulls videos off the Synology,
 #		2. Crops out the individual arenas,
@@ -8,11 +8,8 @@
 #		5. Generates diagnostic plot to evaluate the efficacy of tracking
 #		6. Applies the 'classifiers' with JAABADetect in MatLab, for behaviours that have already been trained
 #		7. Extracts the data from the 'classifiers' and tabulates them into one csv file per plate
-
-
-
-
-
+#
+#
 # Don't forget to;
 #		1.  
 #		2. 
@@ -20,64 +17,50 @@
 #		4. Update the file paths for the individual 'JAB' files in the 'JABfilelist.txt' file.
 #		5. Double check the coordinates for the spatial video cropping in lines 95-114 or 135-154.
 #		6. Double check the times for temporal video cropping in line 81.
-
-
-
-
-
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+#
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
 #!/bin/bash
-
+#
 echo $(date)
-
+#
 MasterDirectory=$(pwd)
 # setting up a variable with todays date and making a folder for the modified courtship videos
 today=$(date +%Y-%m-%d)
-
-echo "Enter the directory you with the files you wish to track:"
-read InputDirectory
-echo "Enter the directory where you wish results to go:"
-read OutputDirectory
-echo "Is the courtship plate upside down? (y/n)"
-read PlateOrientation
-echo "At what time point are the dividers retracted (in seconds):"
-read StartTime
-echo "How long do you want to track for (in seconds):"
-read Duration 
-
-
-
+#
+read -p "Enter the directory you with the files you wish to track:  " InputDirectory
+read -p "Enter the directory where you wish results to go:  " OutputDirectory
+read -p "Is the courtship plate upside down? (y/n)  " PlateOrientation
+read -p "At what time point are the dividers retracted (in seconds): " StartTime
+read -p "How long do you want to track for (in seconds):  " Duration 
+#
 echo "This is the input directory: $InputDirectory"
 echo "This is the ouptut directory: $OutputDirectory"
-
-
+#
+#
 pwd
 cd $OutputDirectory/
 pwd
 sleep
-
+#
 mkdir $today_Courtship/
 mkdir $today_Courtship/ufmf/
 mkdir $today_Courtship/IndividualVideos/
 mkdir $today_Courtship/Temp/
-
+#
 cp "%MasterDirectory%/ufmfCompressionParams.txt" "%MasterDirectory%/$today_Courtship/"
-
+#
 cd $today$_Courtship/
-
-
-
-
-
-
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Cropping a short segment of the length videos.
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,13 +153,13 @@ else
 	rmdir /Q /S Cut/
 	rmdir /Q /S Crop/
 fi
-
-
-
-
-
-
-
+#
+#
+#
+#
+#
+#
+#
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Track all video files with FlyTracker
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -211,10 +194,10 @@ for /d Z in [*]; do
 	cd ..
 	cd ..
 done
-
-
-
-
+#
+#
+#
+#
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Extracting Data for Each Plate
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -230,15 +213,15 @@ for /d Z in [*]; do
 	cd ..
 	cd ..
 done
-
-
-
-
+#
+#
+#
+#
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Clean up of matlab files
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+#
 for /d X in [*]; do
 	cd $X/Videos/
 	rm ExtractDataAndPDFs.m
@@ -251,11 +234,11 @@ for /d X in [*]; do
 	cd ..
 	cd ..
 done
-
-
+#
+#
 echo All Done.
 date /T
 time /T
-
+#
 sleep
-
+#
