@@ -1,0 +1,7 @@
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Approaching.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Contact.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Copulation.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Encircling.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Turning.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\WingGesture.jab
+C:\Users\mgoodwin\Documents\CtraxJAABA\TheCompleteFlyTrackingBundle\JABsFromFlyTracker\Facing.jab
