@@ -21,71 +21,77 @@
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#
+
 #!/bin/bash
-#
+
 echo $(date)
-#
+
 MasterDirectory=$(pwd)
+echo $MasterDirectory
 # setting up a variable with todays date and making a folder for the modified courtship videos
 today=$(date +%Y-%m-%d)
-#
+echo $today
+
 read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 read -p "Enter the directory where you wish results to go:  " OutputDirectory
 read -p "Is the courtship plate upside down? (y/n)  " PlateOrientation
 read -p "At what time point are the dividers retracted (in seconds): " StartTime
 read -p "How long do you want to track for (in seconds):  " Duration 
-#
+
 echo "This is the input directory: $InputDirectory"
 echo "This is the ouptut directory: $OutputDirectory"
-#
-#
+
+
 pwd
 cd $OutputDirectory/
 pwd
-sleep
-#
-mkdir $today_Courtship/
-mkdir $today_Courtship/ufmf/
-mkdir $today_Courtship/IndividualVideos/
-mkdir $today_Courtship/Temp/
-#
-cp "%MasterDirectory%/ufmfCompressionParams.txt" "%MasterDirectory%/$today_Courtship/"
-#
-cd $today$_Courtship/
-#
-#
-#
-#
-#
-#
-#
-#
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sleep 5
+
+mkdir $today/
+mkdir $today/ufmf/
+mkdir $today/IndividualVideos/
+mkdir $today/Temp/
+
+sleep 5
+cp $MasterDirectory/ufmfCompressionParams.txt $today/ufmfCompressionParams.txt
+
+cd $today/
+
+
+
+
+
+
+
+
+## -----------------------------------------------------------------------------------------------------
 ## Cropping a short segment of the length videos.
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------------------------------
+sleep 5
 mkdir Cut/
-for A in [$InputDirectory$/*.avi]; do
-    echo Copying files from Synology
+for A in "$InputDirectory/*.avi"
+do
+	echo Copying files from Synology
 	cp $A Temp/
-    for B in [Temp/*.avi]; 	do
-		ffmpeg -i $B -c copy -ss $StartTime.000 -t $Duration.000 Cut/~nB_10min.avi
-    done
+	for B in Temp/*.avi; do
+		ffmpeg -i $B -c copy -ss $StartTime -t $Duration Cut/~nB_10min.avi
+	done
 	rm Temp/*.avi
 done
 
 
 
 
-
-if [ $PlateOrientation == "y" ] 
+sleep 5
+if $PlateOrientation == "y" 
 then 
 	#UpsideDown
 	echo Cutting upside DOWN video.
-	for C in [Cut/*.avi]; do
+	for C in Cut/*.avi
+	do
 		mkdir IndividualVideos/~nC_IndividualVideos/
-		echo Cutting out individual arenas for: $C
+		echo Cutting out individual arenas from: $C
 		ffmpeg -i $C -vf crop=480:480:195:50 IndividualVideos/~nC_IndividualVideos/~nC_vid01.avi
 		ffmpeg -i $C -vf crop=480:480:630:50 IndividualVideos/~nC_IndividualVideos/~nC_vid02.avi
 		ffmpeg -i $C -vf crop=480:480:1060:50 IndividualVideos/~nC_IndividualVideos/~nC_vid03.avi
@@ -107,7 +113,8 @@ then
 		ffmpeg -i $C -vf crop=480:480:1285:1065 IndividualVideos/~nC_IndividualVideos/~nC_vid19.avi
 		ffmpeg -i $C -vf crop=480:480:1710:1065 IndividualVideos/~nC_IndividualVideos/~nC_vid20.avi
 		echo Converting to ufmf
-		for D in [IndividualVideos/~nC_IndividualVideos/*.avi]; do
+		for D in IndividualVideos/~nC_IndividualVideos/*.avi
+		do
 			mkdir ufmf/~nC/Videos/~nD/
 			any2ufmf $D ufmf/~nC/Videos/~nD/~nD.ufmf ufmfCompressionParams.txt
 		done
@@ -121,7 +128,7 @@ else
 	echo Cutting upside UP video.	
 	for C in [Cut/*.avi]; do
 		mkdir IndividualVideos/~nC_IndividualVideos/
-		echo Cutting out individual arenas for: $C
+		echo Cutting out individual arenas from: $C
 		ffmpeg -i $C -vf crop=480:480:1:50 IndividualVideos/~nC_IndividualVideos/~nC_vid01.avi
 		ffmpeg -i $C -vf crop=480:480:415:50 IndividualVideos/~nC_IndividualVideos/~nC_vid02.avi
 		ffmpeg -i $C -vf crop=480:480:850:50 IndividualVideos/~nC_IndividualVideos/~nC_vid03.avi
@@ -194,10 +201,10 @@ for /d Z in [*]; do
 	cd ..
 	cd ..
 done
-#
-#
-#
-#
+
+
+
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Extracting Data for Each Plate
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -213,15 +220,15 @@ for /d Z in [*]; do
 	cd ..
 	cd ..
 done
-#
-#
-#
-#
+
+
+
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Clean up of matlab files
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#
+
 for /d X in [*]; do
 	cd $X/Videos/
 	rm ExtractDataAndPDFs.m
@@ -234,11 +241,11 @@ for /d X in [*]; do
 	cd ..
 	cd ..
 done
-#
-#
+
+
 echo All Done.
 date /T
 time /T
-#
+
 sleep
-#
+
