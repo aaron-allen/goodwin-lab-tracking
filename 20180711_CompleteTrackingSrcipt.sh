@@ -150,7 +150,7 @@ else
 		ffmpeg -i $C -vf crop=480:480:1500:1065 IndividualVideos/~nC_IndividualVideos/~nC_vid19.avi
 		ffmpeg -i $C -vf crop=480:480:1915:1065 IndividualVideos/~nC_IndividualVideos/~nC_vid20.avi
 		echo Converting to ufmf
-		for D in [IndividualVideos/~nC_IndividualVideos/*.avi]; do
+		for D in IndividualVideos/~nC_IndividualVideos/*.avi; do
 			mkdir ufmf/~nC/Videos/~nD/
 			any2ufmf D ufmf/~nC/Videos/~nD/~nD.ufmf ufmfCompressionParams.txt
 		done
@@ -160,13 +160,13 @@ else
 	rmdir /Q /S Cut/
 	rmdir /Q /S Crop/
 fi
-#
-#
-#
-#
-#
-#
-#
+
+
+
+
+
+
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Track all video files with FlyTracker
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
