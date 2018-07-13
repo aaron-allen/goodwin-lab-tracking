@@ -1,6 +1,6 @@
 addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/FlyTracker-1.0.5'));
 addpath /home/goodwintracking/TheCompleteFlyTrackingBundle/JAABA-master/perframe;
-JABFiles = '/home/goodwintracking/TheCompleteFlyTrackingBundle/JABfilelist.txt';
+JABFiles = '/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/JABfilelist.txt';
 
 
 %Track videos
