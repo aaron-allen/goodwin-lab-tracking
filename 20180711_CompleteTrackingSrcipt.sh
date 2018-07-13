@@ -47,15 +47,15 @@ echo "This is the ouptut directory: $OutputDirectory"
 pwd
 cd $OutputDirectory/
 pwd
-sleep 5
+#sleep 5
 
 mkdir $today/
 mkdir $today/ufmf/
-mkdir $today/IndividualVideos/
-mkdir $today/Temp/
+#mkdir $today/IndividualVideos/
+#mkdir $today/Temp/
 
-sleep 5
-cp $MasterDirectory/ufmfCompressionParams.txt $today/ufmfCompressionParams.txt
+#sleep 5
+#cp -r $MasterDirectory/ufmfCompressionParams.txt $today/ufmfCompressionParams.txt
 
 cd $today/
 
@@ -70,12 +70,13 @@ cd $today/
 ## Cropping a short segment of the length videos.
 ## ------------------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------------------
-sleep 5
+echo TEMPORAL CROP SUB-ROUTINE
+#sleep 5
 #mkdir Cut/
-#for A in "$InputDirectory/*.avi"
-#do
-#	echo Copying files from Synology
-#	cp $A Temp/
+for A in "$InputDirectory/*.ufmf"
+do
+	echo Copying files from Synology
+	cp -r $A ufmf/
 #	for B in Temp/*.avi; do
 #		ffmpeg -i $B -c copy -ss $StartTime -t $Duration Cut/~nB_10min.avi
 #	done
@@ -85,17 +86,13 @@ done
 
 
 
-sleep 5
+sleep 2
 
-if $WholePate == "y"
+if $WholePate == n
 then
-
-
-
-
-else
 	if $PlateOrientation == "y" 
-	then 
+	then
+		echo SPATIAL CROP SUB-ROUTINE		
 		#UpsideDown
 		echo Cutting upside DOWN video.
 		for C in Cut/*.avi
@@ -130,14 +127,15 @@ else
 #				any2ufmf $D ufmf/~nC/Videos/~nD/~nD.ufmf ufmfCompressionParams.txt
 #			done
 		done
-		rmdir /Q /S IndividualVideos/
-		rmdir /Q /S Temp/
-		rmdir /Q /S Cut/
-		rmdir /Q /S Crop/
+#		rmdir /Q /S IndividualVideos/
+#		rmdir /Q /S Temp/
+#		rmdir /Q /S Cut/
+#		rmdir /Q /S Crop/
 	else
 		#UpsideUp
 		echo Cutting upside UP video.	
-		for C in [Cut/*.avi]; do
+		for C in Cut/*.avi
+		do
 			mkdir IndividualVideos/~nC_IndividualVideos/
 			echo Cutting out individual arenas from: $C
 			ffmpeg -i $C -vf crop=480:480:1:50 IndividualVideos/~nC_IndividualVideos/~nC_vid01.avi
@@ -167,10 +165,10 @@ else
 #				any2ufmf D ufmf/~nC/Videos/~nD/~nD.ufmf ufmfCompressionParams.txt
 #			done
 		done
-		rmdir /Q /S IndividualVideos/
-		rmdir /Q /S Temp/
-		rmdir /Q /S Cut/
-		rmdir /Q /S Crop/
+#		rmdir /Q /S IndividualVideos/
+#		rmdir /Q /S Temp/
+#		rmdir /Q /S Cut/
+#		rmdir /Q /S Crop/
 	fi
 fi
 
@@ -184,75 +182,70 @@ fi
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 cd ufmf/
-for /d Z in [*]; do
-	echo Now entering: $Z
-	cd $Z/Videos/
-	for /d A in [*]; do
-		echo Copying Matlab files to: $A
-		cp /Y $MasterDirectory$/TrackDiagnosticClassifiers.m $A/
-		cp /Y $MasterDirectory$/calibration.mat $A/
-		cd $A
-		echo Now tracking: $A
-		gnome-terminal -x  matlab -nodisplay -nosplash -nodesktop -r "TrackDiagnosticClassifiers"
-		cd ..
-	done
-	
+echo Copying Matlab files to ufmf folder
+cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/ufmf/TrackDiagnosticClassifiers.m
+cp -r $MasterDirectory/calibration.mat $OutputDirectory/$today/ufmf/calibration.mat
 
+for A in *.ufmf
+do
+	echo Now tracking: $A
+	xterm $MasterDirectory/TrackDiagnosticClassifiers.sh &
+	
 	# Check if matlab is running
 	# -x flag only match processes whose name (or command line if -f is specified) exactly match the pattern. 
-	if pgrep -x "matlab" > /dev/null
+
+	NumberOfMatlabs=$(pgrep -c "xterm")
+	if [ "$NumberOfMatlabs" -gt 8 ]
 	then
-		echo "Matlab still running, be patient..."
+		echo "Too many MATLABs running, be patient..."
 		sleep 5m
 	else
-		echo "MatLab is all done! Moving on to bigger and better things."
+		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
+
 	
-	
-	echo Leaving Timout Loop
-	cd ..
-	cd ..
+
 done
 
 
 
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Extracting Data for Each Plate
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-for /d Z in [*]; do
-	echo Copy ExtractDataAndPDFs.m into: $Z
-	cp /Y $MasterDirectory$/ExtractDataAndPDFs.m Z/Videos/
-	echo Now entering: $Z
-	cd $Z/Videos/
-	echo Extracting Data For: $Z
-	gnome-terminal -x  matlab -nodisplay -nosplash -nodesktop -r "ExtractDataAndPDFs"
-	sleep 120
-	cd ..
-	cd ..
-done
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Extracting Data for Each Plate
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#for /d Z in [*]; do
+#	echo Copy ExtractDataAndPDFs.m into: $Z
+#	cp -r /Y $MasterDirectory$/ExtractDataAndPDFs.m Z/Videos/
+#	echo Now entering: $Z
+#	cd $Z/Videos/
+#	echo Extracting Data For: $Z
+#	gnome-terminal -x  matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+#	sleep 120
+#	cd ..
+#	cd ..
+#done
 
 
 
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Clean up of matlab files
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Clean up of matlab files
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-for /d X in [*]; do
-	cd $X/Videos/
-	rm ExtractDataAndPDFs.m
-	for /d B in [*]; do
-		cd B
-		rm TrackDiagnosticClassifiers.m
-		rm calibration.mat
-		cd ..
-	done
-	cd ..
-	cd ..
-done
+#for /d X in [*]; do
+#	cd $X/Videos/
+#	rm ExtractDataAndPDFs.m
+#	for /d B in [*]; do
+#		cd B
+#		rm TrackDiagnosticClassifiers.m
+#		rm calibration.mat
+#		cd ..
+#	done
+#	cd ..
+#	cd ..
+#done
 
 
 echo All Done.
