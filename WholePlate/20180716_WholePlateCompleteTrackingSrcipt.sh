@@ -34,21 +34,15 @@ echo $today
 
 read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 read -p "Enter the directory where you wish results to go:  " OutputDirectory
-
-
 echo "This is the input directory: $InputDirectory"
 echo "This is the ouptut directory: $OutputDirectory"
-
 
 pwd
 cd $OutputDirectory/
 pwd
-#sleep 5
 
 mkdir $today/
-mkdir $today/ufmf/
 
-cd $today/
 
 
 
@@ -61,11 +55,35 @@ cd $today/
 ## -------------------------------------------------------------------------------------------------------------
 echo FILE TRANSFER SUB-ROUTINE
 
-for A in "$InputDirectory/*.ufmf"
+for Z in "$InputDirectory/*.ufmf"
 do
+	FileName=$(basename -a --suffix=.ufmf "$Z")
+	mkdir $FileName
 	echo Copying files from Synology
-	cp -r $A ufmf/
+	cp $OutputDirectory/$today/$Z $OutputDirectory/$today/$FileName/$Z
+	cd $FileName
+
+
+
+
 done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -73,15 +91,14 @@ done
 # Track all video files with FlyTracker
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-cd ufmf/
-
 echo TRACKING SUB-ROUTINE
+cd $today/
 
 for Z in *.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir $FileName
-	cp $OutputDirectory/$today/ufmf/$Z $OutputDirectory/$today/ufmf/$FileName/$Z
+	cp $OutputDirectory/$today/$Z $OutputDirectory/$today/$FileName/$Z
 	cd $FileName
 	for A in *.ufmf
 	do
@@ -114,22 +131,22 @@ done
 
 
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Extracting Data for Each Plate
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-for X in *.ufmf
-do
-	echo Copy ExtractDataAndPDFs.m into: $X
-	cp -r $MasterDirectory/WholePlateExtractDataAndPDFs.m $OutputDirectory/$today/ufmf/${Z%.*}/
-	echo Now entering: $Z
-	cd $Z/Videos/
-	echo Extracting Data For: $Z
-	gnome-terminal -x  matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
-	sleep 120
-	cd ..
-	cd ..
-done
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Extracting Data for Each Plate
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#for X in *.ufmf
+#do
+#	echo Copy ExtractDataAndPDFs.m into: $X
+#	cp -r $MasterDirectory/WholePlateExtractDataAndPDFs.m $OutputDirectory/$today/ufmf/${Z%.*}/
+#	echo Now entering: $Z
+#	cd $Z/Videos/
+#	echo Extracting Data For: $Z
+#	gnome-terminal -x  matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+#	sleep 120
+#	cd ..
+#	cd ..
+#done
 
 
 
