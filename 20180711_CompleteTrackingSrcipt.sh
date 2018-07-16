@@ -182,18 +182,26 @@ fi
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 cd ufmf/
-echo Copying Matlab files to ufmf folder
-cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/ufmf/TrackDiagnosticClassifiers.m
-cp -r $MasterDirectory/calibration.mat $OutputDirectory/$today/ufmf/calibration.mat
 
-for A in *.ufmf
+
+for Z in *.ufmf
 do
-	echo Now tracking: $A
-	xterm $MasterDirectory/TrackDiagnosticClassifiers.sh &
+	FileName=$(basename -- "$Z")
+	FileName="${FileName%.*}"
+	mkdir $FileName
+	cp $OutputDirectory/$today/$Z $OutputDirectory/$today/$FileName/$Z
+	cd $FileName
+	for A in *.ufmf
+	do
+		echo Copying Matlab files to ufmf folder
+		cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/ufmf/${Z%.*}/TrackDiagnosticClassifiers.m
+		cp -r $MasterDirectory/calibration.mat $OutputDirectory/$today/ufmf/${Z%.*}/calibration.mat
+		echo Now tracking: $A
+		xterm $MasterDirectory/TrackDiagnosticClassifiers.sh &
+	done
 	
 	# Check if matlab is running
 	# -x flag only match processes whose name (or command line if -f is specified) exactly match the pattern. 
-
 	NumberOfMatlabs=$(pgrep -c "xterm")
 	if [ "$NumberOfMatlabs" -gt 8 ]
 	then
@@ -202,11 +210,9 @@ do
 	else
 		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
-
-	
+	cd ..
 
 done
-
 
 
 
