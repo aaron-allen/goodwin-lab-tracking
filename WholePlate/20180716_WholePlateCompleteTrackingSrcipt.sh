@@ -42,46 +42,7 @@ cd $OutputDirectory/
 pwd
 
 mkdir $today/
-
-
-
-
-
-
-
-## -----------------------------------------------------------------------------------------------------
-## Cropping a short segment of the length videos.
-## ------------------------------------------------------------------------------------------
-## -------------------------------------------------------------------------------------------------------------
-echo FILE TRANSFER SUB-ROUTINE
-
-for Z in "$InputDirectory/*.ufmf"
-do
-	FileName=$(basename -a --suffix=.ufmf "$Z")
-	mkdir $FileName
-	echo Copying files from Synology
-	cp $OutputDirectory/$today/$Z $OutputDirectory/$today/$FileName/$Z
-	cd $FileName
-
-
-
-
-done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+cd $today
 
 
 
@@ -91,20 +52,20 @@ done
 # Track all video files with FlyTracker
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo TRACKING SUB-ROUTINE
-cd $today/
+echo FILE TRANSFER AND TRACKING SUB-ROUTINE
 
-for Z in *.ufmf
+for Z in "$InputDirectory/*.ufmf"
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir $FileName
-	cp $OutputDirectory/$today/$Z $OutputDirectory/$today/$FileName/$Z
+	echo COPYING FILES FROM SYNOLOGY
+	cp "$InputDirectory/$Z" "$OutputDirectory/$today/$FileName/$Z"
 	cd $FileName
 	for A in *.ufmf
 	do
 		echo Copying Matlab files to ufmf folder
-		cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/ufmf/${Z%.*}/TrackDiagnosticClassifiers.m
-		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/ufmf/${Z%.*}/calibration.mat
+		cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/$FileName/TrackDiagnosticClassifiers.m
+		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/$FileName/calibration.mat
 		echo Now tracking: $A
 		xterm $MasterDirectory/TrackDiagnosticClassifiers.sh &
 	done
@@ -119,7 +80,6 @@ do
 		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
 	cd ..
-
 done
 
 # Wait for the tracking to finish before going on to next section
@@ -128,6 +88,58 @@ do
 	echo "Just waiting for the tracking to finish."
 	sleep 5m
 done
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Apply Classifiers
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+echo JAABA CLASSIFIER SUB-ROUTINE
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Rearrange ouptut data
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+echo DATA REARRANGEMENT SUB-ROUTINE
+
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Generate Diagnostic Plots
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+echo DIAGNOSTIC PLOT SUB-ROUTINE
+
+
+
+
+
+
+
+
+
+
+
 
 
 
