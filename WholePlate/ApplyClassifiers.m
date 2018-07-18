@@ -14,7 +14,7 @@ for p = 1:numel(dirs)
     if ismember(JAABAname,{'.','..'})
       continue;
     end 
-    cd ([JAABAname '/' JAABAname '/' JAABAname '_JAABA']);
+    cd ([JAABAname '/' JAABAname]);
     disp(['Now applying classifiers for: ' JAABAname]);
     JAABADetect([JAABAname '_JAABA'],'jablistfile',JABFiles);
     cd (CurrDir)
