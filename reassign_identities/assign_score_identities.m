@@ -20,6 +20,12 @@ scoresfiles=dir('scores*.mat');
 scoresfilenames=arrayfun(@(f) f.name,scoresfiles,'UniformOutput',false);
 outputfilenames=cellfun(@(f) strrep(f,'.mat','_id_corrected.mat'),scoresfilenames,'UniformOutput',false);
 cellfun(@(scoresfilename,outputfilename) id_correct_scorefile(scoresfilename,outputfilename,ids),scoresfilenames,outputfilenames);
+cd ('perframe');
+
+matfiles=dir('*.mat');
+matfilenames=arrayfun(@(f) f.name,matfiles,'UniformOutput',false);
+outputfilenames=cellfun(@(f) strrep(f,'.mat','_id_corrected.mat'),matfilenames,'UniformOutput',false);
+cellfun(@(matfilename,outputfilename) id_correct_matfile(matfilename,outputfilename,ids),matfilenames,outputfilenames);
 
 cd(startdir);
 clear all;
@@ -38,4 +44,16 @@ end
 allScores.scores=deal(scores_new);
 allScores.postprocessed=deal(postprocessed_new);
 save(outputfilename,'allScores');
+end
+
+function id_correct_matfile(matfilename,outputfilename,ids)
+load(matfilename);
+id_new = ids.id_new;
+id_old = ids.id_old;
+for i=1:numel(id_old)
+data_new{1,id_new(i)}=data{1,id_old(i)};
+end
+
+data=data_new;
+save(outputfilename,'data','units');
 end
