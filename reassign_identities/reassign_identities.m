@@ -21,9 +21,11 @@
 
 
 function reassign_identities(inputdir)
+    startdir=pwd;
     JAABAfolder=strcat(inputdir,'_JAABA');
-    JAABAfolder_path=fullfile(inputdir,JAABAfolder);
-    id_path=fullfile(inputdir,'ids.mat');
     assign_chambers(inputdir);
-    assign_score_identities(JAABAfolder_path,id_path);
+    cd(inputdir);
+    assign_score_identities(JAABAfolder,'ids.mat');
+    cd(startdir);
+    clear all;
 end
