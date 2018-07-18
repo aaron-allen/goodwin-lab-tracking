@@ -58,15 +58,15 @@ for Z in $InputDirectory/*.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir $FileName
-	echo Copying files from Synology ...
+	echo Copying files from Synology
 	cp $Z $OutputDirectory/$today/$FileName/
 	cd $FileName
 	for A in *.ufmf
 	do
-		echo           ... Copying Matlab files to ufmf folder ...
+		echo Copying Matlab files to ufmf folder
 		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/$FileName/AutoTracking.m
 		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/$FileName/calibration.mat
-		echo                     ... Now tracking: $A
+		echo Now tracking: $A
 		xterm $MasterDirectory/AutoTracking.sh &
 	done
 	
@@ -79,7 +79,7 @@ do
 	else
 		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
-	cd $today #Aaron changed 'cd ..' to 'cd $today', have not tested this yet but should work
+	cd ..
 done
 
 # Wait for the tracking to finish before going on to next section
@@ -125,7 +125,7 @@ echo DATA REARRANGEMENT SUB-ROUTINE
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo DIAGNOSTIC PLOT SUB-ROUTINE
 
-
+matlab -nodisplay -nosplash -r "DiagnosticPlots" #
 
 
 
