@@ -79,7 +79,7 @@ do
 	else
 		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
-	cd $today
+	cd $today #Aaron changed 'cd ..' to 'cd $today', have not tested this yet but should work
 done
 
 # Wait for the tracking to finish before going on to next section
@@ -97,7 +97,7 @@ done
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo JAABA CLASSIFIER SUB-ROUTINE
 
-matlab -nodisplay -nosplash -r "ApplyClassifiers"
+matlab -nodisplay -nosplash -r "ApplyClassifiers" #Aaron uncommented this line, tested this command on its own and it worked but have not tested it in the context of this script.
 
 
 
