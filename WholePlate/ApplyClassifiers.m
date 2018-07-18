@@ -2,12 +2,10 @@ addpath /home/goodwintracking/TheCompleteFlyTrackingBundle/JAABA-master/perframe
 JABFiles = '/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/JABfilelist.txt';
 
 
-
 % Apply Classifiers
 % ==========================================================================
-% dirs = dirs(~ismember({dirs.name},{'.','..'}));
-cd(WatchaMaCallIt);
 dirs = dir();
+CurrDir = (pwd);
 for p = 1:numel(dirs)
     if ~dirs(p).isdir
       continue;
@@ -16,14 +14,10 @@ for p = 1:numel(dirs)
     if ismember(JAABAname,{'.','..'})
       continue;
     end 
+    cd ([JAABAname '/' JAABAname '/' JAABAname '_JAABA']);
     disp(['Now applying classifiers for: ' JAABAname]);
-    JAABADetect(JAABAname,'jablistfile',JABFiles);
+    JAABADetect([JAABAname '_JAABA'],'jablistfile',JABFiles);
+    cd (CurrDir)
 end
 
-
-
-
 exit
-
-
-

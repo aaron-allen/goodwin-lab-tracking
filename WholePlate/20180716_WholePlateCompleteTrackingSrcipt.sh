@@ -54,20 +54,20 @@ cd $today
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo FILE TRANSFER AND TRACKING SUB-ROUTINE
 
-for Z in "$InputDirectory/*.ufmf"
+for Z in $InputDirectory/*.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir $FileName
-	echo COPYING FILES FROM SYNOLOGY
-	cp "$InputDirectory/$Z" "$OutputDirectory/$today/$FileName/$Z"
+	echo Copying files from Synology ...
+	cp $Z $OutputDirectory/$today/$FileName/
 	cd $FileName
 	for A in *.ufmf
 	do
-		echo Copying Matlab files to ufmf folder
-		cp -r $MasterDirectory/TrackDiagnosticClassifiers.m $OutputDirectory/$today/$FileName/TrackDiagnosticClassifiers.m
+		echo           ... Copying Matlab files to ufmf folder ...
+		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/$FileName/AutoTracking.m
 		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/$FileName/calibration.mat
-		echo Now tracking: $A
-		xterm $MasterDirectory/TrackDiagnosticClassifiers.sh &
+		echo                     ... Now tracking: $A
+		xterm $MasterDirectory/AutoTracking.sh &
 	done
 	
 	# Check if matlab is running
@@ -79,7 +79,7 @@ do
 	else
 		echo "A space is available, ADDING NEXT VIDEO!"
 	fi
-	cd ..
+	cd $today
 done
 
 # Wait for the tracking to finish before going on to next section
@@ -97,12 +97,7 @@ done
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo JAABA CLASSIFIER SUB-ROUTINE
 
-
-
-
-
-
-
+matlab -nodisplay -nosplash -r "ApplyClassifiers"
 
 
 
