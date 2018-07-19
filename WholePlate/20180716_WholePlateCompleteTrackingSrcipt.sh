@@ -2,8 +2,8 @@
 #
 # This script does the following;
 #		1. Pulls videos off the Synology,
-#		2. Crops out the individual arenas,
-#		3. Converts them to ufmf,
+#		2. 
+#		3. 
 #		4. Tracks the videos with FlyTracker, in MatLab
 #		5. Generates diagnostic plot to evaluate the efficacy of tracking
 #		6. Applies the 'classifiers' with JAABADetect in MatLab, for behaviours that have already been trained
@@ -13,10 +13,10 @@
 # Don't forget to;
 #		1.  
 #		2. 
-#		3. Update the file paths for 'FlyTracker', 'JAABA', and the 'JAB' files in the start of the 'TrackDiagnosticClassifiers.m' script.
-#		4. Update the file paths for the individual 'JAB' files in the 'JABfilelist.txt' file.
-#		5. Double check the coordinates for the spatial video cropping in lines 95-114 or 135-154.
-#		6. Double check the times for temporal video cropping in line 81.
+#		3. 
+#		4. 
+#		5. 
+#		6. 
 #
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ cd $today
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Track all video files with FlyTracker
+# Track all video files with FlyTracker, and apply classifiers with JAABA
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo FILE TRANSFER AND TRACKING SUB-ROUTINE
@@ -58,16 +58,17 @@ echo FILE TRANSFER AND TRACKING SUB-ROUTINE
 for Z in $InputDirectory/*.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
-	mkdir $FileName
+	mkdir "$FileName"
 	echo Copying files from Synology
-	cp $Z $OutputDirectory/$today/$FileName/
-	cd $FileName
+	cp "$Z" $OutputDirectory/$today/"$FileName"/
+	cd "$FileName"
 	for A in *.ufmf
 	do
 		echo Copying Matlab files to ufmf folder
-		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/$FileName/AutoTracking.m
-		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/$FileName/calibration.mat
-		echo Now tracking: $A
+		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/"$FileName"/AutoTracking.m
+		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/ApplyClassifiers.m
+		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/"$FileName"/calibration.mat
+		echo Now tracking: "$A"
 		xterm $MasterDirectory/AutoTracking.sh &
 	done
 	
@@ -89,19 +90,6 @@ do
 	echo "Just waiting for the tracking to finish."
 	sleep 5m
 done
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Apply Classifiers
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo JAABA CLASSIFIER SUB-ROUTINE
-
-cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/ApplyClassifiers.m
-matlab -nodisplay -nosplash -r "ApplyClassifiers"
-
-
 
 
 
@@ -187,8 +175,7 @@ matlab -nodisplay -nosplash -r "DiagnosticPlots" #
 
 
 echo All Done.
-date /T
-time /T
+echo $(date)
 
-sleep
+sleep infinity
 

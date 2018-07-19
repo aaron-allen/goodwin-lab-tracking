@@ -16,7 +16,7 @@ for ii = 1:numel(dirs)
     cd (WatchaMaCallIt);
     load('calibration.mat');
     NumberOfArenas = (calib.n_chambers);
-    cd ([WatchaMaCallIt '\' WatchaMaCallIt '_JAABA']);
+    cd ([WatchaMaCallIt '/' WatchaMaCallIt '_JAABA']);
     disp(['Now Plotting: ' WatchaMaCallIt]);
 
     
@@ -336,7 +336,7 @@ for ii = 1:numel(dirs)
     cd (MasterDir)
     
 end
-disp('All done plotting ... but the scheming continues!');
+disp('All done plotting.');
 
 
 
