@@ -67,6 +67,7 @@ do
 		echo Copying Matlab files to ufmf folder
 		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/"$FileName"/AutoTracking.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/ApplyClassifiers.m
+		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/script_reassign_identities.m
 		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		xterm $MasterDirectory/AutoTracking.sh &
