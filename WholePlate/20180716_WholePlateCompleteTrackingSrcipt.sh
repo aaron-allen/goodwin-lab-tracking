@@ -67,7 +67,7 @@ do
 		echo Copying Matlab files to ufmf folder
 		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/"$FileName"/AutoTracking.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/ApplyClassifiers.m
-		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/script_reassign_identities.m
+		cp -r $MasterDirectory/script_reassign_identities.m $OutputDirectory/$today/"$FileName"/script_reassign_identities.m
 		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		xterm $MasterDirectory/AutoTracking.sh &
@@ -96,25 +96,6 @@ done
 
 
 
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Rearrange ouptut data
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo DATA REARRANGEMENT SUB-ROUTINE
-
-
-
-
-
-
-
-
-
-
-
-
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Generate Diagnostic Plots
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -122,15 +103,7 @@ echo DATA REARRANGEMENT SUB-ROUTINE
 echo DIAGNOSTIC PLOT SUB-ROUTINE
 
 cp -r $MasterDirectory/DiagnosticPlots.m $OutputDirectory/$today/DiagnosticPlots.m
-matlab -nodisplay -nosplash -r "DiagnosticPlots" #
-
-
-
-
-
-
-
-
+matlab -nodisplay -nosplash -r "DiagnosticPlots"
 
 
 
@@ -140,18 +113,10 @@ matlab -nodisplay -nosplash -r "DiagnosticPlots" #
 ## Extracting Data for Each Plate
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#for X in *.ufmf
-#do
-#	echo Copy ExtractDataAndPDFs.m into: $X
-#	cp -r $MasterDirectory/WholePlateExtractDataAndPDFs.m $OutputDirectory/$today/ufmf/${Z%.*}/
-#	echo Now entering: $Z
-#	cd $Z/Videos/
-#	echo Extracting Data For: $Z
-#	gnome-terminal -x  matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
-#	sleep 120
-#	cd ..
-#	cd ..
-#done
+
+cp -r $MasterDirectory/ExtractDataAndPDFs.m $OutputDirectory/$today/ExtractDataAndPDFs.m
+matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+
 
 
 
@@ -161,18 +126,21 @@ matlab -nodisplay -nosplash -r "DiagnosticPlots" #
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#for /d X in [*]; do
-#	cd $X/Videos/
-#	rm ExtractDataAndPDFs.m
-#	for /d B in [*]; do
-#		cd B
-#		rm TrackDiagnosticClassifiers.m
-#		rm WholePlateCalibration.mat
-#		cd ..
-#	done
-#	cd ..
-#	cd ..
-#done
+CurrentDirectory=$(pwd)
+
+rm DiagnosticPlots.m
+rm ExtractDataAndPDFs.m
+
+for X in */
+do
+	cd $X/
+	rm ApplyClassifiers.m
+	rm AutoTracking.m
+	rm script_reassign_identities.m
+	
+	cd $CurrentDirectory
+done
+
 
 
 echo All Done.

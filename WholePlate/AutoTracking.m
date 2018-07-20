@@ -23,6 +23,22 @@ for f=1:numel(folders)
     videos.filter = '*.ufmf';     % extension of the videos to process
     % track all videos within folder
     tracker(videos,options);
+    
+    dirs = dir;
+    for p = 1:numel(dirs)
+        if ~dirs(p).isdir
+          continue;
+        end
+        name = dirs(p).name;
+        if ismember(name,{'.','..'})
+          continue;
+        end
+        calibfile = ([name '/' name '-calibration.mat']);
+        if ~exist(calibfile)
+            copyfile('calibration.mat',calibfile) 
+        end
+    end
+
 end
 
 

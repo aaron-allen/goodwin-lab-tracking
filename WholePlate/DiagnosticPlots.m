@@ -29,13 +29,13 @@ for ii = 1:numel(dirs)
     
     % Load Data
     % =====================================================================
-    load('trx.mat');
+    load('trx_id_corrected.mat');
     cd 'perframe'
-    LogVel = load('log_vel.mat');
-    LogAngVel = load('log_ang_vel.mat');
-    DistToOther = load('dist_to_other.mat');
-    FacingAngle = load('facing_angle.mat');
-    AxisRation = load('norm_axis_ratio.mat');
+    LogVel = load('log_vel_id_corrected.mat');
+    LogAngVel = load('log_ang_vel_id_corrected.mat');
+    DistToOther = load('dist_to_other_id_corrected.mat');
+    FacingAngle = load('facing_angle_id_corrected.mat');
+    AxisRation = load('norm_axis_ratio_id_corrected.mat');
     cd ..
     % Rolling Average to Smooth data:
     % Set the windowsize (in frames) the range you want to average over.

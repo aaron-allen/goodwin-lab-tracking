@@ -14,6 +14,7 @@ for p = 1:numel(dirs)
     
     disp(['Now reassigning identities for: ' dirname]);
     error_handling_wrapper('identity_assignment_errors.log','reassign_identities',dirname)
+   
 end
 
 exit
