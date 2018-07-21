@@ -67,7 +67,7 @@ for p = 1:numel(dirs)
             FrameNumberArray = transpose([1:1:ArrayLength]);
             IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
 
-            DataVariableNamesWithoutFrameNumber{1,(m)} = FileData(m).behaviorName;
+            DataVariableNamesWithoutFrameNumber(1,(m)) = extractBetween(files(m).name,'scores_','_id_corrected.mat');
             DataVariableNames = ['Id', 'Frame', DataVariableNamesWithoutFrameNumber];
         end
       
@@ -110,5 +110,5 @@ for p = 1:numel(dirs)
 end
  
 % clear all
-% exit
+exit
 

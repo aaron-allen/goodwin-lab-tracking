@@ -17,5 +17,5 @@ for p = 1:numel(dirs)
    
 end
 
-#exit
+exit
 

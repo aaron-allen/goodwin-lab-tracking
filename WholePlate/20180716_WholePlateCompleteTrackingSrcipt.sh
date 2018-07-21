@@ -75,7 +75,7 @@ do
 	
 	# Check if matlab is running
 	NumberOfMatlabs=$(pgrep -c "xterm")
-	if [ "$NumberOfMatlabs" -gt 5 ]
+	if [ "$NumberOfMatlabs" -gt 4 ]
 	then
 		echo "Too many MATLABs running, be patient..."
 		sleep 5m
