@@ -1,6 +1,6 @@
 
 addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
-addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/reassing_identities'));
+addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/reassign_identities'));
 dirs = dir();
 
 for p = 1:numel(dirs)
@@ -17,5 +17,5 @@ for p = 1:numel(dirs)
    
 end
 
-exit
+#exit
 
