@@ -6,6 +6,7 @@ JABFiles = '/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracke
 % ==========================================================================
 dirs = dir();
 CurrDir = (pwd);
+diary('JAABA_logfile.log')
 for p = 1:numel(dirs)
     if ~dirs(p).isdir
       continue;
@@ -14,10 +15,15 @@ for p = 1:numel(dirs)
     if ismember(JAABAname,{'.','..'})
       continue;
     end 
+    diary on
     cd ([JAABAname]);
     disp(['Now applying classifiers for: ' JAABAname]);
-    JAABADetect([JAABAname '_JAABA'],'jablistfile',JABFiles);
+    
+    
+   
+    error_handling_wrapper('JAABA_errors.log','JAABADetect',[JAABAname '_JAABA'],'jablistfile',JABFiles);
+    diary off
     cd (CurrDir)
+    
 end
-
 exit
