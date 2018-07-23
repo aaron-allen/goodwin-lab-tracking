@@ -74,14 +74,11 @@ do
 	done
 	
 	# Check if matlab is running
-	NumberOfMatlabs=$(pgrep -c "xterm")
-	if [ "$NumberOfMatlabs" -gt 4 ]
-	then
+	while [ $(pgrep -c "xterm") -gt 3 ]
+	do
 		echo "Too many MATLABs running, be patient..."
-		sleep 5m
-	else
-		echo "A space is available, ADDING NEXT VIDEO!"
-	fi
+		sleep 10m
+	done
 	cd ..
 done
 
@@ -89,7 +86,7 @@ done
 while pgrep -x "xterm" > /dev/null
 do
 	echo "Just waiting for the tracking to finish."
-	sleep 5m
+	sleep 10m
 done
 
 

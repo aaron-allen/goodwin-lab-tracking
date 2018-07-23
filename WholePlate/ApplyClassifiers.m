@@ -1,3 +1,4 @@
+addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
 addpath /home/goodwintracking/TheCompleteFlyTrackingBundle/JAABA-master/perframe;
 JABFiles = '/home/goodwintracking/TheCompleteFlyTrackingBundle/JABsFromFlyTracker/JABfilelist.txt';
 
