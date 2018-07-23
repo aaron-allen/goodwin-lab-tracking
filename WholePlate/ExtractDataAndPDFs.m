@@ -8,20 +8,14 @@ ParentDir = pwd;
 
 dirs = dir();
 
-dirs = dir;
-dirs = dirs([dirs.isdir]);
-dirs = dirs(~ismember({dirs.name},{'.','..'}));
-
-
-
 for p = 1:numel(dirs)
-%     if ~dirs(p).isdir
-%       continue;
-%     end
+    if ~dirs(p).isdir
+      continue;
+    end
     name = dirs(p).name;
-%     if ismember(name,{'.','..'})
-%       continue;
-%     end
+    if ismember(name,{'.','..'})
+      continue;
+    end
     
     cd(name);
      
@@ -57,8 +51,7 @@ for p = 1:numel(dirs)
     
     disp(['Now extracting JAABA scores from: ' name]);
     WholePlateDataArray = [];
-    for v = 1:40 % get the number of flies, from calibration file? 
-                 % or from the size of the postprocessed data
+    for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
       
         for m = 1:numel(files)
             FileData(m) = load(fullfile(pwd, files(m).name));
@@ -68,11 +61,12 @@ for p = 1:numel(dirs)
             IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
 
             DataVariableNamesWithoutFrameNumber(1,(m)) = extractBetween(files(m).name,'scores_','_id_corrected.mat');
-            DataVariableNames = ['Id', 'Frame', DataVariableNamesWithoutFrameNumber];
+            DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
         end
       
         IdNumber = ones(ArrayLength,1)*v;
-        IndDataArrayWithArena = [IdNumber, IndDataArray];
+        ArenaNumber = round((ones(ArrayLength,1)*v)/2);
+        IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
         WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
      
       
@@ -110,5 +104,5 @@ for p = 1:numel(dirs)
 end
  
 % clear all
-exit
+% exit
 
