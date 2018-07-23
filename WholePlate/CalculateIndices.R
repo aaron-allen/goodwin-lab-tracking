@@ -8,7 +8,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   setwd(paste0(i,"/Results/"))
   
  
-  AllRawData <- read_csv(list.files(pattern=glob2rx('*JAABAScoresData.csv')))
+  AllRawData <- read_csv(list.files(pattern=glob2rx('*JAABAScores.csv')))
   AllRawData
   AllRawData$FileName <- as_factor(AllRawData$FileName)
   
@@ -35,6 +35,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   CopulationDuration <- vector("numeric")
   
   FlyId <- (unique(CleanedData$Id))
+  ArenaNumber <- ceiling(FlyId/2)
   
   
   for (var in FlyId) {
@@ -56,7 +57,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CopulationDuration[var] <- (sum(sub$Copulation))/25
   }
   
-  IndexDataTable <- tibble(FlyId,CourtshipIndex,CopulationDuration,ApproachingIndex,ContactIndex,EncirclingIndex,TurningIndex,WingIndex)
+  IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CopulationDuration,ApproachingIndex,ContactIndex,EncirclingIndex,TurningIndex,WingIndex)
   IndexDataTable
   
   

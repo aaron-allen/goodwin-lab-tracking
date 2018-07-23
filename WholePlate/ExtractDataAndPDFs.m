@@ -27,15 +27,16 @@ for p = 1:numel(dirs)
     cd(name);
     cd([name '_JAABA']);
     PDFList = dir('*.pdf');
+    disp(['Now moving PDFs for: ' name]);
     for x = 1:length(PDFList)
-        disp(['Now moving PDFs for: ' name]);
         movefile(PDFList(x).name, ResultsFolder) 
     end
     
     ExampleFiles = dir('scores_*_id_corrected.mat');
-    ExampleFileData(p) = load(fullfile(pwd, ExampleFiles(p).name));
-    ArrayLength = length(ExampleFileData(p).allScores.postprocessed{1,1});
- 
+    for r = 1:numel(ExampleFiles)
+        ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
+        ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
+    end
  
     
     
@@ -44,6 +45,12 @@ for p = 1:numel(dirs)
     files = dir('scores_*_id_corrected.mat');
     
     load('trx_id_corrected.mat', 'trx');
+    for v = 1:length([trx.id])
+        trx(v).timestamps = transpose(trx(v).timestamps);
+        trx(v).dt = transpose(trx(v).dt);
+    end
+    
+    
     TrackingResults = ([name '_TrackingData.csv']);
     disp(['Now extracting trx data from: ' name]);
     struct2csv(trx, TrackingResults);
@@ -104,5 +111,5 @@ for p = 1:numel(dirs)
 end
  
 % clear all
-% exit
+ exit
 

@@ -52,19 +52,19 @@ cd $today
 # Track all video files with FlyTracker, and apply classifiers with JAABA
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo FILE TRANSFER AND TRACKING SUB-ROUTINE
+echo FILE TRANSFER AND TRACKING
 
 
 for Z in $InputDirectory/*.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir "$FileName"
-	echo Copying files from Synology
+	echo Copying video files from Synology
 	cp "$Z" $OutputDirectory/$today/"$FileName"/
 	cd "$FileName"
 	for A in *.ufmf
 	do
-		echo Copying Matlab files to ufmf folder
+		echo Copying Matlab files into tracking directory
 		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/"$FileName"/AutoTracking.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $OutputDirectory/$today/"$FileName"/script_reassign_identities.m
@@ -76,57 +76,49 @@ do
 	# Check if matlab is running
 	while [ $(pgrep -c "xterm") -gt 3 ]
 	do
-		echo "Too many MATLABs running, be patient..."
-		sleep 10m
+		sleep 2m
 	done
 	cd ..
 done
 
 # Wait for the tracking to finish before going on to next section
+echo "Just waiting for the tracking to finish."
 while pgrep -x "xterm" > /dev/null
 do
-	echo "Just waiting for the tracking to finish."
-	sleep 10m
+	sleep 2m
 done
 
 
 
-
-
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # Generate Diagnostic Plots
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo DIAGNOSTIC PLOT SUB-ROUTINE
-
+echo DIAGNOSTIC PLOT
 cp -r $MasterDirectory/DiagnosticPlots.m $OutputDirectory/$today/DiagnosticPlots.m
 matlab -nodisplay -nosplash -r "DiagnosticPlots"
 
-
-
-
-
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Extracting Data for Each Plate
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+echo EXTRACT DATA AND PDFs
 cp -r $MasterDirectory/ExtractDataAndPDFs.m $OutputDirectory/$today/ExtractDataAndPDFs.m
 matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
 
+## Calculate indices with R
+echo CALCULATE INDICES
+cp -r $MasterDirectory/CalculateIndices.R $OutputDirectory/$today/CalculateIndices.R
+Rscript CalculateIndices.R
 
 
 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Clean up of matlab files
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 CurrentDirectory=$(pwd)
 
 rm DiagnosticPlots.m
 rm ExtractDataAndPDFs.m
+rm CalculateIndices.R
 
 for X in */
 do
