@@ -177,7 +177,7 @@ for ii = 1:numel(dirs)
         % Save PDF
         %=====================================================================
         PDFName1 = [CurrFolder '_Arena_' char(string(F)) '_fig1' '.pdf'];
-        print(DiagnosticFigure1, PDFName1, '-dpdf', '-r0')
+        print(DiagnosticFigure1, PDFName1, '-fillpage', '-dpdf', '-r600')
 
 
         
@@ -322,7 +322,7 @@ for ii = 1:numel(dirs)
         % Save PDF
         %=====================================================================
         PDFName2 = [CurrFolder '_Arena_' char(string(F)) '_fig2' '.pdf'];
-        print(DiagnosticFigure2, PDFName2, '-dpdf', '-r0')
+        print(DiagnosticFigure2, PDFName2, '-fillpage', '-dpdf', '-r600')
 
         
         close all
