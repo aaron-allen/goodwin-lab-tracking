@@ -2,6 +2,7 @@
 % Diagnostic Plots
 % =====================================================================
 MasterDir = (pwd);
+
 dirs = dir();
 for ii = 1:numel(dirs)
     if ~dirs(ii).isdir
@@ -11,40 +12,42 @@ for ii = 1:numel(dirs)
     if ismember(WatchaMaCallIt,{'.','..'})
         continue;
     end
-    
-    
     cd (WatchaMaCallIt);
-    load('calibration.mat');
-    NumberOfArenas = (calib.n_chambers);
-    cd ([WatchaMaCallIt '/' WatchaMaCallIt '_JAABA']);
-    disp(['Now Plotting: ' WatchaMaCallIt]);
-
+    errorlogfile = strcat(WatchaMaCallIt,'DiagnosticPlot_errors.log');
+    try
     
-    % Setup Current folder name for saving files etc
-    % =====================================================================
-    CurrFolder = regexp(pwd,'[^/\\]+(?=[/\\]?$)','once','match');
- 
-    
-    
-    
-    % Load Data
-    % =====================================================================
-    load('trx_id_corrected.mat');
-    cd 'perframe'
-    LogVel = load('log_vel_id_corrected.mat');
-    LogAngVel = load('log_ang_vel_id_corrected.mat');
-    DistToOther = load('dist_to_other_id_corrected.mat');
-    FacingAngle = load('facing_angle_id_corrected.mat');
-    AxisRation = load('norm_axis_ratio_id_corrected.mat');
-    cd ..
-    % Rolling Average to Smooth data:
-    % Set the windowsize (in frames) the range you want to average over.
-    windowSize = 1; % a value of 1 means no smoothing
-    b = (1/windowSize)*ones(1,windowSize);
-    a = 1;
-    % NB: The velocity plot is very noisy without smoothing, so I've set it's
-    % own smoothing function with it's own window size that you have to be
-    % manipulated independently. The Velocity plot code is at line ~210-235.
+        
+        load('calibration.mat');
+        NumberOfArenas = (calib.n_chambers);
+        cd ([WatchaMaCallIt '/' WatchaMaCallIt '_JAABA']);
+        disp(['Now Plotting: ' WatchaMaCallIt]);
+        
+        
+        % Setup Current folder name for saving files etc
+        % =====================================================================
+        CurrFolder = regexp(pwd,'[^/\\]+(?=[/\\]?$)','once','match');
+        
+        
+        
+        
+        % Load Data
+        % =====================================================================
+        load('trx_id_corrected.mat');
+        cd 'perframe'
+        LogVel = load('log_vel_id_corrected.mat');
+        LogAngVel = load('log_ang_vel_id_corrected.mat');
+        DistToOther = load('dist_to_other_id_corrected.mat');
+        FacingAngle = load('facing_angle_id_corrected.mat');
+        AxisRation = load('norm_axis_ratio_id_corrected.mat');
+        cd ..
+        % Rolling Average to Smooth data:
+        % Set the windowsize (in frames) the range you want to average over.
+        windowSize = 1; % a value of 1 means no smoothing
+        b = (1/windowSize)*ones(1,windowSize);
+        a = 1;
+        % NB: The velocity plot is very noisy without smoothing, so I've set it's
+        % own smoothing function with it's own window size that you have to be
+        % manipulated independently. The Velocity plot code is at line ~210-235.
 
 
     
@@ -331,10 +334,17 @@ for ii = 1:numel(dirs)
     end
     
     
+    catch ME
+        errorMessage= ME.message;
+        disp(errorMessage);
+         cd (MasterDir);
+        fidd = fopen(errorlogfile, 'a');
+        fprintf(fidd, '%s\n', errorMessage); % To file
+        fclose(fidd);
+    end
     
-    
-    cd (MasterDir)
-    
+   
+ cd (MasterDir);    
 end
 disp('All done plotting.');
 
