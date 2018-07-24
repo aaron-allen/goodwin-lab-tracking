@@ -122,7 +122,7 @@ rm CalculateIndices.R
 
 for X in */
 do
-	cd $X/
+	cd "$X"/
 	rm ApplyClassifiers.m
 	rm AutoTracking.m
 	rm script_reassign_identities.m
