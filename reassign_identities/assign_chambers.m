@@ -41,7 +41,10 @@ maxx_chambers=centroid(:,2)+round((calib.rois{1}(4))/2);
 minx_chambers=centroid(:,2)-round((calib.rois{1}(4))/2);
 maxy_chambers=centroid(:,1)+round((calib.rois{1}(4))/2);
 miny_chambers=centroid(:,1)-round((calib.rois{1}(4))/2);
+firstx=arrayfun(@(f) f.x(1),trx);
 chambers=arrayfun(@(f) assign_one(f,maxy_chambers,miny_chambers,maxx_chambers,minx_chambers),trx);
+startpos=left_right_assign(chambers,firstx);
+[trx(:).startpos]=deal(startpos{:});
 id_new=assign_identity(chambers);
 id_new_c=num2cell(id_new);
 [trx(:).id]=deal(id_new_c{:});
@@ -74,3 +77,23 @@ end
 function save_assigned(filename,ids)
 
  save(filename,'ids');
+    
+ function startpos=left_right_assign(chambers,firstx)
+     startpos={};
+     for i=1:20
+         firstxi=firstx(chambers==i);
+         if numel(firstxi)==2
+         if firstxi(1)<firstxi(2)
+             
+             startpos{(size(startpos,1)+1),1}={'l'};
+             startpos{(size(startpos,1)+1),1}={'r'};
+         else
+              startpos{(size(startpos,1)+1),1}={'r'};
+             startpos{(size(startpos,1)+1),1}={'l'};
+         end
+         elseif numel(firstxi)==1
+             startpos{(size(startpos,1)+1),1}={'l'};
+         end
+             
+     end
+
