@@ -34,53 +34,104 @@ for p = 1:numel(dirs)
             movefile(PDFList(x).name, ResultsFolder)
         end
         
-        ExampleFiles = dir('scores_*_id_corrected.mat');
-        for r = 1:numel(ExampleFiles)
-            ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
-            ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
+
+
+        IdCorr = dir('*_id_corrected.mat');
+        if length(IdCorr) >=1
+            ExampleFiles = dir('scores_*_id_corrected.mat');
+            for r = 1:numel(ExampleFiles)
+                ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
+                ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
+            end
+        else
+            ExampleFiles = dir('scores_*.mat');
+            for r = 1:numel(ExampleFiles)
+                ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
+                ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
+            end
         end
+
+
+
         
         
         
         % Extract Data
         % =====================================================================
-        files = dir('scores_*_id_corrected.mat');
-        
-        load('trx_id_corrected.mat', 'trx');
-        for v = 1:length([trx.id])
-            trx(v).timestamps = transpose(trx(v).timestamps);
-            trx(v).dt = transpose(trx(v).dt);
-        end
-        
-        
-        TrackingResults = ([name '_TrackingData.csv']);
-        disp(['Now extracting trx data from: ' name]);
-        struct2csv(trx, TrackingResults);
-        movefile(TrackingResults, ResultsFolder)
-        
-        disp(['Now extracting JAABA scores from: ' name]);
-        WholePlateDataArray = [];
-        for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
+
+
+        IdCorr = dir('*_id_corrected.mat');
+        if length(IdCorr) >=1
+            files = dir('scores_*_id_corrected.mat');
             
-            for m = 1:numel(files)
-                FileData(m) = load(fullfile(pwd, files(m).name));
-                NextArray = transpose(FileData(m).allScores.postprocessed{1,v});
-                IndDataArrayWithoutFPS(1:numel(NextArray),m) = NextArray;
-                FrameNumberArray = transpose([1:1:ArrayLength]);
-                IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
-                
-                DataVariableNamesWithoutFrameNumber(1,(m)) = extractBetween(files(m).name,'scores_','_id_corrected.mat');
-                DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
+            load('trx_id_corrected.mat', 'trx');
+            for v = 1:length([trx.id])
+                trx(v).timestamps = transpose(trx(v).timestamps);
+                trx(v).dt = transpose(trx(v).dt);
             end
             
-            IdNumber = ones(ArrayLength,1)*v;
-            ArenaNumber = round((ones(ArrayLength,1)*v)/2);
-            IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
-            WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
+            TrackingResults = ([name '_TrackingData.csv']);
+            disp(['Now extracting trx data from: ' name]);
+            struct2csv(trx, TrackingResults);
+            movefile(TrackingResults, ResultsFolder)
             
+            disp(['Now extracting JAABA scores from: ' name]);
+            WholePlateDataArray = [];
+            for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
+                
+                for m = 1:numel(files)
+                    FileData(m) = load(fullfile(pwd, files(m).name));
+                    NextArray = transpose(FileData(m).allScores.postprocessed{1,v});
+                    IndDataArrayWithoutFPS(1:numel(NextArray),m) = NextArray;
+                    FrameNumberArray = transpose([1:1:ArrayLength]);
+                    IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
+                    
+                    DataVariableNamesWithoutFrameNumber(1,(m)) = extractBetween(files(m).name,'scores_','_id_corrected.mat');
+                    DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
+                end
+                
+                IdNumber = ones(ArrayLength,1)*v;
+                ArenaNumber = round((ones(ArrayLength,1)*v)/2);
+                IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
+                WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
+            end
+        else
+            files = dir('scores_*.mat');
             
+            load('trx.mat', 'trx');
+            for v = 1:length([trx.id])
+                trx(v).timestamps = transpose(trx(v).timestamps);
+                trx(v).dt = transpose(trx(v).dt);
+            end
+            
+            TrackingResults = ([name '_TrackingData.csv']);
+            disp(['Now extracting trx data from: ' name]);
+            struct2csv(trx, TrackingResults);
+            movefile(TrackingResults, ResultsFolder)
+            
+            disp(['Now extracting JAABA scores from: ' name]);
+            WholePlateDataArray = [];
+            for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
+                
+                for m = 1:numel(files)
+                    FileData(m) = load(fullfile(pwd, files(m).name));
+                    NextArray = transpose(FileData(m).allScores.postprocessed{1,v});
+                    IndDataArrayWithoutFPS(1:numel(NextArray),m) = NextArray;
+                    FrameNumberArray = transpose([1:1:ArrayLength]);
+                    IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
+                    
+                    DataVariableNamesWithoutFrameNumber(1,(m)) = extractBetween(files(m).name,'scores_','.mat');
+                    DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
+                end
+                
+                IdNumber = ones(ArrayLength,1)*v;
+                ArenaNumber = round((ones(ArrayLength,1)*v)/2);
+                IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
+                WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
+            end
         end
-        
+
+
         
         
         % Extract Genotype labels
@@ -117,9 +168,5 @@ for p = 1:numel(dirs)
 
       
   cd(ParentDir)
-
 end
- 
-% clear all
- exit
-
+exit

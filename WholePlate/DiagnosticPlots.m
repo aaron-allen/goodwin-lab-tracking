@@ -32,21 +32,36 @@ for ii = 1:numel(dirs)
         
         % Load Data
         % =====================================================================
-        load('trx_id_corrected.mat');
-        cd 'perframe'
-        LogVel = load('log_vel_id_corrected.mat');
-        LogAngVel = load('log_ang_vel_id_corrected.mat');
-        DistToOther = load('dist_to_other_id_corrected.mat');
-        FacingAngle = load('facing_angle_id_corrected.mat');
-        AxisRation = load('norm_axis_ratio_id_corrected.mat');
-        cd ..
+        
+        IdCorr = dir('*_id_corrected.mat');
+        if length(IdCorr) >=1
+	        load('trx_id_corrected.mat');
+	        cd 'perframe'
+	        LogVel = load('log_vel_id_corrected.mat');
+	        LogAngVel = load('log_ang_vel_id_corrected.mat');
+	        DistToOther = load('dist_to_other_id_corrected.mat');
+	        FacingAngle = load('facing_angle_id_corrected.mat');
+	        AxisRation = load('norm_axis_ratio_id_corrected.mat');
+			cd ..
+	    else
+			load('trx.mat');
+	        cd 'perframe'
+	        LogVel = load('log_vel.mat');
+	        LogAngVel = load('log_ang_vel.mat');
+	        DistToOther = load('dist_to_other.mat');
+	        FacingAngle = load('facing_angle.mat');
+	        AxisRation = load('norm_axis_ratio.mat');
+			cd ..
+		end
+	
+
         % Rolling Average to Smooth data:
         % Set the windowsize (in frames) the range you want to average over.
         windowSize = 1; % a value of 1 means no smoothing
         b = (1/windowSize)*ones(1,windowSize);
         a = 1;
-        % NB: The velocity plot is very noisy without smoothing, so I've set it's
-        % own smoothing function with it's own window size that you have to be
+        % NB: The velocity plot is very noisy without smoothing, so I have set its
+        % own smoothing function with its own window size that you have to be
         % manipulated independently. The Velocity plot code is at line ~210-235.
 
 
@@ -104,7 +119,7 @@ for ii = 1:numel(dirs)
 
         % Change in Angle - To identify orientation errors
         % =====================================================================
-        % Calculating the instantaneous rate of change in the fly's angle 
+        % Calculating the instantaneous rate of change in the angle of the fly 
         dThetaM=diff(trx(G).theta);
         dThetaF=diff(trx(G+1).theta);
         % Values of +/-2pi are due to the fly's angle crossing the "zero" line and
