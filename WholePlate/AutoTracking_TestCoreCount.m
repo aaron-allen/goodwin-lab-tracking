@@ -3,19 +3,17 @@ addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/FlyTracker-1
 % Track videos
 % ==========================================================================
 
-folders = {pwd};
 VideosToBeTracked = dir('*.ufmf');
-for V in length(VideosToBeTracked)
-	options.num_chunks   = V;
-	options.num_cores    = V;
+for v = 1:length(VideosToBeTracked)
+	options.num_chunks   = v;
+	options.num_cores    = v;
 	options.max_minutes  = Inf;
 	options.save_JAABA   = 1;
 	options.save_seg     = 1;
 	disp('Now Tracking Videos');
-    videos.dir_in  = folders{f};
-    videos.dir_out = folders{f};
+    videos.dir_in  = pwd;
+    videos.dir_out = pwd;
     videos.filter = '*.ufmf';
     tracker(videos,options);
-	end
 end
 exit
