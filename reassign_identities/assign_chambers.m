@@ -33,10 +33,10 @@ meanx_c=num2cell(meanx);
 meany_c=num2cell(meany);
 [trx(:).meany]=deal(meany_c{:});
 centroid=sortrows(calib.centroids,1);
-centroid(1:5)=sortrows(centroid(1:5),2);
-centroid(6:10)=sortrows(centroid(6:10),2);
-centroid(11:15)=sortrows(centroid(11:15),2);
-centroid(16:20)=sortrows(centroid(16:20),2);
+centroid(1:5,:)=sortrows(centroid(1:5,:),2);
+centroid(6:10,:)=sortrows(centroid(6:10,:),2);
+centroid(11:15,:)=sortrows(centroid(11:15,:),2);
+centroid(16:20,:)=sortrows(centroid(16:20,:),2);
 maxx_chambers=centroid(:,2)+round((calib.rois{1}(4))/2);
 minx_chambers=centroid(:,2)-round((calib.rois{1}(4))/2);
 maxy_chambers=centroid(:,1)+round((calib.rois{1}(4))/2);
@@ -60,41 +60,41 @@ cd(startdir);
 clear all;
 
 
-function chambernumber=assign_one(f,maxy_chambers,miny_chambers,maxx_chambers,minx_chambers)
-
-for i=1:20
-    if f.meany<maxy_chambers(i)&&f.meany>miny_chambers(i)&&f.meanx<maxx_chambers(i)&&f.meanx>minx_chambers(i)
-        chambernumber=i;
-    end
-end
-
-function id_new=assign_identity(chambers)
-individuals=[1 2; 3 4; 5 6; 7 8; 9 10; 11 12; 13 14; 15 16; 17 18; 19 20;21 22; 23 24; 25 26;27 28;29 30;31 32;33 34;35 36;37 38;39 40];
-flag(1:20)=1;
-for i=1:numel(chambers)
-id_new(i)=individuals(chambers(i),flag(chambers(i))); flag(chambers(i))=2;
-end
-
-function save_assigned(filename,ids)
-
- save(filename,'ids');
-    
- function startpos=left_right_assign(chambers,firstx)
-     startpos={};
-     for i=1:20
-         firstxi=firstx(chambers==i);
-         if numel(firstxi)==2
-         if firstxi(1)<firstxi(2)
-             
-             startpos{(size(startpos,1)+1),1}={'l'};
-             startpos{(size(startpos,1)+1),1}={'r'};
-         else
-              startpos{(size(startpos,1)+1),1}={'r'};
-             startpos{(size(startpos,1)+1),1}={'l'};
-         end
-         elseif numel(firstxi)==1
-             startpos{(size(startpos,1)+1),1}={'l'};
-         end
-             
-     end
-
+    function chambernumber=assign_one(f,maxy_chambers,miny_chambers,maxx_chambers,minx_chambers)
+        
+        for i=1:20
+            if f.meany<maxy_chambers(i)&&f.meany>miny_chambers(i)&&f.meanx<maxx_chambers(i)&&f.meanx>minx_chambers(i)
+                chambernumber=i;
+            end
+        end
+        
+        function id_new=assign_identity(chambers)
+            individuals=[1 2; 3 4; 5 6; 7 8; 9 10; 11 12; 13 14; 15 16; 17 18; 19 20;21 22; 23 24; 25 26;27 28;29 30;31 32;33 34;35 36;37 38;39 40];
+            flag(1:20)=1;
+            for i=1:numel(chambers)
+                id_new(i)=individuals(chambers(i),flag(chambers(i))); flag(chambers(i))=2;
+            end
+            
+            function save_assigned(filename,ids)
+                
+                save(filename,'ids');
+                
+                function startpos=left_right_assign(chambers,firstx)
+                    startpos={};
+                    for i=1:20
+                        firstxi=firstx(chambers==i);
+                        if numel(firstxi)==2
+                            if firstxi(1)<firstxi(2)
+                                
+                                startpos{(size(startpos,1)+1),1}={'l'};
+                                startpos{(size(startpos,1)+1),1}={'r'};
+                            else
+                                startpos{(size(startpos,1)+1),1}={'r'};
+                                startpos{(size(startpos,1)+1),1}={'l'};
+                            end
+                        elseif numel(firstxi)==1
+                            startpos{(size(startpos,1)+1),1}={'l'};
+                        end
+                        
+                    end
+                    
