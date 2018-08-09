@@ -14,13 +14,13 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   
   
   CleanedData <- AllRawData %>% mutate(
-    Multitasking = ifelse(Copulation==0,(Approaching + Contact + Encirling + Turning + WingGesture + Copulation), 0),
+    Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture + Copulation), 0),
     Courtship = ifelse(Multitasking>=1, 1, 0)
   )
   CleanedData
   
-  SmoothedCourtship <- ifelse((rollmean(CleanedData$Courtship, 250,fill = 0, align = c("center")))>0.5, 1, 0)
-  SmoothedCopulation <- ifelse((rollmean(CleanedData$Copulation, 1500,fill = 0, align = c("center")))>0.5, 1, 0)
+  SmoothedCourtship <- ifelse((rollmean(CleanedData$Courtship, 250,fill = 0, align = c("left")))>0.5, 1, 0)
+  SmoothedCopulation <- ifelse((rollmean(CleanedData$Copulation, 1500,fill = 0, align = c("left")))>0.5, 1, 0)
   CleanedData <- add_column(CleanedData,SmoothedCourtship,SmoothedCopulation)
   CleanedData
   
@@ -40,19 +40,26 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   
   for (var in FlyId) {
     sub <- filter(CleanedData, Id==var)
+    sub <- slice(sub, 2100:103590)
     
     StartOfCourtship <- as.numeric(which.max(sub$SmoothedCourtship))
-    EndOfCourtship <- as.numeric(ifelse(which.max(sub$Copulation)>=2, which.max(sub$Copulation),which.max(sub$Frame)))
+    EndOfCourtship <- as.numeric(
+                          ifelse(
+                            which.max(sub$SmoothedCopulation)<=(which.max(sub$SmoothedCourtship)+15000), 
+                            which.max(sub$SmoothedCopulation),
+                            which.max(sub$SmoothedCourtship)+15000))
     CourtshipDuration = EndOfCourtship - StartOfCourtship + 1
     
-    CourtshipIndex[var] <- (sum(sub$Courtship))/CourtshipDuration
+    CourtshipNumerator <- slice(sub, StartOfCourtship:EndOfCourtship)
+    CourtshipIndex[var] <- (mean(CourtshipNumerator$Courtship))
     
-    WingIndex[var] <- (sum(sub$WingGesture))/CourtshipDuration
-    ApproachingIndex[var] <- (sum(sub$Approaching))/CourtshipDuration
-    TurningIndex[var] <- (sum(sub$Turning))/CourtshipDuration
-    ContactIndex[var] <- (sum(sub$Contact))/CourtshipDuration
-    EncirclingIndex[var] <- (sum(sub$Encirling))/CourtshipDuration
-    FacingIndex[var] <- (sum(sub$Facing))/CourtshipDuration
+    
+    WingIndex[var] <- (mean(CourtshipNumerator$WingGesture))
+    ApproachingIndex[var] <- (mean(CourtshipNumerator$Approaching))
+    TurningIndex[var] <- (mean(CourtshipNumerator$Turning))
+    ContactIndex[var] <- (mean(CourtshipNumerator$Contact))
+    EncirclingIndex[var] <- (mean(CourtshipNumerator$Encirling))
+    FacingIndex[var] <- (mean(CourtshipNumerator$Facing))
     
     CopulationDuration[var] <- (sum(sub$Copulation))/25
   }
