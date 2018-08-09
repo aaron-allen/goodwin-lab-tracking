@@ -1,6 +1,6 @@
 % Move Diagnostic Plots to new folder
 % =====================================================================
-
+addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/struct2csv'));
 
 
 ParentDir = pwd;
