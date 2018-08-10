@@ -40,7 +40,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   
   for (var in FlyId) {
     sub <- filter(CleanedData, Id==var)
-    sub <- slice(sub, 2100:103590)
+    #sub <- slice(sub, 2100:103590)
     
     StartOfCourtship <- as.numeric(which.max(sub$SmoothedCourtship))
     EndOfCourtship <- as.numeric(
