@@ -33,7 +33,10 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   EncirclingIndex <- vector("numeric")
   FacingIndex <- vector("numeric")
   CopulationDuration <- vector("numeric")
+  LatencyToCourt <- vector("numeric")
+  LatencyToCopulate <- vector("numeric")
   
+    
   FlyId <- (unique(CleanedData$Id))
   ArenaNumber <- ceiling(FlyId/2)
   
@@ -53,6 +56,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CourtshipNumerator <- slice(sub, StartOfCourtship:EndOfCourtship)
     CourtshipIndex[var] <- (mean(CourtshipNumerator$Courtship))
     
+    CopulationDuration[var] <- (sum(sub$Copulation))/25
+    LatencyToCourt[var] <- (StartOfCourtship/25)
+    LatencyToCopulate[var] <- (EndOfCourtship/25)
     
     WingIndex[var] <- (mean(CourtshipNumerator$WingGesture))
     ApproachingIndex[var] <- (mean(CourtshipNumerator$Approaching))
@@ -61,10 +67,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     EncirclingIndex[var] <- (mean(CourtshipNumerator$Encirling))
     FacingIndex[var] <- (mean(CourtshipNumerator$Facing))
     
-    CopulationDuration[var] <- (sum(sub$Copulation))/25
   }
   
-  IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CopulationDuration,ApproachingIndex,ContactIndex,EncirclingIndex,TurningIndex,WingIndex)
+  IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CopulationDuration,LatencyToCourt,LatencyToCopulate,ApproachingIndex,ContactIndex,EncirclingIndex,TurningIndex,WingIndex)
   IndexDataTable
   
   

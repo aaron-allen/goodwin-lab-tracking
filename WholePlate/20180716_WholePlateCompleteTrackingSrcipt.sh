@@ -33,12 +33,12 @@ today=$(date +%Y-%m-%d)
 echo $today
 
 read -p "Enter the directory you with the files you wish to track:  " InputDirectory
-read -p "Enter the directory where you wish results to go:  " OutputDirectory
+read -p "Enter the directory where you wish results to go:  " WorkingDirectory
 echo "This is the input directory: $InputDirectory"
-echo "This is the ouptut directory: $OutputDirectory"
+echo "This is the ouptut directory: $WorkingDirectory"
 
 pwd
-cd $OutputDirectory/
+cd $WorkingDirectory/
 pwd
 
 mkdir $today/
@@ -60,21 +60,24 @@ do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
 	mkdir "$FileName"
 	echo Copying video files from Synology
-	cp "$Z" $OutputDirectory/$today/"$FileName"/
+	cp "$Z" $WorkingDirectory/$today/"$FileName"/
 	cd "$FileName"
 	for A in *.ufmf
 	do
 		echo Copying Matlab files into tracking directory
-		cp -r $MasterDirectory/AutoTracking.m $OutputDirectory/$today/"$FileName"/AutoTracking.m
-		cp -r $MasterDirectory/ApplyClassifiers.m $OutputDirectory/$today/"$FileName"/ApplyClassifiers.m
-		cp -r $MasterDirectory/script_reassign_identities.m $OutputDirectory/$today/"$FileName"/script_reassign_identities.m
-		cp -r $MasterDirectory/WholePlateCalibration.mat $OutputDirectory/$today/"$FileName"/calibration.mat
+		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
+		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
+		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
+		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
+		cp -r $MasterDirectory/WholePlateCalibration.mat $WorkingDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
-		xterm $MasterDirectory/AutoTracking.sh &
+		bash AutoTracking.sh &
 	done
+
+	sleep 5s
 	
 	# Check if matlab is running
-	while [ $(pgrep -c "xterm") -gt 3 ]
+	while [ $(pgrep -c "MATLAB") -gt 2 ]
 	do
 		sleep 2m
 	done
@@ -83,7 +86,7 @@ done
 
 # Wait for the tracking to finish before going on to next section
 echo "Just waiting for the tracking to finish."
-while pgrep -x "xterm" > /dev/null
+while pgrep -x "MATLAB" > /dev/null
 do
 	sleep 2m
 done
@@ -96,17 +99,17 @@ done
 
 # Generate Diagnostic Plots
 echo DIAGNOSTIC PLOT
-cp -r $MasterDirectory/DiagnosticPlots.m $OutputDirectory/$today/DiagnosticPlots.m
+cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
 matlab -nodisplay -nosplash -r "DiagnosticPlots"
 
 ## Extracting Data for Each Plate
 echo EXTRACT DATA AND PDFs
-cp -r $MasterDirectory/ExtractDataAndPDFs.m $OutputDirectory/$today/ExtractDataAndPDFs.m
+cp -r $MasterDirectory/ExtractDataAndPDFs.m $WorkingDirectory/$today/ExtractDataAndPDFs.m
 matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
 
 ## Calculate indices with R
 echo CALCULATE INDICES
-cp -r $MasterDirectory/CalculateIndices.R $OutputDirectory/$today/CalculateIndices.R
+cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndices.R
 Rscript CalculateIndices.R
 
 
