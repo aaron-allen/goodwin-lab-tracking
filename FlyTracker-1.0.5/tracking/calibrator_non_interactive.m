@@ -1,4 +1,3 @@
-
 % Obtain tracking parameters via user input.
 %
 % To start the calibration, use:
@@ -64,7 +63,7 @@ function success = calibrator_non_interactive(f_vid, f_calib)
     
     % interface handles
     handles = [];
-    
+   
     % initialize interface
     init_interface()   
     
@@ -74,6 +73,11 @@ function success = calibrator_non_interactive(f_vid, f_calib)
     % wait until figure handle has been deleted before exiting function
     %waitfor(handles.fig_h)
     setResolution();
+    detectChambers();
+    acceptChambers();
+    delete(handles.fig_h)
+    init_interface() 
+    setResolution2();
     detectChambers();
     acceptChambers();
     finish();
@@ -580,6 +584,88 @@ function setResolution(~,~)
     % set spatial resolution
     points = getPosition(handles.ruler_h);
     pixdist = sqrt(sum((points(1,:)-points(2,:)).^2));
+    ppm = pixdist/length;
+    calib.PPM = ppm;
+
+    % compute background
+    bg = calib_bg_estimate(vinfo, ppm);
+    if isnumeric(bg) && ~bg
+        return
+    end    
+
+    % disable current componenets
+    set(handles.ruler_h,'Visible','off')
+    set(handles.vid_button_h,'Visible','off');
+    try
+    set(handles.ruler_h,'PickableParts','none');
+    catch
+    end
+    for i=1:numel(handles.res_hs)
+        set(handles.res_hs(i),'Enable','off')
+    end
+    drawnow
+    
+    % save background
+    save(files.f_bg,'bg');    
+    
+    % fill in our best guess for number of flies
+    tmp_vinfo = vinfo;
+    im = video_read_frame(tmp_vinfo,0);    
+    bw_diff = abs(im-bg.bg_mean);
+    [~,b] = hist(bw_diff(:),10);
+    thresh = b(5);    
+    
+    frames = [0 vinfo.n_frames-2 floor(vinfo.n_frames/2)];
+    blob_count = zeros(1,numel(frames));
+    for i=1:numel(frames) 
+        bw_diff = abs(video_read_frame(tmp_vinfo,frames(i))-bg.bg_mean);
+        bw_th_diff = bw_diff > thresh;
+        cc = bwconncomp(bw_th_diff);
+        props = regionprops(cc,{'MinorAxisLength','MajorAxisLength','Centroid'});
+        n_candidates = 0;
+        axis_lengths = zeros(cc.NumObjects,2);
+        for c=1:cc.NumObjects
+            axis_lengths(c,1) = props(c).MinorAxisLength;
+            axis_lengths(c,2) = props(c).MajorAxisLength;
+            if props(c).MajorAxisLength < calib.PPM*4.5 && ...
+               props(c).MajorAxisLength > calib.PPM && ...
+               props(c).MinorAxisLength > calib.PPM/2
+                n_candidates = n_candidates + 1;
+            end
+        end
+        blob_count(i) = n_candidates;
+    end        
+    vars.total_n_flies = median(blob_count);
+    set(handles.h_n_flies,'String','2');
+   % set(handles.h_n_flies,'String',num2str(vars.total_n_flies)); 
+    set(handles.h_n_chambers,'String','20');
+
+    % update image to white out background
+    bw_diff = 1-abs(vars.img-bg.bg_mean);        
+    bw_diff = (bw_diff-min(bw_diff(:)))/(max(bw_diff(:))-min(bw_diff(:)));
+    set(handles.im_h,'cdata',(2*bw_diff+vars.img)/3);
+
+    % make next step visible
+    cover_position = get(handles.h_cover,'Position');
+    cover_position(end) = const.menu_pos_y(3);    
+    set(handles.h_cover,'Position',cover_position);
+end
+function setResolution2(~,~) 
+    val = get(handles.h_fps,'String');
+    fps = str2double(val);
+    fps = 25;
+    if isnan(fps), return; end
+    val = get(handles.h_ruler_len,'String');
+    length = str2double(val);  
+    length =20;
+    if isnan(length), return; end        
+
+    % set temporal resolution
+    calib.FPS = fps;
+
+    % set spatial resolution
+   
+    pixdist = calib.rois{1}(3);
     ppm = pixdist/length;
     calib.PPM = ppm;
 
