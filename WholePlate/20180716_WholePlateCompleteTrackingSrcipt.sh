@@ -100,12 +100,12 @@ done
 # Generate Diagnostic Plots
 echo DIAGNOSTIC PLOT
 cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
-matlab -nodisplay -nosplash -r "DiagnosticPlots"
+/usr/local/bin/matlab -nodisplay -nosplash -r "DiagnosticPlots"
 
 ## Extracting Data for Each Plate
 echo EXTRACT DATA AND PDFs
 cp -r $MasterDirectory/ExtractDataAndPDFs.m $WorkingDirectory/$today/ExtractDataAndPDFs.m
-matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+/usr/local/bin/matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
 
 ## Calculate indices with R
 echo CALCULATE INDICES
