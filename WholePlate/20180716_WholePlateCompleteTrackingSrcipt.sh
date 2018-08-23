@@ -67,9 +67,11 @@ do
 		echo Copying Matlab files into tracking directory
 		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
 		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
+		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
 		cp -r $MasterDirectory/WholePlateCalibration.mat $WorkingDirectory/$today/"$FileName"/calibration.mat
+                /usr/local/bin/matlab  -r "run_calibrator_non_interactive"
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
 	done
