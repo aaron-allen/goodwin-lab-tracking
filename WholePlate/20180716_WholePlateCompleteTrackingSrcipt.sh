@@ -29,11 +29,13 @@ echo $(date)
 MasterDirectory=$(pwd)
 echo $MasterDirectory
 # setting up a variable with todays date and making a folder for the modified courtship videos
-today=$(date +%Y-%m-%d)
+today=$(date +%Y%m%d)
 echo $today
 
-read -p "Enter the directory you with the files you wish to track:  " InputDirectory
-read -p "Enter the directory where you wish results to go:  " WorkingDirectory
+#read -p "Enter the directory you with the files you wish to track:  " InputDirectory
+#read -p "Enter the directory where you wish results to go:  " WorkingDirectory
+InputDirectory=/mnt/ToBeTracked/2018_08_24_Converted
+WorkingDirectory=/media/goodwintracking/Data/WorkingDirectory
 echo "This is the input directory: $InputDirectory"
 echo "This is the ouptut directory: $WorkingDirectory"
 
