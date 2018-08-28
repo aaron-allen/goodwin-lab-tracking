@@ -12,7 +12,7 @@ diary('tracker_logfile.log')
 %options.granularity  = 10000;
 options.num_chunks   = 1;       % set either granularity or num_chunks
 options.num_cores    = 1;
-options.max_minutes  = Inf;
+options.max_minutes  = 15;
 options.save_JAABA   = 1;
 options.save_seg     = 1;
 diary on
