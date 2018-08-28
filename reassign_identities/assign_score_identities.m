@@ -17,8 +17,11 @@ load(idsfile);
 
 trackfile=dir('*-track.mat');
 trackfilename=trackfile(1).name;
+trackfilename_old=strrep(trackfilename,'.mat','_old.mat');
 trackoutputfile=strrep(trackfilename,'.mat','_id_corrected.mat');
 id_correct_trackfile(trackfilename,trackoutputfile,ids);
+movefile(trackfilename, trackfilename_old);
+copyfile(trackoutputfile,trackfilename);
 
 featfile=dir('*-feat.mat');
 featfilename=featfile(1).name;
