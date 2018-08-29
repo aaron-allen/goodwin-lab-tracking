@@ -48,12 +48,12 @@ echo FILE TRANSFER AND TRACKING
 
 
 
-for U in /mnt/Synology/ToBeTracked/*/
+for U in /mnt/Synology/ToBeTracked/Test/*/
 do
     CompressionDate=$(basename -a  "$U")
     pwd
     echo CHANGING INTO USER DIRECTORY: "$CompressionDate"
-	cd "$CompressionDate"
+	cd $U
 	pwd
 	
 	for Z in *.ufmf
@@ -69,14 +69,15 @@ do
 		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
-		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
+		/usr/local/bin/matlab  -r "run_calibrator_non_interactive" 
 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 		
 
 		echo STARTING AUTOTRACKING SCRIPT
 		gnome-terminal -e ./AutoTracking.sh &
 		echo CHANGING DIRECTORY BACK TO SYNOLOGY
-		cd /mnt/Synology/ToBeTracked/$CompressionDate
+		cd $U
 
 		sleep 5s
 		while [ $(pgrep -c "MATLAB") -gt 3 ]
