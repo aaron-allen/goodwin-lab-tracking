@@ -48,105 +48,118 @@ echo FILE TRANSFER AND TRACKING
 
 
 
-for U in /mnt/Synology/ToBeTracked/Test/*/
+for U in /mnt/Synology/ToBeTracked/*/
 do
-    UserName=$(basename -a  "$U")
+    CompressionDate=$(basename -a  "$U")
     pwd
-    echo CHANGING INTO USER DIRECTORY: "$UserName"
-	cd "$U"
+    echo CHANGING INTO USER DIRECTORY: "$CompressionDate"
+	cd "$CompressionDate"
 	pwd
-
-    for D in */
-    do
-    	RecordingDate=$(basename -a  "$D")
-    	mkdir $WorkingDirectory/$today/$RecordingDate/
-    	pwd
-    	echo CHANGING INTO DATE DIRECTORY "$RecordingDate"
-    	cd "$D"
-		pwd
-		
-		
-		for Z in *.ufmf
-		do
-			FileName=$(basename -a --suffix=.ufmf "$Z")
-			mkdir $WorkingDirectory/$today/$RecordingDate/"$FileName"
-			echo COPYING VIDEO FILES FROM SYNOLOGY
-			cp "$Z" $WorkingDirectory/$today/$RecordingDate/"$FileName"
-			cd $WorkingDirectory/$today/$RecordingDate/"$FileName"
-			
-			echo COPYING MATLAB FILES INTO TRACKING DIRECTORY
-			mkdir $WorkingDirectory/$today/$RecordingDate
-			cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/$RecordingDate/"$FileName"/AutoTracking.sh
-			cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/$RecordingDate/"$FileName"/AutoTracking.m
-			cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/$RecordingDate/"$FileName"/ApplyClassifiers.m
-			cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/$RecordingDate/"$FileName"/script_reassign_identities.m
-			cp -r $MasterDirectory/WholePlateCalibration.mat $WorkingDirectory/$today/$RecordingDate/"$FileName"/calibration.mat
-
-			echo STARTING AUTOTRACKING SCRIPT
-			gnome-terminal -e ./AutoTracking.sh &
-			echo CHANGING DIRECTORY BACK TO SYNOLOGY
-			cd /mnt/Synology/ToBeTracked/Test/$UserName/$RecordingDate
 	
-			sleep 5s
-			while [ $(pgrep -c "MATLAB") -gt 3 ]
-			do
-				sleep 2m
-			done
-		done
+	for Z in *.ufmf
+	do
+		FileName=$(basename -a --suffix=.ufmf "$Z")
+		mkdir $WorkingDirectory/$today/"$FileName"
+		echo COPYING VIDEO FILES FROM SYNOLOGY
+		cp "$Z" $WorkingDirectory/$today/"$FileName"
+		cd $WorkingDirectory/$today/"$FileName"
+		
+		echo COPYING MATLAB FILES INTO TRACKING DIRECTORY
+		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
+		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
+		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
+		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
+		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
+		
 
-		# Wait for the tracking to finish before going on to next section
-		echo JUST WAITNING FOR TRACKING TO FINISH
-		while pgrep -x "MATLAB" > /dev/null
+		echo STARTING AUTOTRACKING SCRIPT
+		gnome-terminal -e ./AutoTracking.sh &
+		echo CHANGING DIRECTORY BACK TO SYNOLOGY
+		cd /mnt/Synology/ToBeTracked/$CompressionDate
+
+		sleep 5s
+		while [ $(pgrep -c "MATLAB") -gt 3 ]
 		do
 			sleep 2m
 		done
-
-		cd $WorkingDirectory/$today/$RecordingDate/
-		# Generate Diagnostic Plots
-		echo DIAGNOSTIC PLOT
-		cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/$RecordingDate/DiagnosticPlots.m
-		matlab -nodisplay -nosplash -r "DiagnosticPlots"
-
-		## Extracting Data for Each Plate
-		echo EXTRACT DATA AND PDFs
-		cp -r $MasterDirectory/ExtractDataAndPDFs.m $WorkingDirectory/$today/$RecordingDate/ExtractDataAndPDFs.m
-		matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
-
-		## Calculate indices with R
-		echo CALCULATE INDICES
-		cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/$RecordingDate/CalculateIndices.R
-		Rscript CalculateIndices.R
-
-		# Clean up of matlab files
-		echo REMOVING MATLAB SCRIPTS
-		CurrentDirectory=$(pwd)
-
-		rm DiagnosticPlots.m
-		rm ExtractDataAndPDFs.m
-		rm CalculateIndices.R
-		for X in */
-		do
-			cd "$X"/
-			rm AutoTracking.sh
-			rm AutoTracking.m
-			rm ApplyClassifiers.m
-			rm script_reassign_identities.m
-			
-			cd $CurrentDirectory
-		done
-		
-
-		echo MOVING TRACKING RESULTS TO SYNOLOGY
-		cd $WorkingDirectory/
-    	mkdir /mnt/Synology/Tracked/Test/
-		mkdir /mnt/Synology/Tracked/Test/$UserName/
-		
-		mv $today /mnt/Synology/Tracked/Test/$UserName/
-
-		cd /mnt/Synology/ToBeTracked/Test/$UserName/
 	done
-	cd /mnt/Synology/ToBeTracked/Test/
+
+	# Wait for the tracking to finish before going on to next section
+	echo JUST WAITNING FOR TRACKING TO FINISH
+	while pgrep -x "MATLAB" > /dev/null
+	do
+		sleep 2m
+	done
+
+	cd $WorkingDirectory/$today/
+	# Generate Diagnostic Plots
+	echo DIAGNOSTIC PLOT
+	cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
+	matlab -nodisplay -nosplash -r "DiagnosticPlots"
+
+	## Extracting Data for Each Plate
+	echo EXTRACT DATA AND PDFs
+	cp -r $MasterDirectory/ExtractDataAndPDFs.m $WorkingDirectory/$today/ExtractDataAndPDFs.m
+	matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+
+	## Calculate indices with R
+	echo CALCULATE INDICES
+	cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndices.R
+	Rscript CalculateIndices.R
+
+	# Clean up of matlab files
+	echo REMOVING MATLAB SCRIPTS
+	CurrentDirectory=$(pwd)
+
+	rm DiagnosticPlots.m
+	rm ExtractDataAndPDFs.m
+	rm CalculateIndices.R
+	for X in */
+	do
+		cd "$X"/
+		rm AutoTracking.sh
+		rm AutoTracking.m
+		rm ApplyClassifiers.m
+		rm script_reassign_identities.m
+		
+		cd $CurrentDirectory
+	done
+	
+	# Moving any error log files for the Diagnostic... and Extract...
+	for L in *DiagnosticPlot_errors.log
+	do
+		LogFile=$L
+		Directory=${LogFile%%DiagnosticPlot_errors.log}
+		mv $LogFile $Directory/
+	done
+	for L in *ExtractDataAndPDFs_errors.log
+	do
+		LogFile=$L
+		Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
+		mv $LogFile $Directory/
+	done
+
+
+
+	echo MOVING TRACKING RESULTS TO SYNOLOGY
+	cd $WorkingDirectory/
+	for D in */
+	do
+		Directory=$D
+		User=${Directory%%_*}
+		RecordingDate=${Directory#*_}
+		VideoName=${RecordingDate#*_}
+		RecordingDate=${RecordingDate%%_*}
+
+		mkdir /mnt/Synology/Tracked/$User
+		mkdir /mnt/Synology/Tracked/$User/$RecordingDate
+	
+		mv $today /mnt/Synology/Tracked/$User/$RecordingDate
+	done
+	cd /mnt/Synology/ToBeTracked/
 done
+
 
 echo All Done.
 echo $(date)
