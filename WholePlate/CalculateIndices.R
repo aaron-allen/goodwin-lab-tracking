@@ -17,7 +17,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     
     
     CleanedData <- AllRawData %>% mutate(
-      Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture + Copulation), 0),
+      Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0)
     )
     CleanedData
@@ -72,7 +72,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       
     }
     
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CopulationDuration,LatencyToCourt,LatencyToCopulate,ApproachingIndex,ContactIndex,EncirclingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,LatencyToCourt,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable
     
     

@@ -34,8 +34,8 @@ echo $today
 
 #read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 #read -p "Enter the directory where you wish results to go:  " WorkingDirectory
-InputDirectory=/mnt/ToBeTracked/2018_08_24_Converted
-WorkingDirectory=/media/goodwintracking/Data/WorkingDirectory
+InputDirectory=/mnt/Synology/ToBeTracked/20180905Converted
+WorkingDirectory=/mnt/LocalData/WorkingDirectory
 echo "This is the input directory: $InputDirectory"
 echo "This is the ouptut directory: $WorkingDirectory"
 
@@ -82,7 +82,7 @@ do
 	sleep 5s
 	
 	# Check if matlab is running
-	while [ $(pgrep -c "MATLAB") -gt 2 ]
+	while [ $(pgrep -c "MATLAB") -gt 3 ]
 	do
 		sleep 2m
 	done
@@ -134,10 +134,25 @@ do
 	rm ApplyClassifiers.m
 	rm AutoTracking.m
 	rm script_reassign_identities.m
-	
+	rm run_calibrator_non_interactive.m
+
 	cd $CurrentDirectory
 done
 
+# Moving any error log files for the Diagnostic... and Extract...
+echo "Now moving log files"
+for L in *DiagnosticPlot_errors.log
+do
+	LogFile=$L
+	Directory=${LogFile%%DiagnosticPlot_errors.log}
+	mv $LogFile $Directory/
+done
+for L in *ExtractDataAndPDFs_errors.log
+do
+	LogFile=$L
+	Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
+	mv $LogFile $Directory/
+done
 
 
 echo All Done.
