@@ -31,13 +31,15 @@ echo $MasterDirectory
 # setting up a variable with todays date and making a folder for the modified courtship videos
 today=$(date +%Y%m%d)
 echo $today
+today=${today}Tracked
+echo  "$today"
 
 #read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 #read -p "Enter the directory where you wish results to go:  " WorkingDirectory
-InputDirectory=/mnt/Synology/ToBeTracked/20180905Converted
+InputDirectory=/mnt/Synology/ToBeTracked/*Converted
 WorkingDirectory=/mnt/LocalData/WorkingDirectory
-echo "This is the input directory: $InputDirectory"
-echo "This is the ouptut directory: $WorkingDirectory"
+echo This is the input directory: $InputDirectory
+echo This is the ouptut directory: $WorkingDirectory
 
 pwd
 cd $WorkingDirectory/
@@ -72,8 +74,7 @@ do
 		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
-		#cp -r $MasterDirectory/WholePlateCalibration.mat $WorkingDirectory/$today/"$FileName"/calibration.mat
-                /usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+        /usr/local/bin/matlab  -r "run_calibrator_non_interactive"
 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
@@ -117,12 +118,19 @@ echo CALCULATE INDICES
 cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndices.R
 Rscript CalculateIndices.R
 
-
-
+# Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
+CurrentDirectory=$(pwd)
+for P in */
+do
+	cd $P/Results
+	echo MERGING DIAGNOSTIC PLOTS INTO ONE PDF FOR $P
+	pdftk *.pdf cat output ${P%%/*}_DiagnosticPlots.pdf
+	rm *[0-9].pdf
+	cd $CurrentDirectory
+done
 
 
 ## Clean up of matlab files
-CurrentDirectory=$(pwd)
 
 rm DiagnosticPlots.m
 rm ExtractDataAndPDFs.m
@@ -132,6 +140,7 @@ for X in */
 do
 	cd "$X"/
 	rm ApplyClassifiers.m
+	rm AutoTracking.sh
 	rm AutoTracking.m
 	rm script_reassign_identities.m
 	rm run_calibrator_non_interactive.m
@@ -153,6 +162,24 @@ do
 	Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
 	mv $LogFile $Directory/
 done
+
+echo MOVING TRACKING RESULTS TO SYNOLOGY
+for D in */
+do
+	Directory=$D
+	User=${Directory%%-*}
+	RecordingDate=${Directory#*-}
+	VideoName=${RecordingDate#*-}
+	RecordingDate=${RecordingDate%%-*}
+
+	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
+
+	mv $D /mnt/Synology/Tracked/$User/$RecordingDate/
+done
+
+echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
+mv $InputDirectory /mnt/Synology/Archive/uFMF
+
 
 
 echo All Done.
