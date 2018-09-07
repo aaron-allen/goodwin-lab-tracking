@@ -174,8 +174,9 @@ do
 
 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
 
-	mv $D /mnt/Synology/Tracked/$User/$RecordingDate/
-done
+	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
+	cd $CurrentDirectory
+ done
 
 echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
 mv $InputDirectory /mnt/Synology/Archive/uFMF
