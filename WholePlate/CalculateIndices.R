@@ -11,14 +11,11 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   LogFile <-file("CalculateIndicesError.log")
   
   tryCatch({
-    AllRawData <- read_csv(list.files(pattern=glob2rx('*JAABAScores.csv')))
-    AllRawData
-    AllRawData$FileName <- as_factor(AllRawData$FileName)
-    
-    
     CleanedData <- AllRawData %>% mutate(
       Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
-      Courtship = ifelse(Multitasking>=1, 1, 0)
+      MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encirling + Facing + Contact + Turning + WingGesture), 0),
+      Courtship = ifelse(Multitasking>=1, 1, 0),
+      CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
     )
     CleanedData
     
@@ -29,6 +26,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     
     
     CourtshipIndex <- vector("numeric")
+    CourtshipIndexWithFacing <- vector("numeric")
     WingIndex <- vector("numeric")
     ApproachingIndex <- vector("numeric")
     TurningIndex <- vector("numeric")
@@ -38,8 +36,10 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CopulationDuration <- vector("numeric")
     LatencyToCourt <- vector("numeric")
     LatencyToCopulate <- vector("numeric")
+    CourtshipInitiation <- vector("numeric")
+    CourtshipTermination <- vector("numeric")
     
-      
+    
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
     
@@ -50,18 +50,24 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       
       StartOfCourtship <- as.numeric(which.max(sub$SmoothedCourtship))
       EndOfCourtship <- as.numeric(
-                            ifelse(
-                              which.max(sub$SmoothedCopulation)<=(which.max(sub$SmoothedCourtship)+15000), 
-                              which.max(sub$SmoothedCopulation),
-                              which.max(sub$SmoothedCourtship)+15000))
+        ifelse(
+          sum(sub$SmoothedCopulation)==0, 
+          which.max(sub$SmoothedCourtship)+15000,
+          ifelse(
+            which.max(sub$SmoothedCopulation)<=(which.max(sub$SmoothedCourtship)+15000), 
+            which.max(sub$SmoothedCopulation),
+            which.max(sub$SmoothedCourtship)+15000)))
       CourtshipDuration = EndOfCourtship - StartOfCourtship + 1
       
       CourtshipNumerator <- slice(sub, StartOfCourtship:EndOfCourtship)
       CourtshipIndex[var] <- (mean(CourtshipNumerator$Courtship))
+      CourtshipIndexWithFacing[var] <- (mean(CourtshipNumerator$CourtshipWithFacing))
       
       CopulationDuration[var] <- (sum(sub$Copulation))/25
       LatencyToCourt[var] <- (StartOfCourtship/25)
       LatencyToCopulate[var] <- (EndOfCourtship/25)
+      CourtshipInitiation[var] <- (StartOfCourtship/25)
+      CourtshipTermination[var] <- (EndOfCourtship/25)
       
       WingIndex[var] <- (mean(CourtshipNumerator$WingGesture))
       ApproachingIndex[var] <- (mean(CourtshipNumerator$Approaching))
@@ -72,7 +78,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       
     }
     
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,LatencyToCourt,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable
     
     
