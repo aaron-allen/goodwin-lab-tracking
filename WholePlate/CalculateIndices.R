@@ -11,6 +11,11 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   LogFile <-file("CalculateIndicesError.log")
   
   tryCatch({
+    AllRawData <- read_csv(list.files(pattern=glob2rx('*JAABAScores.csv')))
+    AllRawData
+    AllRawData$FileName <- as_factor(AllRawData$FileName)
+    
+    
     CleanedData <- AllRawData %>% mutate(
       Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
       MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encirling + Facing + Contact + Turning + WingGesture), 0),
