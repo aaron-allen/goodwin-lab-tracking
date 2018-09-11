@@ -94,11 +94,11 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
         
         WingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$WingGesture)))
-        ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Approaching)))
-        TurningIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Turning)))
-        ContactIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Contact)))
-        EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Encirling)))
-        FacingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Facing)))
+        ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Approaching)), (mean(CourtshipNumerator$Approaching)))
+        TurningIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Turning)), (mean(CourtshipNumerator$Turning)))
+        ContactIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Contact)), (mean(CourtshipNumerator$Contact)))
+        EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Encirling)), (mean(CourtshipNumerator$Encirling)))
+        FacingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Facing)), (mean(CourtshipNumerator$Facing)))
       }
     }
     
