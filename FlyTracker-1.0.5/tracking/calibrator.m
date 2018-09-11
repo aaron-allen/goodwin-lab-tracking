@@ -1414,6 +1414,8 @@ function randomPic(~,~)
     img = video_read_frame(tmp_vinfo,frame);        
     % set FOV to be a random mask
     mask_id = randi(numel(calib.rois));
+    % valid_chamber_nums=find(calib.valid_chambers);
+    %mask_id=valid_chamber_nums(randi(numel(valid_chamber_nums)));
     setAxis(mask_id,size(img));    
     calib.mask = calib.masks{mask_id};
     % update segmentation overlay

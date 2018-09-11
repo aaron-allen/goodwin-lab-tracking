@@ -75,11 +75,12 @@ function success = calibrator_non_interactive(f_vid, f_calib)
     setResolution();
     detectChambers();
     acceptChambers();
+    finish_no_save();
     delete(handles.fig_h)
     init_interface() 
     setResolution2();
     detectChambers();
-    acceptChambers();
+    acceptChambers2();
     finish();
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1361,7 +1362,120 @@ function acceptChambers(~,~)
     vars.dets = track_segment(vars.dets,calib,0);
     updateSeg()
 end
+function acceptChambers2(~,~) 
+    % get number of flies
+    val = get(handles.h_n_flies,'String');
+    n_flies = str2double(val);
+    if isnan(n_flies), return; end
 
+    % get chamber info
+    detect_method = get(handles.h_chamber_method,'Value');
+    if detect_method == 1
+        h = handles.roi_h_auto;
+        h_size = handles.ROIsize_h_auto;
+    elseif detect_method == 2
+        h = handles.roi_h;
+        h_size = handles.ROIsize_h;
+    else
+        h = handles.roi_h_full;
+    end
+    if isempty(h), return; end
+
+    % generate chamber masks and rois
+    masks = cell(1,numel(h));
+    rois = cell(1,numel(h));
+    full_mask = zeros(size(bg.bg_mean));
+    for i=1:numel(h)
+        if detect_method == 3
+            mask = true(size(bg.bg_mean));
+            rois{i} = [1 1 size(mask)];
+        else
+            mask = h(i).createMask;
+            [I,J] = find(mask);
+            rois{i} = [min(I) min(J) max(I)-min(I)+1 max(J)-min(J)+1];
+        end
+        full_mask = full_mask + mask;
+        masks{i} = mask;        
+    end
+    calib.masks = masks;
+    calib.mask = calib.masks{1};
+    calib.full_mask = full_mask;  
+    calib.rois = rois;    
+    calib.n_flies = n_flies;
+    calib.magnet = 0;
+    calib.dead_female = 0;
+
+    % hide chamber detections
+    for i=1:numel(h)
+        set(h(i),'Visible','off')
+        try
+        set(h(i),'PickableParts','none');
+        catch
+        end
+    end
+    if exist('h_size','var')
+        set(h_size,'Visible','off')
+    end
+    % disable components
+    for i=1:numel(handles.exp_hs)
+        set(handles.exp_hs(i),'Enable','off')
+    end
+    drawnow
+    
+    % infer parameters
+    calib.params = infer_tracker_params2();     
+    
+    % make next step visible
+    cover_position = get(handles.h_cover,'Position');
+    cover_position(end) = const.menu_pos_y(4);    
+    set(handles.h_cover,'Position',cover_position);   
+    for i=1:numel(handles.h_segview)
+        set(handles.h_segview(i),'Visible','on')
+    end
+
+    % enable zooming
+    zoom on
+
+    % display legend for segmentation colors
+    hold on
+    hs = [];
+    hs(1) = plot(-1,-1,'o','markerEdgeColor','k','markerFaceColor',const.clr.body,'markersize',10,'linewidth',1);
+    hs(2) = plot(-1,-1,'o','markerEdgeColor','k','markerFaceColor',const.clr.wings,'markersize',10,'linewidth',1);
+    hs(3) = plot(-1,-1,'o','markerEdgeColor','k','markerFaceColor',const.clr.legs,'markersize',10,'linewidth',1);
+    hs(4) = plot(-1,-1,'o','markerEdgeColor','k','markerFaceColor','w','markersize',10,'linewidth',1);
+    legend(hs,{'body','wings','legs','other'},'FontSize',fs*11);
+    legend('boxoff')
+
+    % update image to white out background
+    img = vars.img;
+    bw_diff = 1-abs(img-bg.bg_mean);        
+    bw_diff = (bw_diff-min(bw_diff(:)))/(max(bw_diff(:))-min(bw_diff(:)));
+    im_disp = (2*bw_diff+img)/3;
+    im_disp(~calib.mask) = im_disp(~calib.mask)*.8;
+    set(handles.im_h,'cdata',im_disp);
+    
+    % set FOV to show just one chamber
+    mask_id = vars.mask_id;
+    setAxis(mask_id,size(img));
+    
+    % set slider values
+    fg_thr = 1-calib.params.fg_th_weak;
+    set(handles.fg_slider_h,'Value',fg_thr);
+    str = sprintf('%0.2f',fg_thr);
+    set(handles.fg_thr_h,'String',str);
+    body_thr = 1-calib.params.body_th_weak;    
+    set(handles.bod_slider_h,'Value',body_thr);
+    str = sprintf('%0.2f',body_thr);
+    set(handles.bod_thr_h,'String',str);
+
+    % set pointsize to fit the size of pixels per screen-mm 
+    autoSetPointsize();
+
+    % segment flies
+    vars.dets = track_detect(vinfo,bg,calib,[],{img});  
+    vars.dets = track_segment(vars.dets,calib,0);
+    updateSeg()
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% SEGMENTATION OVERLAY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1510,6 +1624,8 @@ function randomPic(~,~)
     img = video_read_frame(tmp_vinfo,frame);        
     % set FOV to be a random mask
     mask_id = randi(numel(calib.rois));
+    %valid_chamber_nums=find(calib.valid_chambers);
+    %mask_id=valid_chamber_nums(randi(numel(valid_chamber_nums)));
     setAxis(mask_id,size(img));    
     calib.mask = calib.masks{mask_id};
     % update segmentation overlay
@@ -1600,7 +1716,76 @@ function params = infer_tracker_params()
     params.vel_thresh             = 20*calib.PPM/calib.FPS; %20 mm/sec
     params.spike_thresh           = 2.5;
 end    
+function params = infer_tracker_params2() 
+    % scale factors
+    ref_ppm = 12;   % resolution of video used to set params initially
+    sf = calib.PPM/ref_ppm;
 
+    % kernels for erosion and dilation of body and fg masks,
+    % used in detectionand segmentation
+    se_disk = cell(1,5);
+    body_border = max(1,round(1*sf));  
+    se_disk{1} = strel('disk',1,0);                                        % NEVER USED
+    se_disk{2} = strel('disk',body_border,0);
+    radius = max(1,floor(round(2* 3*sf^.5)/2));
+    se_disk{3} = strel('disk',radius,0);
+    se_disk{4} = strel('disk',max(radius+1,floor(round(2*(3+1)*sf^.5)/2)),0);
+    params.strels = se_disk;
+    
+    % MATCHING
+    params.match_cost_th         = calib.PPM*10;         % 5 fly lengths
+    params.min_cost_mat_diff     = calib.PPM;            % 1/2 fly length
+    % (these are updated later to match the distribution of the data)
+    factor = 1.5;
+    params.mean_major_axis = calib.PPM*2;         % approx fly length
+    params.mean_minor_axis = calib.PPM;
+    params.mean_area       = calib.PPM^2*1.5;
+    params.max_major_axis  = params.mean_major_axis*factor;
+    params.max_minor_axis  = params.mean_minor_axis*factor;
+    params.max_area        = params.mean_area*factor;    
+    
+    % DETECTION
+    params.r_props = {'Area','Centroid','Orientation' ...
+                      'MajorAxisLength','MinorAxisLength'};
+    params.fg_mask_buff         = round(5*sf);          
+    params.fg_min_size          = 70*sf^2;              
+    params.fg_max_size          = params.fg_min_size * 30;
+    params.fly_comp             = 3;                    
+    % - infer params from video statistics
+    % (these are updated later in interface)
+    a = params.mean_major_axis/2;
+    b = params.mean_minor_axis/2;
+    num_pix = round(a*b*pi) * (calib.n_flies+calib.magnet+calib.dead_female);    
+    im_fg = max((bg.bg_mean - vars.img),[],3);
+    im_fg = im_fg./max(.1,bg.bg_mean); % to account for difference on food
+    im_fg = im_fg/max(max(im_fg(:)),max(vars.img(:))); % normalize
+    valid_chamber_nums=find(calib.valid_chambers);
+    mask_id=valid_chamber_nums(randi(numel(valid_chamber_nums)));
+    sorted_pix = sort(im_fg(calib.masks{1,mask_id}==1),'descend');
+    sorted_thr = min(sorted_pix(1:num_pix));
+    %sorted_thr = prctile(sorted_pix(1:num_pix),1);
+    params.body_th_weak  = sorted_thr;
+    params.fg_th_weak    = 0.1;  
+    params.fg_th_strong  = .2*params.fg_th_weak + .8*params.body_th_weak;    
+    % set default params
+    default.fg_th_weak   = params.fg_th_weak;
+    default.body_th_weak = params.body_th_weak;
+    
+    % SEGMENTATION
+    % - legs
+    params.joint_dist_th          = 2;                   
+    params.joint_area_max         = 8*sf;                
+    % - wings
+    params.max_body_wing_ang      = 1.8;  
+    params.wing_area_min          = 20*sf^2;                                
+    params.min_ori_discr_length   = 8*sf;                
+    % - fix ori    
+    params.min_resting_body_ratio = 1.5;                
+    params.min_resting_body_area  = max(7,100*sf^2);      
+    params.min_wing_area          = max(7,10*sf^2);       
+    params.vel_thresh             = 20*calib.PPM/calib.FPS; %20 mm/sec
+    params.spike_thresh           = 2.5;
+end 
 function updateFgThr(val)     
     calib.params.fg_th_weak = 1-val;
     calib.params.fg_th_strong = .2*calib.params.fg_th_weak + .8*calib.params.body_th_weak;
@@ -1748,7 +1933,100 @@ function finish(~,~)
     % save results
     save(files.f_info,'calib')
 end
-
+function finish_no_save(~,~)    
+    % load more images
+    tmp_vinfo = vinfo;
+    n_frames = tmp_vinfo.n_frames;
+    step = round(n_frames/6);
+    start = step;
+    limit = step*4+1;
+    imgs = cell(1,4);
+    frames = start:step:limit;
+    for idx=1:4
+        imgs{idx} = video_read_frame(tmp_vinfo,frames(idx));
+    end       
+    % remove masks where no flies are present
+    nonempty_chambers = zeros(1,numel(calib.rois));    
+    blob_count = zeros(1,numel(calib.rois));
+    calib.full_mask = zeros(size(calib.full_mask));
+    for i=1:numel(calib.rois)
+        calib.mask = calib.masks{i};
+        dets = track_detect(tmp_vinfo,bg,calib,[],imgs);
+        n_flies = 0;
+        for j=1:numel(imgs)
+            n_flies = n_flies + dets.frame_data{j}.body_cc.NumObjects;
+        end
+        blob_count(i) = n_flies/numel(imgs);
+        if n_flies > 0
+            nonempty_chambers(i) = 1;
+            calib.full_mask = calib.full_mask | calib.masks{i};
+        else
+            disp(['Chamber ' num2str(i) ' appears to be empty'])
+        end
+    end    
+    if sum(nonempty_chambers) == 0
+        return
+    end         
+    calib.valid_chambers = nonempty_chambers;
+    
+    % determine body size thresholds using 100 sparse frames from video
+    calib.mask = calib.full_mask;
+    n_flies = calib.n_flies;
+    calib.n_flies = calib.n_flies * sum(calib.valid_chambers);
+    fr.start = 1;
+    fr.step = round(tmp_vinfo.n_frames/100);
+    fr.limit = tmp_vinfo.n_frames;
+    dets = track_detect(tmp_vinfo,bg,calib,fr,[],1);    
+    n_frms = numel(dets.frame_data);
+    
+    num_flies = calib.n_flies;
+    body_sizes = zeros(n_frms*num_flies,3);
+    contrasts = zeros(n_frms*num_flies,1);
+    c_count = 0;
+    count = 0;
+    for f=1:n_frms
+       body_cc = dets.frame_data{f}.body_cc;       
+       body_props = dets.frame_data{f}.body_props;
+       body_contrast = dets.frame_data{f}.body_contrast;
+       contrasts(c_count+(1:numel(body_contrast))) = body_contrast;
+       c_count = c_count+numel(body_contrast);
+       if body_cc.NumObjects ~= calib.n_flies
+           continue;
+       end
+       big_enough = 1;
+       for c=1:body_cc.NumObjects
+           if body_props(c).MajorAxisLength < calib.PPM
+               big_enough = 0; break;
+           end
+       end
+       if ~big_enough, continue; end
+       for c=1:body_cc.NumObjects
+           count = count + 1;
+           body_sizes(count,1) = body_props(c).MajorAxisLength;
+           body_sizes(count,2) = body_props(c).MinorAxisLength;
+           body_sizes(count,3) = body_props(c).Area;
+       end
+    end
+    if count > 0
+       body_sizes = body_sizes(1:count,:); 
+       medians = prctile(body_sizes,50);
+       maxs = prctile(body_sizes,95) * 1.15;
+       calib.params.mean_major_axis = medians(1);
+       calib.params.mean_minor_axis = medians(2);    
+       calib.params.mean_area       = medians(3);
+       calib.params.max_major_axis  = maxs(1);
+       calib.params.max_minor_axis  = maxs(2);    
+       calib.params.max_area        = maxs(3)*1.15;       
+    end  
+    contrasts = contrasts(contrasts>0);
+    m = median(contrasts);
+    s = median(abs(contrasts-m));
+    calib.params.contrast_th = m-5*s;
+    calib.n_flies = n_flies;
+    
+    
+    
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Close interface function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
