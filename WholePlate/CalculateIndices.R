@@ -22,12 +22,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
     )
-    CleanedData
-    
-    SmoothedCourtship <- ifelse((rollmean(CleanedData$Courtship, 250,fill = 0, align = c("left")))>0.5, 1, 0)
-    SmoothedCopulation <- ifelse((rollmean(CleanedData$Copulation, 1500,fill = 0, align = c("left")))>0.5, 1, 0)
-    CleanedData <- add_column(CleanedData,SmoothedCourtship,SmoothedCopulation)
-    CleanedData
+    #CleanedData
     
     
     CourtshipIndex <- vector("numeric")
@@ -39,52 +34,76 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     EncirclingIndex <- vector("numeric")
     FacingIndex <- vector("numeric")
     CopulationDuration <- vector("numeric")
-    LatencyToCourt <- vector("numeric")
-    LatencyToCopulate <- vector("numeric")
     CourtshipInitiation <- vector("numeric")
     CourtshipTermination <- vector("numeric")
-    
+    CourtshipDuration <- vector("numeric")
     
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
     
     
     for (var in FlyId) {
-      sub <- filter(CleanedData, Id==var)
-      #sub <- slice(sub, 2100:103590)
+      SubsectionedData <- filter(CleanedData, Id==var)
+      #SubsectionedData <- slice(SubsectionedData, 2100:103590)
       
-      StartOfCourtship <- as.numeric(which.max(sub$SmoothedCourtship))
+      SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 250,fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
+      SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250,fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
+      SubsectionedData <- add_column(SubsectionedData,SmoothedCourtship,SmoothedCopulation)
+      #SubsectionedData
+      
+      StartOfCourtship <- as.numeric(which.max(SubsectionedData$SmoothedCourtship)) # NB: if the flies never court, this will be frame 1
       EndOfCourtship <- as.numeric(
         ifelse(
-          sum(sub$SmoothedCopulation)==0, 
-          which.max(sub$SmoothedCourtship)+15000,
+          sum(SubsectionedData$SmoothedCopulation)==0, 
           ifelse(
-            which.max(sub$SmoothedCopulation)<=(which.max(sub$SmoothedCourtship)+15000), 
-            which.max(sub$SmoothedCopulation),
-            which.max(sub$SmoothedCourtship)+15000)))
-      CourtshipDuration = EndOfCourtship - StartOfCourtship + 1
+            (which.max(SubsectionedData$SmoothedCourtship)+15000)<=22500,
+            which.max(SubsectionedData$SmoothedCourtship)+15000,
+            22500),
+          ifelse(
+            which.max(SubsectionedData$SmoothedCopulation)<=(which.max(SubsectionedData$SmoothedCourtship)+15000), 
+            which.max(SubsectionedData$SmoothedCopulation),
+            (which.max(SubsectionedData$SmoothedCourtship)+15000))))
+
       
-      CourtshipNumerator <- slice(sub, StartOfCourtship:EndOfCourtship)
-      CourtshipIndex[var] <- (mean(CourtshipNumerator$Courtship))
-      CourtshipIndexWithFacing[var] <- (mean(CourtshipNumerator$CourtshipWithFacing))
-      
-      CopulationDuration[var] <- (sum(sub$Copulation))/25
-      LatencyToCourt[var] <- (StartOfCourtship/25)
-      LatencyToCopulate[var] <- (EndOfCourtship/25)
-      CourtshipInitiation[var] <- (StartOfCourtship/25)
-      CourtshipTermination[var] <- (EndOfCourtship/25)
-      
-      WingIndex[var] <- (mean(CourtshipNumerator$WingGesture))
-      ApproachingIndex[var] <- (mean(CourtshipNumerator$Approaching))
-      TurningIndex[var] <- (mean(CourtshipNumerator$Turning))
-      ContactIndex[var] <- (mean(CourtshipNumerator$Contact))
-      EncirclingIndex[var] <- (mean(CourtshipNumerator$Encirling))
-      FacingIndex[var] <- (mean(CourtshipNumerator$Facing))
-      
+      if (EndOfCourtship<StartOfCourtship) {
+        EndOfCourtship<-NA
+        StartOfCourtship<-NA
+        CourtshipIndex[var] <- NA
+        CourtshipIndexWithFacing[var] <- NA
+        CourtshipInitiation[var] <- NA
+        CourtshipTermination[var] <- NA
+        CourtshipDuration[var] = NA
+        CopulationDuration[var] <- NA
+        WingIndex[var] <- NA
+        ApproachingIndex[var] <- NA
+        TurningIndex[var] <- NA
+        ContactIndex[var] <- NA
+        EncirclingIndex[var] <- NA
+        FacingIndex[var] <- NA
+        
+      } else {
+        CourtshipNumerator <- slice(SubsectionedData, StartOfCourtship:EndOfCourtship)
+        
+        CourtshipIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, 0, (mean(CourtshipNumerator$Courtship)))
+        CourtshipIndexWithFacing[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, 0, (mean(CourtshipNumerator$CourtshipWithFacing)))
+        
+        CourtshipInitiation[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (StartOfCourtship/25))
+        CourtshipTermination[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (EndOfCourtship/25))
+        CourtshipDuration[var] = (CourtshipTermination[var] - CourtshipInitiation[var])
+        
+        #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
+        
+        WingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$WingGesture)))
+        ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Approaching)))
+        TurningIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Turning)))
+        ContactIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Contact)))
+        EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Encirling)))
+        FacingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$Facing)))
+      }
     }
     
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
-    IndexDataTable
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable %>% print(n=40)
     
     
     # export data as csv
