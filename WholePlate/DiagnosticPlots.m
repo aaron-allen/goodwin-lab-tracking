@@ -363,7 +363,7 @@ disp('All done plotting.');
 
 
 
-%exit
+exit
 
 
 
