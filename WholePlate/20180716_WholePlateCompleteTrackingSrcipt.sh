@@ -47,6 +47,7 @@ pwd
 
 mkdir $today/
 cd $today
+CurrentDirectory=$(pwd)
 
 
 
@@ -79,15 +80,14 @@ do
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
 	done
-
-	sleep 5s
+	cd $CurrentDirectory
+	sleep 5s    # 5 second lag to allow MATLAB to open
 	
 	# Check if matlab is running
 	while [ $(pgrep -c "MATLAB") -gt 3 ]
 	do
 		sleep 2m
 	done
-	cd ..
 done
 
 # Wait for the tracking to finish before going on to next section
@@ -119,7 +119,6 @@ cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndi
 Rscript CalculateIndices.R
 
 # Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
-CurrentDirectory=$(pwd)
 for P in */
 do
 	cd $P/Results
