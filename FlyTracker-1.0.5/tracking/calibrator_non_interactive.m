@@ -49,7 +49,8 @@ function success = calibrator_non_interactive(f_vid, f_calib)
     const.clr.legs   = [.2 .8 .3];    
     
     % interface variables
-    vars.img = video_read_frame(vinfo,floor(vinfo.n_frames/2));
+   % vars.img = video_read_frame(vinfo,floor(vinfo.n_frames/2));
+    vars.img = video_read_frame(vinfo,500);
     vars.dets            = [];   
     vars.mask_id         = 1;    
     vars.overlay_seg     = true; 
@@ -61,7 +62,7 @@ function success = calibrator_non_interactive(f_vid, f_calib)
     % set default params
     default = [];
     
-    % interface handles
+    % interface handlesvars.im
     handles = [];
    
     % initialize interface
@@ -1760,9 +1761,13 @@ function params = infer_tracker_params2()
     im_fg = im_fg./max(.1,bg.bg_mean); % to account for difference on food
     im_fg = im_fg/max(max(im_fg(:)),max(vars.img(:))); % normalize
     valid_chamber_nums=find(calib.valid_chambers);
-    mask_id=valid_chamber_nums(randi(numel(valid_chamber_nums)));
-    sorted_pix = sort(im_fg(calib.masks{1,mask_id}==1),'descend');
-    sorted_thr = min(sorted_pix(1:num_pix));
+    for i=1:10
+        mask_id=valid_chamber_nums(randi(numel(valid_chamber_nums)));
+        sorted_pix = sort(im_fg(calib.masks{1,mask_id}==1),'descend');
+        sorted_thrs(i) = min(sorted_pix(1:num_pix));
+    end
+    sorted_thrs=sort(sorted_thrs);
+    sorted_thr = mean(sorted_thrs(2:9));
     %sorted_thr = prctile(sorted_pix(1:num_pix),1);
     params.body_th_weak  = sorted_thr;
     params.fg_th_weak    = 0.1;  
