@@ -34,25 +34,10 @@ for p = 1:numel(dirs)
             movefile(PDFList(x).name, ResultsFolder)
         end
         
-
-
-        IdCorr = dir('*_id_corrected.mat');
-        if length(IdCorr) >=1
-            ExampleFiles = dir('scores_*_id_corrected.mat');
-            for r = 1:numel(ExampleFiles)
-                ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
-                ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
-            end
-        else
-            ExampleFiles = dir('scores_*.mat');
-            for r = 1:numel(ExampleFiles)
-                ExampleFileData(r) = load(fullfile(pwd, ExampleFiles(r).name));
-                ArrayLength = length(ExampleFileData(r).allScores.postprocessed{1,1});
-            end
-        end
-
-
-
+        ExampleFiles = dir('scores_*.mat');
+        ExampleFileData(1) = load(fullfile(pwd, ExampleFiles(1).name));
+        ArrayLength = length(ExampleFileData(1).allScores.postprocessed{1,1});
+        
         
         
         
@@ -81,7 +66,7 @@ for p = 1:numel(dirs)
                 
                 for m = 1:numel(files)
                     FileData(m) = load(fullfile(pwd, files(m).name));
-                    NextArray = transpose(FileData(m).allScores.postprocessed{1,v});
+                    NextArray = transpose(FileData(m).allScores.postprocessed{1,trx(v).id});
                     IndDataArrayWithoutFPS(1:numel(NextArray),m) = NextArray;
                     FrameNumberArray = transpose([1:1:ArrayLength]);
                     IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];
@@ -115,7 +100,7 @@ for p = 1:numel(dirs)
                 
                 for m = 1:numel(files)
                     FileData(m) = load(fullfile(pwd, files(m).name));
-                    NextArray = transpose(FileData(m).allScores.postprocessed{1,v});
+                    NextArray = transpose(FileData(m).allScores.postprocessed{1,trx(v).id});
                     IndDataArrayWithoutFPS(1:numel(NextArray),m) = NextArray;
                     FrameNumberArray = transpose([1:1:ArrayLength]);
                     IndDataArray = [FrameNumberArray, IndDataArrayWithoutFPS];

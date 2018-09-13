@@ -67,8 +67,9 @@ for ii = 1:numel(dirs)
 
     
         
-        NumberOfFlies = size(trx,2);
+        NumberOfFlies = length([trx.id]);
         for F = 1:(NumberOfFlies/2)
+        %for F = 1:1
             G = (2.*F)-1;
                   
             
@@ -93,7 +94,8 @@ for ii = 1:numel(dirs)
             subplot(5,1,1)
             % plot(x,y2,'m','LineWidth',1)
             plot(y2,'m','LineWidth',1)
-            title([CurrFolder '_Arena_' char(string(F))], 'Interpreter', 'none');
+            ArenaNumber = (trx(G).id + 1)/2;
+            title([CurrFolder '_Arena_' char(string(ArenaNumber))], 'Interpreter', 'none');
             xlabel('Frame Number');
             ylabel('Area (mm^2)');
             hold on
@@ -105,8 +107,8 @@ for ii = 1:numel(dirs)
 
             % Distance to Other - pretty self explanitory
             % =====================================================================
-            y11 = filter(b,a,(DistToOther.data{1,G}));
-            y12 = filter(b,a,(DistToOther.data{1,G+1}));
+            y11 = filter(b,a,(DistToOther.data{1,trx(G).id}));
+            y12 = filter(b,a,(DistToOther.data{1,trx(G+1).id}));
             subplot(5,1,2)
             % plot(x,y12,'m','LineWidth',1)
             plot(y12,'m','LineWidth',1)
@@ -162,8 +164,8 @@ for ii = 1:numel(dirs)
 
             % Facing Angle
             % =====================================================================
-            y13 = filter(b,a,(FacingAngle.data{1,G}));
-            y14 = filter(b,a,(FacingAngle.data{1,G+1}));
+            y13 = filter(b,a,(FacingAngle.data{1,trx(G).id}));
+            y14 = filter(b,a,(FacingAngle.data{1,trx(G+1).id}));
             subplot(5,1,4)
             % plot(x,y14,'m','LineWidth',1)
             plot(y14,'m','LineWidth',1)
@@ -180,8 +182,8 @@ for ii = 1:numel(dirs)
             % =====================================================================
             VelWindowSize = 200; 
             bVel = (1/VelWindowSize)*ones(1,VelWindowSize);
-            y3 = filter(bVel,a,(exp(LogVel.data{1,G})));
-            y4 = filter(bVel,a,(exp(LogVel.data{1,G+1})));
+            y3 = filter(bVel,a,(exp(LogVel.data{1,trx(G).id})));
+            y4 = filter(bVel,a,(exp(LogVel.data{1,trx(G+1).id})));
             subplot(5,1,5)
             % plot(x,y4,'m','LineWidth',1)
             plot(y4,'m','LineWidth',1)
@@ -224,7 +226,7 @@ for ii = 1:numel(dirs)
             subplot(6,1,1)
             % plot(x,y6,'m','LineWidth',1)
             plot(y6,'m','LineWidth',1)
-            title([CurrFolder '_Arena_' char(string(F))], 'Interpreter', 'none');
+            title([CurrFolder '_Arena_' char(string(ArenaNumber))], 'Interpreter', 'none');
             xlabel('Frame Number');
             ylabel('Angle (rad)');
             hold on
@@ -300,8 +302,8 @@ for ii = 1:numel(dirs)
 
             % Axis Ratio
             % =====================================================================
-            y15 = filter(b,a,(AxisRation.data{1,G}));
-            y16 = filter(b,a,(AxisRation.data{1,G+1}));
+            y15 = filter(b,a,(AxisRation.data{1,trx(G).id}));
+            y16 = filter(b,a,(AxisRation.data{1,trx(G+1).id}));
             subplot(6,1,6)
             % plot(x,y16,'m','LineWidth',1)
             plot(y16,'m','LineWidth',1)
@@ -316,28 +318,7 @@ for ii = 1:numel(dirs)
 
             
                    
-            
-            
-            
-            
-            % May want to look into making a single file with two pages for the
-            % diagnostic plots
-            
-            % Comment from https://uk.mathworks.com/matlabcentral/answers/52889-placing-plots-into-multiple-page-pdf-document
-            
-            % Look what I just found in the documentation of export_fig:
-            % 
-            % -append - option indicating that if the file (pdfs only) already
-            %               exists, the figure is to be appended as a new page, instead
-            %               of being overwritten (default).
-            % 
-            % looks like we need to install someones own script/function for
-            % this functionality ...
-            % https://uk.mathworks.com/matlabcentral/fileexchange/23629-export_fig
-
-            
-            
-            
+          
             
             % Save PDF
             %=====================================================================
