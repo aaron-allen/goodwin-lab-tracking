@@ -148,19 +148,34 @@ do
 done
 
 # Moving any error log files for the Diagnostic... and Extract...
-echo "Now moving log files"
-for L in *DiagnosticPlot_errors.log
-do
-	LogFile=$L
-	Directory=${LogFile%%DiagnosticPlot_errors.log}
-	mv $LogFile $Directory/
-done
-for L in *ExtractDataAndPDFs_errors.log
-do
-	LogFile=$L
-	Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
-	mv $LogFile $Directory/
-done
+echo "Now moving any error log files"
+DiagnosticErrors=$(ls *DiagnosticPlot_errors.log 2> /dev/null | wc -l)
+if [ "$DiagnosticErrors" != "0" ]
+then
+	echo Diagnostic Plot errors exist
+	for L in *DiagnosticPlot_errors.log
+	do
+		LogFile=$L
+		Directory=${LogFile%%DiagnosticPlot_errors.log}
+	done
+else
+	echo No Diagnostic Plot errors
+fi
+
+ExtractError=$(ls *ExtractDataAndPDFs_errors.log 2> /dev/null | wc -l)
+if [ "$ExtractError" != "0" ]
+then
+	echo Extract Data errors exist
+	for L in *ExtractDataAndPDFs_errors.log
+	do
+		LogFile=$L
+		Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
+		mv $LogFile $Directory/
+	done
+else
+	echo No Extract Data Plot errors
+
+fi
 
 echo MOVING TRACKING RESULTS TO SYNOLOGY
 for D in */
@@ -170,6 +185,11 @@ do
 	RecordingDate=${Directory#*-}
 	VideoName=${RecordingDate#*-}
 	RecordingDate=${RecordingDate%%-*}
+	VideoName=${VideoName%%/}
+	echo This is the Directory: $Directory
+	echo This is the User: $User
+	echo This is the Recording Date: $RecordingDate
+	echo This is the Video Name: $VideoName
 
 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
 
