@@ -22,9 +22,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
     )
-    #CleanedData
+    CleanedData
     
-    
+
     CourtshipIndex <- vector("numeric")
     CourtshipIndexWithFacing <- vector("numeric")
     WingIndex <- vector("numeric")
@@ -37,6 +37,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CourtshipInitiation <- vector("numeric")
     CourtshipTermination <- vector("numeric")
     CourtshipDuration <- vector("numeric")
+    CourtTermReason <- vector("numeric")
     
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
@@ -46,8 +47,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       SubsectionedData <- filter(CleanedData, Id==var)
       #SubsectionedData <- slice(SubsectionedData, 2100:103590)
       
-      SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 250,fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
-      SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250,fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
+      SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 250, fill = c(0,0,0), align = c("left")))>0.5, 1, 0)
+      SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
       SubsectionedData <- add_column(SubsectionedData,SmoothedCourtship,SmoothedCopulation)
       #SubsectionedData
       
@@ -56,9 +57,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         ifelse(
           sum(SubsectionedData$SmoothedCopulation)==0, 
           ifelse(
-            (which.max(SubsectionedData$SmoothedCourtship)+15000)<=22500,
+            (which.max(SubsectionedData$SmoothedCourtship)+15000)<=which.max(SubsectionedData$Frame),
             which.max(SubsectionedData$SmoothedCourtship)+15000,
-            22500),
+            which.max(SubsectionedData$Frame)),
           ifelse(
             which.max(SubsectionedData$SmoothedCopulation)<=(which.max(SubsectionedData$SmoothedCourtship)+15000), 
             which.max(SubsectionedData$SmoothedCopulation),
@@ -90,6 +91,20 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         CourtshipInitiation[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (StartOfCourtship/25))
         CourtshipTermination[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (EndOfCourtship/25))
         CourtshipDuration[var] = (CourtshipTermination[var] - CourtshipInitiation[var])
+        CourtTermReason[var] <- ifelse(
+                                    sum(SubsectionedData$SmoothedCourtship)==0, NA,
+                                    ifelse(
+                                      sum(SubsectionedData$SmoothedCopulation)==0, 
+                                      ifelse(
+                                        (which.max(SubsectionedData$SmoothedCourtship)+15000)<=which.max(SubsectionedData$Frame),
+                                        '10 minutes',
+                                        'End of tracking'),
+                                      ifelse(
+                                        which.max(SubsectionedData$SmoothedCopulation)<=(which.max(SubsectionedData$SmoothedCourtship)+15000), 
+                                        'Copulated',
+                                        '10 minutes')))
+        
+        
         
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
         
@@ -102,7 +117,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       }
     }
     
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable %>% print(n=40)
     
     
