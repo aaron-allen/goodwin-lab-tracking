@@ -61,6 +61,10 @@ for p = 1:numel(dirs)
             movefile(TrackingResults, ResultsFolder)
             
             disp(['Now extracting JAABA scores from: ' name]);
+            NextArray = [];
+            IndDataArrayWithoutFPS = [];
+            IndDataArray = [];
+            IndDataArrayWithArena = [];
             WholePlateDataArray = [];
             for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
                 
@@ -95,6 +99,10 @@ for p = 1:numel(dirs)
             movefile(TrackingResults, ResultsFolder)
             
             disp(['Now extracting JAABA scores from: ' name]);
+            NextArray = [];
+            IndDataArrayWithoutFPS = [];
+            IndDataArray = [];
+            IndDataArrayWithArena = [];
             WholePlateDataArray = [];
             for v = 1:length([trx.id]) % get the number of flies from the trx.mat file.
                 
@@ -121,15 +129,15 @@ for p = 1:numel(dirs)
         
         % Extract Genotype labels
         % =====================================================================
+        TempArray = [];
         HorzGenotypeArray = {};
-        
+        VertGenotypeArray = [];
         disp(['Now extracting genotype labels from: ' name]);
         [TempArray{1:length(WholePlateDataArray)}] = deal(name);
         HorzGenotypeArray = [HorzGenotypeArray, TempArray];
         VertGenotypeArray = transpose(HorzGenotypeArray);
         
         GenotypeVariableNames{1,1} = ('FileName');
-        
         
         
         
@@ -153,5 +161,6 @@ for p = 1:numel(dirs)
 
       
   cd(ParentDir)
+  
 end
 exit
