@@ -37,7 +37,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CourtshipInitiation <- vector("numeric")
     CourtshipTermination <- vector("numeric")
     CourtshipDuration <- vector("numeric")
-    CourtTermReason <- vector("numeric")
+    #CourtTermReason <- vector("numeric")
     
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
@@ -91,7 +91,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         CourtshipInitiation[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (StartOfCourtship/25))
         CourtshipTermination[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (EndOfCourtship/25))
         CourtshipDuration[var] = (CourtshipTermination[var] - CourtshipInitiation[var])
-        CourtTermReason[var] <- ifelse(
+        #CourtTermReason[var] <- ifelse(
                                     sum(SubsectionedData$SmoothedCourtship)==0, NA,
                                     ifelse(
                                       sum(SubsectionedData$SmoothedCopulation)==0, 
@@ -117,7 +117,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       }
     }
     
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    #IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable %>% print(n=40)
     
     
