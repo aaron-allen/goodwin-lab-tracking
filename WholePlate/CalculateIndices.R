@@ -92,18 +92,18 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         CourtshipTermination[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (EndOfCourtship/25))
         CourtshipDuration[var] = (CourtshipTermination[var] - CourtshipInitiation[var])
         #CourtTermReason[var] <- ifelse(
-                                    sum(SubsectionedData$SmoothedCourtship)==0, NA,
-                                    ifelse(
-                                      sum(SubsectionedData$SmoothedCopulation)==0, 
-                                      ifelse(
-                                        (which.max(SubsectionedData$SmoothedCourtship)+15000)<=which.max(SubsectionedData$Frame),
-                                        '10 minutes',
-                                        'End of tracking'),
-                                      ifelse(
-                                        which.max(SubsectionedData$SmoothedCopulation)<=(which.max(SubsectionedData$SmoothedCourtship)+15000), 
-                                        'Copulated',
-                                        '10 minutes')))
-        
+                                    # sum(SubsectionedData$SmoothedCourtship)==0, NA,
+                                    # ifelse(
+                                    #   sum(SubsectionedData$SmoothedCopulation)==0, 
+                                    #   ifelse(
+                                    #     (which.max(SubsectionedData$SmoothedCourtship)+15000)<=which.max(SubsectionedData$Frame),
+                                    #     '10 minutes',
+                                    #     'End of tracking'),
+                                    #   ifelse(
+                                    #     which.max(SubsectionedData$SmoothedCopulation)<=(which.max(SubsectionedData$SmoothedCourtship)+15000), 
+                                    #     'Copulated',
+                                    #     '10 minutes')))
+                                    # 
         
         
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
