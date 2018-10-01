@@ -79,8 +79,8 @@ for p = 1:numel(dirs)
                     DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
                 end
                 
-                IdNumber = ones(ArrayLength,1)*v;
-                ArenaNumber = round((ones(ArrayLength,1)*v)/2);
+                IdNumber = ones(ArrayLength,1)*trx(v).id;
+                ArenaNumber = round((ones(ArrayLength,1)*trx(v).id)/2);
                 IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
                 WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
             end
@@ -117,8 +117,8 @@ for p = 1:numel(dirs)
                     DataVariableNames = ['Arena', 'Id', 'Frame', DataVariableNamesWithoutFrameNumber];
                 end
                 
-                IdNumber = ones(ArrayLength,1)*v;
-                ArenaNumber = round((ones(ArrayLength,1)*v)/2);
+                IdNumber = ones(ArrayLength,1)*trx(v).id;
+                ArenaNumber = round((ones(ArrayLength,1)*trx(v).id)/2);
                 IndDataArrayWithArena = [ArenaNumber, IdNumber, IndDataArray];
                 WholePlateDataArray = vertcat(WholePlateDataArray, IndDataArrayWithArena);
             end
