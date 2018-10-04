@@ -26,7 +26,7 @@ for p = 12:12
     end
     
     cd(name);
-    errorlogfile = strcat(name,'ExtractDataAndPDFs_errors.log');
+    errorlogfile = strcat(name,'ExtractData_errors.log');
     try
      
         cd('Results')
