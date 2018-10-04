@@ -162,14 +162,14 @@ else
 	echo No Diagnostic Plot errors
 fi
 
-ExtractError=$(ls *ExtractDataAndPDFs_errors.log 2> /dev/null | wc -l)
+ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
 if [ "$ExtractError" != "0" ]
 then
 	echo Extract Data errors exist
 	for L in *ExtractDataAndPDFs_errors.log
 	do
 		LogFile=$L
-		Directory=${LogFile%%ExtractDataAndPDFs_errors.log}
+		Directory=${LogFile%%ExtractData_errors.log}
 		mv $LogFile $Directory/
 	done
 else
