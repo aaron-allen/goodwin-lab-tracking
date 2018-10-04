@@ -15,8 +15,8 @@
 ParentDir = pwd;
 dirs = dir();
 
-%for p = 7:7
-for p = 1:numel(dirs)
+for p = 12:12
+%for p = 1:numel(dirs)
     if ~dirs(p).isdir
       continue;
     end
@@ -54,7 +54,7 @@ for p = 1:numel(dirs)
         trk.names = regexprep(trk.names, ' ', '_');
         AllData = [];
         AllStartPos = [];
-        disp(['Now extracting tracking data from:' name]);
+        disp(['Now extracting tracking data from: ' name]);
         for I=1:size(trx,2)
             %disp(I);
             IdNumber = ones(ArrayLength,1)*I;
@@ -109,31 +109,21 @@ for p = 1:numel(dirs)
         VertVideoArray = transpose(HorzVideoArray);
         
         VideoVariableNames{1,1} = ('FileName');
-        disp(['Making Names Table for:' name])
+        disp(['Making Names Table for: ' name])
         VideoTable = array2table(VertVideoArray, 'VariableNames', VideoVariableNames);
         
         StartPosVariableName{1,1} = ('StartPosition');
         StartPosTable = array2table(AllStartPos, 'VariableNames', StartPosVariableName);
         
-        disp(['Making Data Table for:' name])
+        disp(['Making Data Table for: ' name])
         DataVariableNames = ['Arena', 'Id', 'Frame', JAABAnames, FeatureNames, TrackNames];
         AllDataTable = array2table(AllData, 'VariableNames', DataVariableNames);
                 
-        disp(['Making Final Table for:' name])
+        disp(['Making Final Table for: ' name])
         MySuperFinalTable = [VideoTable, StartPosTable, AllDataTable];
         disp(['Writing CSV for:' name])
         writetable(MySuperFinalTable, [ResultsFolder '/' name '_ALLDATA.csv']);      
         
-        
-        % Move PDFs
-        % =====================================================================
-        cd([name '_JAABA']);
-        PDFList = dir('*.pdf');
-        disp(['Now moving PDFs for: ' name]);
-        for x = 1:length(PDFList)
-            movefile(PDFList(x).name, ResultsFolder)
-        end
-        % =====================================================================
           
     catch ME
         errorMessage= ME.message;
