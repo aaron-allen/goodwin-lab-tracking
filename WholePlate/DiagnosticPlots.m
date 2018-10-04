@@ -15,6 +15,11 @@ for ii = 1:numel(dirs)
     cd (WatchaMaCallIt);
     errorlogfile = strcat(WatchaMaCallIt,'DiagnosticPlot_errors.log');
     try
+        
+        mkdir Results
+        cd('Results')
+        ResultsFolder = pwd;
+        cd ..
     
         
         load('calibration.mat');
@@ -89,8 +94,8 @@ for ii = 1:numel(dirs)
             % smaller than the female, this lets us see if there were any identity
             % swaps and if the male was correctly identified as track 1.
             % =====================================================================
-            y1 = filter(b,a,(trx(G).a_mm).*(trx(G).b_mm).*pi);
-            y2 = filter(b,a,(trx(G+1).a_mm).*(trx(G+1).b_mm).*pi);
+            y1 = filter(b,a,(trx(G).a_mm).*(trx(G).b_mm).*pi.*16);
+            y2 = filter(b,a,(trx(G+1).a_mm).*(trx(G+1).b_mm).*pi.*16);
             subplot(5,1,1)
             % plot(x,y2,'m','LineWidth',1)
             plot(y2,'m','LineWidth',1)
@@ -100,7 +105,7 @@ for ii = 1:numel(dirs)
             ylabel('Area (mm^2)');
             hold on
             % grid on
-            ylim([0 1])
+            ylim([0 20])
             % plot(x,y1,'b','LineWidth',1)
             plot(y1,'b','LineWidth',1)
             hold off
@@ -270,8 +275,8 @@ for ii = 1:numel(dirs)
 
             % a
             % =====================================================================
-            y17 = filter(b,a,(trx(G).a_mm));
-            y18 = filter(b,a,(trx(G+1).a_mm));
+            y17 = filter(b,a,(trx(G).a_mm).*4);
+            y18 = filter(b,a,(trx(G+1).a_mm).*4);
             subplot(6,1,4)
             % plot(x,y18,'m','LineWidth',1)
             plot(y18,'m','LineWidth',1)
@@ -279,15 +284,15 @@ for ii = 1:numel(dirs)
             ylabel('Major Axis (mm)');
             hold on
             % grid on
-            ylim([0 1])
+            ylim([0 5])
             % plot(x,y17,'b','LineWidth',1)
             plot(y17,'b','LineWidth',1)
             hold off
 
             % b
             % =====================================================================
-            y17 = filter(b,a,(trx(G).b_mm));
-            y18 = filter(b,a,(trx(G+1).b_mm));
+            y17 = filter(b,a,(trx(G).b_mm).*4);
+            y18 = filter(b,a,(trx(G+1).b_mm).*4);
             subplot(6,1,5)
             % plot(x,y18,'m','LineWidth',1)
             plot(y18,'m','LineWidth',1)
@@ -295,7 +300,7 @@ for ii = 1:numel(dirs)
             ylabel('Minor Axis (mm)');
             hold on
             % grid on
-            ylim([0 0.6])
+            ylim([0 3])
             % plot(x,y17,'b','LineWidth',1)
             plot(y17,'b','LineWidth',1)
             hold off
@@ -325,6 +330,15 @@ for ii = 1:numel(dirs)
             PDFName2 = [CurrFolder '_Arena_' char(sprintfc('%02d', F)) '_fig2' '.pdf'];
             print(DiagnosticFigure2, PDFName2, '-fillpage', '-dpdf', '-r600')
 
+            % Move PDFs
+            % =====================================================================
+            PDFList = dir('*.pdf');
+            disp(['Now moving PDFs for: ' WatchaMaCallIt]);
+            for x = 1:length(PDFList)
+                movefile(PDFList(x).name, ResultsFolder)
+            end
+            % =====================================================================
+
             
             close all
             %clear all
@@ -340,10 +354,6 @@ for ii = 1:numel(dirs)
     cd (MasterDir);    
 end
 disp('All done plotting.');
-
-
-
-
 exit
 
 
