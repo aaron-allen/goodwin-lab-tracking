@@ -110,8 +110,8 @@ cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlot
 
 ## Extracting Data for Each Plate
 echo EXTRACT DATA AND PDFs
-cp -r $MasterDirectory/ExtractDataAndPDFs.m $WorkingDirectory/$today/ExtractDataAndPDFs.m
-/usr/local/bin/matlab -nodisplay -nosplash -r "ExtractDataAndPDFs"
+cp -r $MasterDirectory/ExtractData.m $WorkingDirectory/$today/ExtractData.m
+/usr/local/bin/matlab -nodisplay -nosplash -r "ExtractData"
 
 ## Calculate indices with R
 echo CALCULATE INDICES
