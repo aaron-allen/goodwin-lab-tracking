@@ -11,12 +11,25 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   LogFile <-file("CalculateIndicesError.log")
   
   tryCatch({
-    AllRawData <- read_csv(list.files(pattern=glob2rx('*JAABAScores.csv')))
-    AllRawData
-    AllRawData$FileName <- as_factor(AllRawData$FileName)
+    AllRawData <- read_csv(list.files(pattern=glob2rx('*ALLDATA.csv')))
+    #AllRawData
+    CleanedData <- select(AllRawData,
+                         FileName,
+                         StartPosition,
+                         Arena,
+                         Id,
+                         Frame,
+                         Approaching,
+                         Contact,
+                         Copulation,
+                         Encirling,
+                         Facing,
+                         Turning,
+                         WingGesture)
+    CleanedData$FileName <- as_factor(CleanedData$FileName)
     
     
-    CleanedData <- AllRawData %>% mutate(
+    CleanedData <- CleanedData %>% mutate(
       Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
       MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encirling + Facing + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0),
@@ -41,11 +54,13 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
-    
+    StartPos <- vector()
     
     for (var in FlyId) {
-      SubsectionedData <- filter(CleanedData, Id==var)
+      SubsectionedData <- filter(CleanedData, Id==var) %>% drop_na()
       #SubsectionedData <- slice(SubsectionedData, 2100:103590)
+      #SubsectionedData[ is.na(SubsectionedData) ] <- 0
+      
       
       SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 250, fill = c(0,0,0), align = c("left")))>0.5, 1, 0)
       SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
@@ -67,6 +82,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
 
       
       if (EndOfCourtship<StartOfCourtship) {
+        StartPos[var] <- SubsectionedData$StartPosition[1]
         EndOfCourtship<-NA
         StartOfCourtship<-NA
         CourtshipIndex[var] <- NA
@@ -107,6 +123,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         
         
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
+        StartPos[var] <- SubsectionedData$StartPosition[1]
         
         WingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$WingGesture)))
         ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Approaching)), (mean(CourtshipNumerator$Approaching)))
@@ -117,8 +134,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       }
     }
     
-    #IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
-    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    #IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable %>% print(n=40)
     
     
