@@ -1,10 +1,9 @@
 % Aaron M. Allen, 2018.10.04
 
-% Updated ExtractDataAndPDFs.m srcipt:
+% Updated ExtractData.m srcipt:
 % This script extracts and concatenates JAABA annotated behaviour scores,
 % and Calteck FlyTracker feature data and raw tracking data. These data are
-% saved to csv file to be more portable. This script also moves the PDF
-% diagnostic plots to a folder names 'Results'.
+% saved to csv file to be more portable and saves it in a folder names 'Results'.
 
 % This scipt assumes that it will be run across multiple folders containing
 % tracking data for different videos. As such this script should be run in
@@ -32,7 +31,17 @@ for p = 1:numel(dirs)
         ResultsFolder = pwd;
         cd ..
         cd(name);
-               
+        
+
+		mkdir SegmentationFile
+        cd('SegmentationFile')
+        SegFolder = pwd;
+        cd ..
+        SegFile = dir('*seg.mat');
+        disp(['Now moving Segmentation file for: ' name]);
+        movefile(SegFile(1).name, SegFolder)
+
+
         % Extract Data
         % =====================================================================
         CurrentDirectory = pwd;
