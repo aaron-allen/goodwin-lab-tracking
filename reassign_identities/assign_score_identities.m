@@ -25,8 +25,11 @@ copyfile(trackoutputfile,trackfilename);
 
 featfile=dir('*-feat.mat');
 featfilename=featfile(1).name;
+featfilename_old=strrep(featfilename,'.mat','_old.mat');
 featoutputfile=strrep(featfilename,'.mat','_id_corrected.mat');
 id_correct_featfile(featfilename,featoutputfile,ids);
+movefile(featfilename, featfilename_old);
+copyfile(featoutputfile,featfilename);
 
 cd (scoresdir);
 

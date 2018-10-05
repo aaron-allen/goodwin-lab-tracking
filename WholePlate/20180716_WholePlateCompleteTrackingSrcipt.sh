@@ -75,10 +75,7 @@ do
 		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
-		cp -r $MasterDirectory/script_fix_trk.m $WorkingDirectory/$today/"$FileName"/script_fix_trk.m
-		cp -r $MasterDirectory/feat_correction.mat $WorkingDirectory/$today/"$FileName"/feat_correction.mat
-		cp -r $MasterDirectory/track_correction.mat $WorkingDirectory/$today/"$FileName"/track_correction.mat
-        /usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
@@ -146,10 +143,7 @@ do
 	rm AutoTracking.m
 	rm script_reassign_identities.m
 	rm run_calibrator_non_interactive.m
-	rm script_fix_trk.m
-	rm track_correction.mat
-	rm feat.correction.mat
-
+	
 	cd $CurrentDirectory
 done
 
