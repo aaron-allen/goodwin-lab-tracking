@@ -135,7 +135,7 @@ done
 ## Clean up of matlab files
 
 rm DiagnosticPlots.m
-rm ExtractDataAndPDFs.m
+rm ExtractData.m
 rm CalculateIndices.R
 
 for X in */

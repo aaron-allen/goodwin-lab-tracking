@@ -15,8 +15,7 @@
 ParentDir = pwd;
 dirs = dir();
 
-for p = 12:12
-%for p = 1:numel(dirs)
+for p = 1:numel(dirs)
     if ~dirs(p).isdir
       continue;
     end
