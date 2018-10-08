@@ -33,7 +33,7 @@ for p = 1:numel(dirs)
         cd(name);
         
 
-		mkdir SegmentationFile
+    	mkdir SegmentationFile
         cd('SegmentationFile')
         SegFolder = pwd;
         cd ..
@@ -65,8 +65,8 @@ for p = 1:numel(dirs)
         disp(['Now extracting tracking data from: ' name]);
         for I=1:size(trx,2)
             %disp(I);
-            IdNumber = ones(ArrayLength,1)*I;
-            ArenaNumber = round((ones(ArrayLength,1)*I)/2);
+            IdNumber = ones(ArrayLength,1)*trx(I).id;
+            ArenaNumber = round((ones(ArrayLength,1)*trx(I).id)/2);
             FrameNumber = transpose(1:1:ArrayLength);
             IndStartPos = [];
             [IndStartPos{1:ArrayLength}] = deal(trx(I).startpos);
