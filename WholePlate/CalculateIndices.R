@@ -1,7 +1,8 @@
 #!/usr/bin/env Rscript
 
-library(tidyverse)
-library(zoo)
+library("tidyverse")
+library("zoo")
+library("gridExtra")
 
 CurrDir <- getwd()
 
@@ -143,7 +144,65 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     #############################################
     SaveName <- paste0(unique(CleanedData$FileName),'_Indices.csv')
     write_csv(IndexDataTable, SaveName)
+    #############################################
     
+    
+
+
+    # Ethogram Plots of JAABA Classifiers
+    #############################################
+    OddFly <- (unique(ArenaNumber)*2)-1
+    EthoFileName <- paste0(basename(i), "_Ethogram.pdf")
+    pdf(EthoFileName,width=10,height=7,paper='a4r')
+    for (P in OddFly){
+      Plot1 <- CleanedData %>% 
+        filter(Id==P) %>%
+        select(Frame, Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        gather("Behaviour", "Score", Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        ggplot(aes(x=Frame,y=1)) +
+          theme_classic() +
+          facet_grid(Behaviour~.) +
+          geom_raster(aes(fill = Score)) +
+          scale_fill_gradient(low = NA, high = "black") +
+          ylab("Behaviours") +
+          ggtitle(paste0("FlyId_", P)) +
+          theme(legend.position="none",
+                plot.title = element_text(size=35,hjust = 0.5),
+                axis.text.y = element_blank(),
+                axis.ticks.y = element_blank(),
+                axis.text.x = element_text(colour = 'black', size=18),
+                axis.line = element_blank(),
+                axis.title = element_text(colour = 'black', size=24),
+                strip.text.y = element_text(colour = 'black', size=14, angle = 0)
+                )
+      Plot2 <- CleanedData %>% 
+        filter(Id==P+1) %>%
+        select(Frame, Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        gather("Behaviour", "Score", Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        ggplot(aes(x=Frame,y=1)) +
+          theme_classic() +
+          facet_grid(Behaviour~.) +
+          geom_raster(aes(fill = Score)) +
+          scale_fill_gradient(low = NA, high = "black") +
+          ylab("Behaviours") +
+          ggtitle(paste0("FlyId_", P+1)) +
+          theme(legend.position="none",
+                plot.title = element_text(size=35,hjust = 0.5),
+                axis.text.y = element_blank(),
+                axis.ticks.y = element_blank(),
+                axis.text.x = element_text(colour = 'black', size=18),
+                axis.line = element_blank(),
+                axis.title = element_text(colour = 'black', size=24),
+                strip.text.y = element_text(colour = 'black', size=14, angle = 0)
+          )
+      grid.arrange(Plot1,Plot2,nrow=2)
+    }
+    dev.off()
+    #############################################
+
+
+
+
     setwd(paste0(CurrDir))
     }, 
     error=function(e) {
@@ -151,6 +210,4 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     }
   ) 
 }
-
-
 
