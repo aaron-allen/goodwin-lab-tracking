@@ -28,7 +28,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
                          Approaching,
                          Contact,
                          Copulation,
-                         Encirling,
+                         Encircling,
                          Facing,
                          Turning,
                          WingGesture)
@@ -37,8 +37,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     # Using the binary JAABA scores, we compute a courtship variables such that if the fly is performing at least one
     # of the behaviours, the courtship variables will be equal to 1.  
     CleanedData <- CleanedData %>% mutate(
-      Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
-      MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encirling + Facing + Contact + Turning + WingGesture), 0),
+      Multitasking = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture), 0),
+      MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
     )
@@ -139,7 +139,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Approaching)), (mean(CourtshipNumerator$Approaching)))
         TurningIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Turning)), (mean(CourtshipNumerator$Turning)))
         ContactIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Contact)), (mean(CourtshipNumerator$Contact)))
-        EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Encirling)), (mean(CourtshipNumerator$Encirling)))
+        EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Encircling)), (mean(CourtshipNumerator$Encircling)))
         FacingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Facing)), (mean(CourtshipNumerator$Facing)))
       }
     }
@@ -166,8 +166,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     for (P in OddFly){
       Plot1 <- CleanedData %>% 
         filter(Id==P) %>%
-        select(Frame, Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
-        gather("Behaviour", "Score", Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        select(Frame, Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>% 
+        gather("Behaviour", "Score", Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>% 
         ggplot(aes(x=Frame,y=1)) +
           theme_classic() +
           facet_grid(Behaviour~.) +
@@ -186,8 +186,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
                 )
       Plot2 <- CleanedData %>% 
         filter(Id==P+1) %>%
-        select(Frame, Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
-        gather("Behaviour", "Score", Facing, Approaching, Turning, Encirling, WingGesture, Contact, Copulation) %>% 
+        select(Frame, Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>% 
+        gather("Behaviour", "Score", Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>% 
         ggplot(aes(x=Frame,y=1)) +
           theme_classic() +
           facet_grid(Behaviour~.) +
