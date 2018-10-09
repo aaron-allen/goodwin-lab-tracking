@@ -1,3 +1,10 @@
+% Aaron M. Allen, 2018.10.04
+
+% DiagnosticPlots.m loads the tracking data .mat files and generates plots of different features.
+% These include: area, facing angle, distance to other, x and y postion, amoung others.
+
+
+
 
 % Diagnostic Plots
 % =====================================================================
@@ -21,7 +28,6 @@ for ii = 1:numel(dirs)
         ResultsFolder = pwd;
         cd ..
     
-        
         load('calibration.mat');
         NumberOfArenas = (calib.n_chambers);
         cd ([WatchaMaCallIt '/' WatchaMaCallIt '_JAABA']);
@@ -33,11 +39,8 @@ for ii = 1:numel(dirs)
         CurrFolder = regexp(pwd,'[^/\\]+(?=[/\\]?$)','once','match');
         
         
-        
-        
         % Load Data
         % =====================================================================
-        
         IdCorr = dir('*_id_corrected.mat');
         if length(IdCorr) >=1
 	        load('trx_id_corrected.mat');
@@ -58,7 +61,6 @@ for ii = 1:numel(dirs)
 	        AxisRation = load('norm_axis_ratio.mat');
 			cd ..
 		end
-	
 
         % Rolling Average to Smooth data:
         % Set the windowsize (in frames) the range you want to average over.
@@ -68,9 +70,6 @@ for ii = 1:numel(dirs)
         % NB: The velocity plot is very noisy without smoothing, so I have set its
         % own smoothing function with its own window size that you have to be
         % manipulated independently. The Velocity plot code is at line ~210-235.
-
-
-    
         
         NumberOfFlies = length([trx.id]);
         for F = 1:(NumberOfFlies/2)
@@ -87,8 +86,6 @@ for ii = 1:numel(dirs)
             DiagnosticFigure1.Units = 'centimeters';
             DiagnosticFigure1.PaperType='A4';
      
-                   
-            
             
             % Area - if a male and female were tracked, and assuming the male is
             % smaller than the female, this lets us see if there were any identity
@@ -210,11 +207,6 @@ for ii = 1:numel(dirs)
             
             
             
-            
-            
-            
-            
-            
             % Figure 2
             % =====================================================================
             % =====================================================================
@@ -322,9 +314,8 @@ for ii = 1:numel(dirs)
             hold off
 
             
-                   
-          
-            
+ 
+
             % Save PDF
             %=====================================================================
             PDFName2 = [CurrFolder '_Arena_' char(sprintfc('%02d', F)) '_fig2' '.pdf'];
@@ -339,9 +330,7 @@ for ii = 1:numel(dirs)
             end
             % =====================================================================
 
-            
             close all
-            %clear all
         end
     catch ME
         errorMessage= ME.message;

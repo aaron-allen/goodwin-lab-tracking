@@ -32,7 +32,9 @@ for p = 1:numel(dirs)
         cd ..
         cd(name);
         
-
+        % Moving the segmentation file to a subdirectory.
+        % The segmentation file slows down the opening and loading of data into the Visualizer
+        % script, and by moving it, things load much faster.
     	mkdir SegmentationFile
         cd('SegmentationFile')
         SegFolder = pwd;
@@ -42,7 +44,7 @@ for p = 1:numel(dirs)
         movefile(SegFile(1).name, SegFolder)
 
 
-        % Extract Data
+        % Extracting the data from the track.mat, feat.mat, and JAABA score*.mat files
         % =====================================================================
         CurrentDirectory = pwd;
         TrackFile = dir('*-track_id_corrected.mat');
@@ -59,14 +61,14 @@ for p = 1:numel(dirs)
 
         ArrayLength = size(trk.data,2);
         ArrayWidth = 3 + size(JAABAScoreFiles,1) + size(feat.data,3) + size(trk.data,3);
-        trk.names = regexprep(trk.names, ' ', '_');
+        trk.names = regexprep(trk.names, ' ', '_'); % spaces in the variable names gives an error when assembling the table
         AllData = [];
         AllStartPos = [];
         disp(['Now extracting tracking data from: ' name]);
         for I=1:size(trx,2)
             %disp(I);
-            IdNumber = ones(ArrayLength,1)*trx(I).id;
-            ArenaNumber = round((ones(ArrayLength,1)*trx(I).id)/2);
+            IdNumber = ones(ArrayLength,1)*trx(I).id; % important to use the trx(I).id due to the id_correction
+            ArenaNumber = round((ones(ArrayLength,1)*trx(I).id)/2); % important to use the trx(I).id due to the id_correction
             FrameNumber = transpose(1:1:ArrayLength);
             IndStartPos = [];
             [IndStartPos{1:ArrayLength}] = deal(trx(I).startpos);
@@ -84,7 +86,7 @@ for p = 1:numel(dirs)
             end
             cd ..;
             FeatureNames = [];
-            feat.units = regexprep(feat.units, '/', 'per');
+            feat.units = regexprep(feat.units, '/', 'per'); % forward slashes in the variable names gives an error when assembling the table
             %disp('feat');
             for B=1:length([feat.names])
                 FeatureNames = [FeatureNames, strcat(feat.names(B),'__',feat.units(B))];
@@ -106,7 +108,7 @@ for p = 1:numel(dirs)
             AllStartPos = vertcat(AllStartPos, IndStartPos);
         end
 
-        % Extract Video Name
+        % Extract the name of the video
         % =====================================================================
         TempArray = [];
         HorzVideoArray = {};
@@ -116,6 +118,10 @@ for p = 1:numel(dirs)
         HorzVideoArray = [HorzVideoArray, TempArray];
         VertVideoArray = transpose(HorzVideoArray);
         
+        
+
+        % Converting the arrays into tables - need to do this in order to append character vectors/matrices and number vectors/matrices
+        % =====================================================================
         VideoVariableNames{1,1} = ('FileName');
         disp(['Making Names Table for: ' name])
         VideoTable = array2table(VertVideoArray, 'VariableNames', VideoVariableNames);

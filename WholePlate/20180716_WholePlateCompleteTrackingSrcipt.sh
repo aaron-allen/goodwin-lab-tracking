@@ -1,34 +1,34 @@
-# Aaron M Allen, 2018.06.20
+#!/bin/bash
+
+
+# Aaron M Allen, 2018.10.09
 #
 # This script does the following;
 #		1. Pulls videos off the Synology,
-#		2. 
-#		3. 
-#		4. Tracks the videos with FlyTracker, in MatLab
+#		2. Tracks the videos with FlyTracker, in MatLab
+#		3. Applies the 'classifiers' with JAABADetect in MatLab, for behaviours that have already been trained
+#		4. Correct the Ids for flies in whole plate video
 #		5. Generates diagnostic plot to evaluate the efficacy of tracking
-#		6. Applies the 'classifiers' with JAABADetect in MatLab, for behaviours that have already been trained
-#		7. Extracts the data from the 'classifiers' and tabulates them into one csv file per plate
+#		6. Extracts the data from the 'classifiers' and tabulates them into one csv file per plate
+#		7. Calculates indices and plots ethograms in R
 #
 #
-# Don't forget to;
-#		1.  
-#		2. 
-#		3. 
-#		4. 
-#		5. 
-#		6. 
+# Don't forget to update paths in the following files;
+#		1. AutoTracking.m
+#		2. run_calibrator_non_interactive.m
+#		3. ApplyClassifiers.m
+#		4. script_reassign_identities.m
 #
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#!/bin/bash
 
 echo $(date)
 
+# setting up a variable with todays date and making a folder for the modified courtship videos
 MasterDirectory=$(pwd)
 echo $MasterDirectory
-# setting up a variable with todays date and making a folder for the modified courtship videos
 today=$(date +%Y%m%d)
 echo $today
 today=${today}Tracked
@@ -44,22 +44,14 @@ echo This is the ouptut directory: $WorkingDirectory
 pwd
 cd $WorkingDirectory/
 pwd
-
 mkdir $today/
 cd $today
 CurrentDirectory=$(pwd)
 
 
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Track all video files with FlyTracker, and apply classifiers with JAABA
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo FILE TRANSFER AND TRACKING
-
-
 for Z in $InputDirectory/*.ufmf
 do
 	FileName=$(basename -a --suffix=.ufmf "$Z")
@@ -98,25 +90,28 @@ do
 done
 
 
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 # Generate Diagnostic Plots
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo DIAGNOSTIC PLOT
 cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
 /usr/local/bin/matlab -nodisplay -nosplash -r "DiagnosticPlots"
 
-## Extracting Data for Each Plate
+# Extracting Data for Each Plate
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo EXTRACT DATA AND PDFs
 cp -r $MasterDirectory/ExtractData.m $WorkingDirectory/$today/ExtractData.m
 /usr/local/bin/matlab -nodisplay -nosplash -r "ExtractData"
 
-## Calculate indices with R
+# Calculate indices with R
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo CALCULATE INDICES
 cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndices.R
 Rscript CalculateIndices.R
+
+
+
+# Clean up ...
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
 for P in */
@@ -129,12 +124,10 @@ do
 done
 
 
-## Clean up of matlab files
-
+# Clean up of matlab files
 rm DiagnosticPlots.m
 rm ExtractData.m
 rm CalculateIndices.R
-
 for X in */
 do
 	cd "$X"/
@@ -143,9 +136,9 @@ do
 	rm AutoTracking.m
 	rm script_reassign_identities.m
 	rm run_calibrator_non_interactive.m
-	
 	cd $CurrentDirectory
 done
+
 
 # Moving any error log files for the Diagnostic... and Extract...
 echo "Now moving any error log files"
@@ -161,7 +154,6 @@ then
 else
 	echo No Diagnostic Plot errors
 fi
-
 ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
 if [ "$ExtractError" != "0" ]
 then
@@ -177,6 +169,7 @@ else
 
 fi
 
+# Move the resulting tracking results to the Synology in each users folder
 echo MOVING TRACKING RESULTS TO SYNOLOGY
 for D in */
 do
@@ -190,20 +183,15 @@ do
 	echo This is the User: $User
 	echo This is the Recording Date: $RecordingDate
 	echo This is the Video Name: $VideoName
-
 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
-
 	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
 	cd $CurrentDirectory
  done
 
+# Move the input direstory to the archive synology for backup
 echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
 mv $InputDirectory /mnt/Synology/Archive/uFMF
 
-
-
 echo All Done.
 echo $(date)
-
 sleep infinity
-

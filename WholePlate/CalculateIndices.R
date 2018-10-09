@@ -1,5 +1,10 @@
 #!/usr/bin/env Rscript
 
+# Aaron M. Allen, 2018.10.09
+# This script takes in the JAABA scores data and computes indices for courtship and plots ethograms.
+
+
+
 library("tidyverse")
 library("zoo")
 library("gridExtra")
@@ -13,7 +18,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
   
   tryCatch({
     AllRawData <- read_csv(list.files(pattern=glob2rx('*ALLDATA.csv')))
-    #AllRawData
+    # subset the data to only the variables we'll be working with
     CleanedData <- select(AllRawData,
                          FileName,
                          StartPosition,
@@ -29,16 +34,16 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
                          WingGesture)
     CleanedData$FileName <- as_factor(CleanedData$FileName)
     
-    
+    # Using the binary JAABA scores, we compute a courtship variables such that if the fly is performing at least one
+    # of the behaviours, the courtship variables will be equal to 1.  
     CleanedData <- CleanedData %>% mutate(
       Multitasking = ifelse(Copulation==0,(Approaching + Encirling + Contact + Turning + WingGesture), 0),
       MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encirling + Facing + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
     )
-    CleanedData
-    
 
+    # Setting up empty vectors that will be populated below for each fly
     CourtshipIndex <- vector("numeric")
     CourtshipIndexWithFacing <- vector("numeric")
     WingIndex <- vector("numeric")
@@ -59,16 +64,18 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     
     for (var in FlyId) {
       SubsectionedData <- filter(CleanedData, Id==var) %>% drop_na()
-      #SubsectionedData <- slice(SubsectionedData, 2100:103590)
-      #SubsectionedData[ is.na(SubsectionedData) ] <- 0
       
-      
-      SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 250, fill = c(0,0,0), align = c("left")))>0.5, 1, 0)
+      # Applying a smoothing filter to the courtship and copulation variables.
+      # The smoothed courtship allows us to assertain the starting point for when the fly has conducted courtship behaviour
+      # for at least 3 seconds over a 6 second window. The smoothed copulation allows us to mask any subtle inaccuracies with
+      # raw JAABA annotation.
+      SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 150, fill = c(0,0,0), align = c("left")))>0.5, 1, 0)
       SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
       SubsectionedData <- add_column(SubsectionedData,SmoothedCourtship,SmoothedCopulation)
-      #SubsectionedData
       
       StartOfCourtship <- as.numeric(which.max(SubsectionedData$SmoothedCourtship)) # NB: if the flies never court, this will be frame 1
+      # End of Courtship is defined as either the start of copulation, 10 minutes after courtship initiation, or the end to tracking, which
+      # ever is the lowest value.
       EndOfCourtship <- as.numeric(
         ifelse(
           sum(SubsectionedData$SmoothedCopulation)==0, 
@@ -81,7 +88,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
             which.max(SubsectionedData$SmoothedCopulation),
             (which.max(SubsectionedData$SmoothedCourtship)+15000))))
 
-      
+      # Sometimes there is a false positive annotation of courtship initiation after copulation initiation for females.
+      # To address (or rather hide) this, if courtship initiation occurs after courtship termination, then I record 'not available'
+      # for all the indices.     
       if (EndOfCourtship<StartOfCourtship) {
         StartPos[var] <- SubsectionedData$StartPosition[1]
         EndOfCourtship<-NA
@@ -101,10 +110,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         
       } else {
         CourtshipNumerator <- slice(SubsectionedData, StartOfCourtship:EndOfCourtship)
-        
+        # If the fly fails to initiate courtship (ie 3 out 6 seconds from above) then CI is recorded at 0
         CourtshipIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, 0, (mean(CourtshipNumerator$Courtship)))
         CourtshipIndexWithFacing[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, 0, (mean(CourtshipNumerator$CourtshipWithFacing)))
-        
         CourtshipInitiation[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (StartOfCourtship/25))
         CourtshipTermination[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, NA, (EndOfCourtship/25))
         CourtshipDuration[var] = (CourtshipTermination[var] - CourtshipInitiation[var])
@@ -126,6 +134,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
         StartPos[var] <- SubsectionedData$StartPosition[1]
         
+        # If the fly fails to initiate courtship (ie 3 out 6 seconds from above) then other indices are recorded at for the full duration of tracking
         WingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$WingGesture)))
         ApproachingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Approaching)), (mean(CourtshipNumerator$Approaching)))
         TurningIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Turning)), (mean(CourtshipNumerator$Turning)))
@@ -199,8 +208,6 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     }
     dev.off()
     #############################################
-
-
 
 
     setwd(paste0(CurrDir))
