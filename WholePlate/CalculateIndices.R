@@ -40,7 +40,11 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       Multitasking = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture), 0),
       MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0),
-      CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0)
+      CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0),
+      MultitaskingWithCopulation = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture + Copulation), 0),
+      MultitaskingWithCopulationWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture + Copulation), 0),
+      CourtshipAndCopulation = ifelse(MultitaskingWithCopulation>=1, 1, 0),
+      CourtshipAndCopulationWthFacing = ifelse(MultitaskingWithCopulationWithFacing>=1, 1, 0)
     )
 
     # Setting up empty vectors that will be populated below for each fly
@@ -57,7 +61,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     CourtshipTermination <- vector("numeric")
     CourtshipDuration <- vector("numeric")
     #CourtTermReason <- vector("numeric")
-    
+    TotalCCI <- vector("numeric")
+    TotalCCIwFacing <- vector("numeric")
+
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
     StartPos <- vector()
@@ -107,6 +113,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         ContactIndex[var] <- NA
         EncirclingIndex[var] <- NA
         FacingIndex[var] <- NA
+        TotalCCI[var] <- NA
+        TotalCCIwFacing[var] <- NA
         
       } else {
         CourtshipNumerator <- slice(SubsectionedData, StartOfCourtship:EndOfCourtship)
@@ -141,11 +149,15 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         ContactIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Contact)), (mean(CourtshipNumerator$Contact)))
         EncirclingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Encircling)), (mean(CourtshipNumerator$Encircling)))
         FacingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$Facing)), (mean(CourtshipNumerator$Facing)))
+        TotalCCI[var] <- mean(SubsectionedData$CourtshipAndCopulation)
+        TotalCCIwFacing[var] <- mean(SubsectionedData$CourtshipAndCopulationWthFacing)
       }
     }
+    FlyId <- (1:40)
+    ArenaNumber <- ceiling(FlyId/2)
     
     #IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
-    IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex,TotalCCI,TotalCCIwFacing)
     IndexDataTable %>% print(n=40)
     
     
@@ -160,6 +172,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
 
     # Ethogram Plots of JAABA Classifiers
     #############################################
+    FlyId <- (unique(CleanedData$Id))
+    ArenaNumber <- ceiling(FlyId/2)
     OddFly <- (unique(ArenaNumber)*2)-1
     EthoFileName <- paste0(basename(i), "_Ethogram.pdf")
     pdf(EthoFileName,width=10,height=7,paper='a4r')
