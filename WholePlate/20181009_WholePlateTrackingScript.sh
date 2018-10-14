@@ -95,6 +95,15 @@ done
 echo DIAGNOSTIC PLOT
 cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
 /usr/local/bin/matlab -nodisplay -nosplash -r "DiagnosticPlots"
+# Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
+for P in */
+do
+	cd $P/Results
+	echo MERGING DIAGNOSTIC PLOTS INTO ONE PDF FOR $P
+	pdftk *.pdf cat output ${P%%/*}_DiagnosticPlots.pdf
+	rm *[0-9].pdf
+	cd $CurrentDirectory
+done
 
 # Extracting Data for Each Plate
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,17 +121,6 @@ Rscript CalculateIndices.R
 
 # Clean up ...
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
-for P in */
-do
-	cd $P/Results
-	echo MERGING DIAGNOSTIC PLOTS INTO ONE PDF FOR $P
-	pdftk *.pdf cat output ${P%%/*}_DiagnosticPlots.pdf
-	rm *[0-9].pdf
-	cd $CurrentDirectory
-done
-
 
 # Clean up of matlab files
 rm DiagnosticPlots.m
