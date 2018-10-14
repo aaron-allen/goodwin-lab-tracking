@@ -41,8 +41,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture), 0),
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0),
-      MultitaskingWithCopulation = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture + Copulation), 0),
-      MultitaskingWithCopulationWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture + Copulation), 0),
+      MultitaskingWithCopulation = (Approaching + Encircling + Contact + Turning + WingGesture + Copulation),
+      MultitaskingWithCopulationWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture + Copulation),
       CourtshipAndCopulation = ifelse(MultitaskingWithCopulation>=1, 1, 0),
       CourtshipAndCopulationWthFacing = ifelse(MultitaskingWithCopulationWithFacing>=1, 1, 0)
     )
