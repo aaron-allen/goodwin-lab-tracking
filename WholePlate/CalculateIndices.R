@@ -37,8 +37,12 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     # Using the binary JAABA scores, we compute a courtship variables such that if the fly is performing at least one
     # of the behaviours, the courtship variables will be equal to 1.  
     CleanedData <- CleanedData %>% mutate(
-      Multitasking = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture), 0),
-      MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture), 0),
+      # The below if statements for Multitasking causes an issue if the start of smoothedCopulation is significantly different to the 
+      # actual start of copulation. So I've reset the variable to just be the sum of the features.
+      # Multitasking = ifelse(Copulation==0,(Approaching + Encircling + Contact + Turning + WingGesture), 0),
+      # MultitaskingWithFacing = ifelse(Copulation==0,(Approaching + Encircling + Facing + Contact + Turning + WingGesture), 0),
+      Multitasking = (Approaching + Encircling + Contact + Turning + WingGesture),
+      MultitaskingWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture),
       Courtship = ifelse(Multitasking>=1, 1, 0),
       CourtshipWithFacing = ifelse(MultitaskingWithFacing>=1, 1, 0),
       MultitaskingWithCopulation = (Approaching + Encircling + Contact + Turning + WingGesture + Copulation),
