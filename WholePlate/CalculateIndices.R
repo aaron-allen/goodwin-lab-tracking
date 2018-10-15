@@ -72,8 +72,9 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     ArenaNumber <- ceiling(FlyId/2)
     StartPos <- vector()
     
-    for (var in FlyId) {
-      SubsectionedData <- filter(CleanedData, Id==var) %>% drop_na()
+    NumberOfFlies = (1:length(FlyId))
+    for (var in NumberOfFlies) {
+      SubsectionedData <- filter(CleanedData, Id==FlyId[var]) %>% drop_na()
       
       # Applying a smoothing filter to the courtship and copulation variables.
       # The smoothed courtship allows us to assertain the starting point for when the fly has conducted courtship behaviour
@@ -157,8 +158,6 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         TotalCCIwFacing[var] <- mean(SubsectionedData$CourtshipAndCopulationWthFacing)
       }
     }
-    FlyId <- (1:40)
-    ArenaNumber <- ceiling(FlyId/2)
     
     #IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
     IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex,TotalCCI,TotalCCIwFacing)
