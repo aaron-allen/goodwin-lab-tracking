@@ -76,7 +76,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       # for at least 3 seconds over a 6 second window. The smoothed copulation allows us to mask any subtle inaccuracies with
       # raw JAABA annotation.
       SmoothedCourtship <- ifelse((rollmean(SubsectionedData$Courtship, 150, fill = c(0,0,0), align = c("left")))>0.5, 1, 0)
-      SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 2250, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
+      SmoothedCopulation <- ifelse((rollmean(SubsectionedData$Copulation, 1250, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
       SubsectionedData <- add_column(SubsectionedData,SmoothedCourtship,SmoothedCopulation)
       
       StartOfCourtship <- as.numeric(which.max(SubsectionedData$SmoothedCourtship)) # NB: if the flies never court, this will be frame 1
