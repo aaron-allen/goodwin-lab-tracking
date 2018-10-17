@@ -14,23 +14,25 @@
 function assign_score_identities(scoresdir,idsfile)
 startdir=pwd;
 load(idsfile);
-
-trackfile=dir('*-track.mat');
-trackfilename=trackfile(1).name;
-trackfilename_old=strrep(trackfilename,'.mat','_old.mat');
-trackoutputfile=strrep(trackfilename,'.mat','_id_corrected.mat');
-id_correct_trackfile(trackfilename,trackoutputfile,ids);
-movefile(trackfilename, trackfilename_old);
-copyfile(trackoutputfile,trackfilename);
-
-featfile=dir('*-feat.mat');
-featfilename=featfile(1).name;
-featfilename_old=strrep(featfilename,'.mat','_old.mat');
-featoutputfile=strrep(featfilename,'.mat','_id_corrected.mat');
-id_correct_featfile(featfilename,featoutputfile,ids);
-movefile(featfilename, featfilename_old);
-copyfile(featoutputfile,featfilename);
-
+if ~isempty(dir('*track_old.mat'))
+    
+else    
+    trackfile=dir('*-track.mat');
+    trackfilename=trackfile(1).name;
+    trackfilename_old=strrep(trackfilename,'.mat','_old.mat');
+    trackoutputfile=strrep(trackfilename,'.mat','_id_corrected.mat');
+    id_correct_trackfile(trackfilename,trackoutputfile,ids);
+    movefile(trackfilename, trackfilename_old);
+    copyfile(trackoutputfile,trackfilename);
+    
+    featfile=dir('*-feat.mat');
+    featfilename=featfile(1).name;
+    featfilename_old=strrep(featfilename,'.mat','_old.mat');
+    featoutputfile=strrep(featfilename,'.mat','_id_corrected.mat');
+    id_correct_featfile(featfilename,featoutputfile,ids);
+    movefile(featfilename, featfilename_old);
+    copyfile(featoutputfile,featfilename);
+end
 cd (scoresdir);
 
 scoresfiles=dir('scores*.mat');
