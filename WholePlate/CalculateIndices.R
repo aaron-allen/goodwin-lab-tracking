@@ -70,7 +70,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
 
     FlyId <- (unique(CleanedData$Id))
     ArenaNumber <- ceiling(FlyId/2)
-    StartPos <- vector()
+    #StartPos <- vector()
     
     NumberOfFlies = (1:length(FlyId))
     for (var in NumberOfFlies) {
@@ -103,7 +103,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
       # To address (or rather hide) this, if courtship initiation occurs after courtship termination, then I record 'not available'
       # for all the indices.     
       if (EndOfCourtship<StartOfCourtship) {
-        StartPos[var] <- SubsectionedData$StartPosition[1]
+        #StartPos[var] <- SubsectionedData$StartPosition[1]
         EndOfCourtship<-NA
         StartOfCourtship<-NA
         CourtshipIndex[var] <- NA
@@ -145,7 +145,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
         
         
         #CopulationDuration[var] <- (sum(SubsectionedData$Copulation))/25
-        StartPos[var] <- SubsectionedData$StartPosition[1]
+        #StartPos[var] <- SubsectionedData$StartPosition[1]
         
         # If the fly fails to initiate courtship (ie 3 out 6 seconds from above) then other indices are recorded at for the full duration of tracking
         WingIndex[var] <- ifelse(sum(SubsectionedData$SmoothedCourtship)==0, (mean(SubsectionedData$WingGesture)), (mean(CourtshipNumerator$WingGesture)))
@@ -160,7 +160,8 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     }
     
     #IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,CourtTermReason,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex)
-    IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex,TotalCCI,TotalCCIwFacing)
+    #IndexDataTable <- tibble(ArenaNumber,FlyId,StartPos,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex,TotalCCI,TotalCCIwFacing)
+    IndexDataTable <- tibble(ArenaNumber,FlyId,CourtshipIndex,CourtshipIndexWithFacing,CourtshipInitiation,CourtshipTermination,CourtshipDuration,ApproachingIndex,ContactIndex,EncirclingIndex,FacingIndex,TurningIndex,WingIndex,TotalCCI,TotalCCIwFacing)
     IndexDataTable %>% print(n=40)
     
     
