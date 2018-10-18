@@ -92,7 +92,7 @@ for p = 1:numel(dirs)
             %disp('feat');
             for B=1:length([feat.names])
                 FeatureNames = [FeatureNames, strcat(feat.names(B),'__',feat.units(B))];
-                IndFeat = transpose(feat.data(I,:,B));
+                IndFeat = transpose(feat.data((trx(I).id),:,B));
                 ColPos = 3 + size(JAABAScoreFiles,1) + B;
                 IndData(1:length(IndFeat),ColPos) = IndFeat;
             end
@@ -101,7 +101,7 @@ for p = 1:numel(dirs)
             %disp('track');
             for T=1:length([trk.names])
                 TrackNames = [TrackNames, strcat(trk.names(T),'__',trk.units(T))];
-                IndTrk = transpose(trk.data(I,:,T));
+                IndTrk = transpose(trk.data((trx(I).id),:,T));
                 ColPos = 3 + size(JAABAScoreFiles,1) + size([feat.data],3) + T;
                 IndData(1:length(IndTrk),ColPos) = IndTrk;
             end
