@@ -156,7 +156,7 @@ ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
 if [ "$ExtractError" != "0" ]
 then
 	echo Extract Data errors exist
-	for L in *ExtractDataAndPDFs_errors.log
+	for L in *ExtractData_errors.log
 	do
 		LogFile=$L
 		Directory=${LogFile%%ExtractData_errors.log}

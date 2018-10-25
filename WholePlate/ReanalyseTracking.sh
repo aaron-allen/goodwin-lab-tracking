@@ -102,7 +102,7 @@ ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
 if [ "$ExtractError" != "0" ]
 then
 	echo Extract Data errors exist
-	for L in *ExtractDataAndPDFs_errors.log
+	for L in *ExtractData_errors.log
 	do
 		LogFile=$L
 		Directory=${LogFile%%ExtractData_errors.log}
@@ -113,24 +113,24 @@ else
 
 fi
 
-# # Move the resulting tracking results to the Synology in each users folder
-# echo MOVING TRACKING RESULTS TO SYNOLOGY
-# for D in */
-# do
-# 	Directory=$D
-# 	User=${Directory%%-*}
-# 	RecordingDate=${Directory#*-}
-# 	VideoName=${RecordingDate#*-}
-# 	RecordingDate=${RecordingDate%%-*}
-# 	VideoName=${VideoName%%/}
-# 	echo This is the Directory: $Directory
-# 	echo This is the User: $User
-# 	echo This is the Recording Date: $RecordingDate
-# 	echo This is the Video Name: $VideoName
-# 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
-# 	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
-# 	cd $WorkingDirectory
-#  done
+# Move the resulting tracking results to the Synology in each users folder
+echo MOVING TRACKING RESULTS TO SYNOLOGY
+for D in */
+do
+	Directory=$D
+	User=${Directory%%-*}
+	RecordingDate=${Directory#*-}
+	VideoName=${RecordingDate#*-}
+	RecordingDate=${RecordingDate%%-*}
+	VideoName=${VideoName%%/}
+	echo This is the Directory: $Directory
+	echo This is the User: $User
+	echo This is the Recording Date: $RecordingDate
+	echo This is the Video Name: $VideoName
+	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
+	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
+	cd $WorkingDirectory
+ done
 
 
 echo All Done.
