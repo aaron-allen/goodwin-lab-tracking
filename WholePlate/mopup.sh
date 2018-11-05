@@ -29,65 +29,66 @@ echo $(date)
 # setting up a variable with todays date and making a folder for the modified courtship videos
 MasterDirectory=$(pwd)
 echo $MasterDirectory
-today=$(date +%Y%m%d)
-echo $today
-today=${today}Tracked
+#today=$(date +%Y%m%d)
+#echo $today
+#today=${today}Tracked
+read -p "Enter the 'today' directory you with the files you wish to mopup:  " today
 echo  "$today"
 
 #read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 #read -p "Enter the directory where you wish results to go:  " WorkingDirectory
-InputDirectory=/mnt/Synology/ToBeTracked/*Converted
+#InputDirectory=/mnt/Synology/ToBeTracked/*Converted
 WorkingDirectory=/mnt/LocalData/WorkingDirectory
-echo This is the input directory: $InputDirectory
+echo This is the mop-up directory: $today
 echo This is the ouptut directory: $WorkingDirectory
 
 pwd
 cd $WorkingDirectory/
 pwd
-mkdir $today/
+#mkdir $today/
 cd $today
 CurrentDirectory=$(pwd)
 
 
 # Track all video files with FlyTracker, and apply classifiers with JAABA
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo FILE TRANSFER AND TRACKING
-for Z in $InputDirectory/*.ufmf
-do
-	FileName=$(basename -a --suffix=.ufmf "$Z")
-	mkdir "$FileName"
-	echo Copying video files from Synology
-	cp "$Z" $WorkingDirectory/$today/"$FileName"/
-	cd "$FileName"
-	for A in *.ufmf
-	do
-		echo Copying Matlab files into tracking directory
-		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
-		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
-		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
-		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
-		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
-		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
-		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
-		echo Now tracking: "$A"
-		bash AutoTracking.sh &
-	done
-	cd $CurrentDirectory
-	sleep 5s    # 5 second lag to allow MATLAB to open
+# echo FILE TRANSFER AND TRACKING
+# for Z in $InputDirectory/*.ufmf
+# do
+# 	FileName=$(basename -a --suffix=.ufmf "$Z")
+# 	mkdir "$FileName"
+# 	echo Copying video files from Synology
+# 	cp "$Z" $WorkingDirectory/$today/"$FileName"/
+# 	cd "$FileName"
+# 	for A in *.ufmf
+# 	do
+# 		echo Copying Matlab files into tracking directory
+# 		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
+# 		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
+# 		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
+# 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
+# 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
+# 		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+# 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
+# 		echo Now tracking: "$A"
+# 		bash AutoTracking.sh &
+# 	done
+# 	cd $CurrentDirectory
+# 	sleep 5s    # 5 second lag to allow MATLAB to open
 	
-	# Check if matlab is running
-	while [ $(pgrep -c "MATLAB") -gt 3 ]
-	do
-		sleep 2m
-	done
-done
+# 	# Check if matlab is running
+# 	while [ $(pgrep -c "MATLAB") -gt 3 ]
+# 	do
+# 		sleep 2m
+# 	done
+# done
 
-# Wait for the tracking to finish before going on to next section
-echo "Just waiting for the tracking to finish."
-while pgrep -x "MATLAB" > /dev/null
-do
-	sleep 2m
-done
+# # Wait for the tracking to finish before going on to next section
+# echo "Just waiting for the tracking to finish."
+# while pgrep -x "MATLAB" > /dev/null
+# do
+# 	sleep 2m
+# done
 
 
 # Generate Diagnostic Plots
@@ -156,7 +157,7 @@ ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
 if [ "$ExtractError" != "0" ]
 then
 	echo Extract Data errors exist
-	for L in *ExtractData_errors.log
+	for L in *ExtractDataAndPDFs_errors.log
 	do
 		LogFile=$L
 		Directory=${LogFile%%ExtractData_errors.log}
@@ -186,9 +187,9 @@ do
 	cd $CurrentDirectory
  done
 
-# Move the input direstory to the archive synology for backup
-echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
-mv $InputDirectory /mnt/Synology/Archive/uFMF
+# # Move the input direstory to the archive synology for backup
+# echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
+# mv $InputDirectory /mnt/Synology/Archive/uFMF
 
 echo All Done.
 echo $(date)
