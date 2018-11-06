@@ -51,7 +51,7 @@ for p = 1:numel(dirs)
     % classifiers to be applied without issue.
     if (1 < FliesPerChamber) && (FliesPerChamber < 2)
         disp('The number of flies differs between chambers.');
-        cd ('New folder')
+        % cd ([JAABAname '_JAABA']);
         save('trxBackup.mat', 'trx', 'timestamps');
         for N = 1:size(trk.flies_in_chamber,2)
           if size(trk.flies_in_chamber{N},2) == 1
@@ -60,7 +60,7 @@ for p = 1:numel(dirs)
           end
         save('trx.mat', 'trx', 'timestamps')    
         end
-        cd ..
+        % cd ..
     else
         if (FliesPerChamber == 2)
             disp('There are 2 flies per chamber.')
