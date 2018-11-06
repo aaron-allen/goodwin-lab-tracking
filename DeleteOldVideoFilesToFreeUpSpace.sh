@@ -22,6 +22,7 @@ echo $(pwd)
 cd $DIR
 echo $(pwd)
 CAPACITY=$(df -k . | awk '{gsub("%",""); capacity=$5}; END {print capacity}')
+echo "CAPACITY = $CAPACITY"
 if [ $CAPACITY -gt $CAPACITY_LIMIT ]
 then
     find . -type f -name 'settings.txt' -printf "%T@ %Tc %p\n" | sort -n | cut -f 2- -d '/' > ListOfSettingsListFilesByDate.txt
@@ -35,10 +36,10 @@ then
         do
             Movie="${line%%,*}"
             echo "Movie = $Movie"
-            # rm -f "/mnt/Synology/Archive/raw/$MovieDir/$Movie"
+            rm -f "/mnt/Synology/Archive/raw/$MovieDir/$Movie"
             echo "Deleted $Movie in /mnt/Synology/Archive/raw/$MovieDir"
         done < $SettingsFile
-        # mv "/mnt/Synology/Archive/lossless/$SettingsFile" "/mnt/Synology/Archive/lossless/$MovieDir/settingsBackup.txt"
+        mv "/mnt/Synology/Archive/lossless/$SettingsFile" "/mnt/Synology/Archive/lossless/$MovieDir/settingsBackup.txt"
         CAPACITY=$(df -k . | awk '{gsub("%",""); capacity=$5}; END {print capacity}')
         echo "Current capacity is $CAPACITY"
         if [ $CAPACITY -le $CAPACITY_LIMIT ]
