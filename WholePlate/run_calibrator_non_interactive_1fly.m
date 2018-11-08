@@ -5,7 +5,7 @@ videonames={videos.name};
 videonamestr=cellfun(@(vid) strrep(vid,'.ufmf',''), videonames,'UniformOutput',false);
 cellfun(@(videoname) mkdir(videoname), videonamestr);
 calibfilenames=cellfun(@(vidname) strcat(vidname,'_calibration.mat'), videonamestr,'UniformOutput',false);
-cellfun(@(vid,calibfilename) error_handling_wrapper('calibration_errors.log','calibrator_non_interactive',char(vid),char(calibfilename)),videonames,calibfilenames,'UniformOutput',false);
+cellfun(@(vid,calibfilename) error_handling_wrapper('calibration_errors.log','calibrator_non_interactive_1fly',char(vid),char(calibfilename)),videonames,calibfilenames,'UniformOutput',false);
 exit;
     
     
