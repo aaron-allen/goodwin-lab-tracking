@@ -1,5 +1,5 @@
-%addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/FlyTracker-1.0.5'));
-%addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
+addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/FlyTracker-1.0.5'));
+addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
 videos=dir('*.ufmf');
 videonames={videos.name};
 videonamestr=cellfun(@(vid) strrep(vid,'.ufmf',''), videonames,'UniformOutput',false);
