@@ -64,10 +64,10 @@ do
 		echo Copying Matlab files into tracking directory
 		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
 		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
-		cp -r $MasterDirectory/run_calibrator_non_interactive.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive.m
+		cp -r $MasterDirectory/run_calibrator_non_interactive_xflies.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive_xflies.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
-		/usr/local/bin/matlab  -r "run_calibrator_non_interactive"
+		/usr/local/bin/matlab  -r "run_calibrator_non_interactive_xflies"
 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
@@ -133,7 +133,7 @@ do
 	rm AutoTracking.sh
 	rm AutoTracking.m
 	rm script_reassign_identities.m
-	rm run_calibrator_non_interactive.m
+	rm run_calibrator_non_interactive_xflies.m
 	cd $CurrentDirectory
 done
 
