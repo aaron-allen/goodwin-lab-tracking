@@ -146,8 +146,8 @@ then
 	echo Diagnostic Plot errors exist
 	for L in *DiagnosticPlot_errors.log
 	do
-		LogFile=$L
-		Directory=${LogFile%%DiagnosticPlot_errors.log}
+		Directory=${L%%DiagnosticPlot_errors.log}
+		mv $L $Directory/
 	done
 else
 	echo No Diagnostic Plot errors
@@ -158,13 +158,11 @@ then
 	echo Extract Data errors exist
 	for L in *ExtractData_errors.log
 	do
-		LogFile=$L
-		Directory=${LogFile%%ExtractData_errors.log}
-		mv $LogFile $Directory/
+		Directory=${L%%ExtractData_errors.log}
+		mv $L $Directory/
 	done
 else
 	echo No Extract Data Plot errors
-
 fi
 
 # Move the resulting tracking results to the Synology in each users folder
