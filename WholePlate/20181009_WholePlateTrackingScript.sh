@@ -71,6 +71,7 @@ do
 		cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 		echo Now tracking: "$A"
 		bash AutoTracking.sh &
+		#gnome-terminal -- ./AutoTracking.sh &
 	done
 	cd $CurrentDirectory
 	sleep 5s    # 5 second lag to allow MATLAB to open
