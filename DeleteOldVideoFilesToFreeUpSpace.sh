@@ -37,9 +37,11 @@ then
             Movie="${line%%,*}"
             echo "Movie = $Movie"
             rm -f "/mnt/Synology/Archive/raw/$MovieDir/$Movie"
-			cd .local/share/Trash/files/
+			rm -f "/mnt/Synology/Archive/#recycle/raw/$MovieDir/$Movie"
+			cd ~/.local/share/Trash/files/
             rm -rf "*.avi"
             cd $DIR
+            sleep 30
             echo "Deleted $Movie in /mnt/Synology/Archive/raw/$MovieDir"
         done < $SettingsFile
         mv "/mnt/Synology/Archive/lossless/$SettingsFile" "/mnt/Synology/Archive/lossless/$MovieDir/settingsBackup.txt"
