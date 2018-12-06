@@ -1,3 +1,4 @@
+
 %Annika Rings July 2018
 %function for reassigning chamber numbers and identities of flies that were
 %tracked by Flytracker
@@ -45,13 +46,15 @@ x=arrayfun(@(f) rmmissing(f.x),trx,'UniformOutput',false);
 firstx=cellfun(@(f) f(1,1),x);
 chambers=arrayfun(@(f) assign_one(f,maxy_chambers,miny_chambers,maxx_chambers,minx_chambers),trx);
 startpos=left_right_assign(chambers,firstx);
-[trx(:).startpos]=deal(startpos{:});
+
 id_new=assign_identity(chambers);
 id_new_c=num2cell(id_new);
 [trx(:).id]=deal(id_new_c{:});
 fields = {'meanx','meany'};
 trx = rmfield(trx,fields);
 trx=nestedSortStruct(trx,'id');
+[trx(:).startpos]=deal(startpos{:});
+
 ids=struct('id_old',id_old,'id_new',id_new,'chambers',chambers);
 save_assigned('ids',ids);
 save(trxfile_new,'trx');
