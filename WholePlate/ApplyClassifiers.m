@@ -51,16 +51,49 @@ for p = 1:numel(dirs)
     % classifiers to be applied without issue.
     if (1 < FliesPerChamber) && (FliesPerChamber < 2)
         disp('The number of flies differs between chambers.');
-        % cd ([JAABAname '_JAABA']);
         save('trxBackup.mat', 'trx', 'timestamps');
+        
+        % 2019.01.03 - added sections to deal with a single fly in a
+        % chamber that isn't at the end of the trx and perframe data. First
+        % I make a logical array for the id's that are in a 1 fly chamber,
+        % then delete the rows from the trx file, then renumber the id's in
+        % the trx file, then apply the logical array to delete the columns
+        % in the perframe data.
+        disp('Creating logical array for perframe data.');
+        LM = [];
         for N = 1:size(trk.flies_in_chamber,2)
-          if size(trk.flies_in_chamber{N},2) == 1
-            disp('Deleting row of trx file.');
-            trx([trx.id]==trk.flies_in_chamber{N}) = [];
-          end
-        save('trx.mat', 'trx', 'timestamps')    
+            if size(trk.flies_in_chamber{N},2) == 1
+                LM = [LM, 1];
+            else
+                LM = [LM, 0, 0];
+            end
         end
-        % cd ..
+        LM = boolean(LM);
+        disp(['Deleting row(s) in trx file.']);
+        for N = 1:size(trk.flies_in_chamber,2)
+            if size(trk.flies_in_chamber{N},2) == 1
+                trx([trx.id]==trk.flies_in_chamber{N}) = [];
+            end
+        end
+        disp('Re-numbering Ids in trx file.');
+        for I = 1:length(trx)
+            trx(I).id = I;
+        end
+        save('trx.mat', 'trx', 'timestamps')
+
+        cd perframe
+        mkdir BackupPerframe
+        perframeDataFiles = dir('*.mat');
+        for P = 1:length(perframeDataFiles)
+            copyfile(perframeDataFiles(P).name, ['BackupPerframe/Backup_' perframeDataFiles(P).name]);
+            load(perframeDataFiles(P).name);
+            disp(['Deleting data from ' perframeDataFiles(P).name]);
+            data(:,LM)=[];
+            save(perframeDataFiles(P).name, 'data', 'units');
+        end
+        cd .. 
+        % end of new bit ...
+        
     else
         if (FliesPerChamber == 2)
             disp('There are 2 flies per chamber.')
