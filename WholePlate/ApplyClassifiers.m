@@ -29,11 +29,8 @@ for p = 1:numel(dirs)
     
     cd (JAABAdir);
     disp(['Now applying classifiers for: ' JAABAname]);
-    if (round(FliesPerChamber)==2)
-        error_handling_wrapper('JAABA_errors.log','JAABADetect',[JAABAname '_JAABA'],'jablistfile',JABFiles);
-    else
-        error_handling_wrapper('JAABA_errors.log','JAABADetect',[JAABAname '_JAABA'],'jabfiles',wingJAB);
-    end
+    error_handling_wrapper('JAABA_errors.log','JAABADetect',[JAABAname '_JAABA'],'jablistfile',JABFiles);
+    
     diary off
     cd (CurrDir)
 end
