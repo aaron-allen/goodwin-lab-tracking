@@ -65,6 +65,7 @@ do
 		cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
 		cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
 		cp -r $MasterDirectory/run_calibrator_non_interactive_xflies.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive_xflies.m
+		cp -r $MasterDirectory/DeleteSingletonFlies.m $WorkingDirectory/$today/"$FileName"/DeleteSingletonFlies.m
 		cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$today/"$FileName"/ApplyClassifiers.m
 		cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$today/"$FileName"/script_reassign_identities.m
 		/usr/local/bin/matlab  -r "run_calibrator_non_interactive_xflies"
@@ -130,6 +131,7 @@ rm CalculateIndices.R
 for X in */
 do
 	cd "$X"/
+	rm DeleteSingletonFlies.m
 	rm ApplyClassifiers.m
 	rm AutoTracking.sh
 	rm AutoTracking.m
