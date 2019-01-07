@@ -3,6 +3,9 @@ SETLOCAL enabledelayedexpansion
 date /T
 time /T
 
+:: Aaron M. Allen, updated 2019.01.07
+:: Batch script to cut and convert raw videos to uFMF to be tracked. Also makes a lossless version of
+:: the video for archival purposes.
 
 
 
