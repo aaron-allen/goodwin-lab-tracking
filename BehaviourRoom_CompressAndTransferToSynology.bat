@@ -2,6 +2,12 @@
 date /T
 time /T
 
+:: Aaron M. Allen, updated 2019.01.07
+:: Batch script to make a lossy compression of video and transfer to Synology.
+:: The lossy videos go to the 'GoodwinGroup' Synology, the raw video and settings.txt
+:: file to the '2P' Synology.
+
+
 set today=%date:~-4%_%date:~3,2%_%date:~0,2%
 mkdir %today%_Courtship
 set/P UserName=ENTER YOUR FIRST NAME: 
@@ -17,16 +23,16 @@ for %%A in ("*.avi") do (
 	xcopy "%today%_Courtship\%%~nA_compressed.avi" "Z:\%UserName%\%today%_Courtship\"
 
 	echo COPYING UNCOMPRESSED VIDEO "%%A" TO OTHER SYNOLOGY
-	xcopy "%%A" "X:\raw\%UserName%\%today%_Courtship\"
-	fc /b "%%A" "X:\raw\%UserName%\%today%_Courtship\%%A" > nul
+	xcopy "%%A" "X:\TempRawVideos\%UserName%\%today%_Courtship\"
+	fc /b "%%A" "X:\TempRawVideos\%UserName%\%today%_Courtship\%%A" > nul
 	echo THE ERROR LEVEL EQUALS    %errorlevel%
 	if %errorlevel% EQU 0 (
 		echo NOW DELTING FILES
 		del "%%A"
 	)
 )
-::xcopy "%SettingsFile%" "X:\raw\%UserName%\%today%_Courtship\"
-echo f | xcopy /f /y "%SettingsFile%" "X:\raw\%UserName%\%today%_Courtship\settings.txt"
+::xcopy "%SettingsFile%" "X:\TempRawVideos\%UserName%\%today%_Courtship\"
+echo f | xcopy /f /y "%SettingsFile%" "X:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
 
 
 
@@ -36,8 +42,3 @@ date /T
 time /T
 
 PAUSE
-
-
-
-
-
