@@ -5,13 +5,18 @@ time /T
 
 
 
-::need to add a bit to wait for previous weeks run to finish
 
+:: This section tests to see if the previous weeks run is finished.
+:: But it is not finished... may not be necessary since this script is not scheduled.
 :WAIT
-TIMEOUT 300 /NOBREAK
+TIMEOUT 30 /NOBREAK
 tasklist /FI "IMAGENAME eq ffmpeg.exe" 2>NUL | find /I /N "ffmpeg.exe">NUL
 if "%ERRORLEVEL%"=="0" (goto WAIT)
 tasklist /FI "IMAGENAME eq any2ufmf.exe" 2>NUL | find /I /N "any2ufmf.exe">NUL
+if "%ERRORLEVEL%"=="0" (goto WAIT)
+tasklist /FI "IMAGENAME eq xcopy.exe" 2>NUL | find /I /N "xcopy.exe">NUL
+if "%ERRORLEVEL%"=="0" (goto WAIT)
+tasklist /FI "IMAGENAME eq fc.exe" 2>NUL | find /I /N "fc.exe">NUL
 if "%ERRORLEVEL%"=="0" (goto WAIT)
 
 
@@ -19,7 +24,7 @@ if "%ERRORLEVEL%"=="0" (goto WAIT)
 set today=%date:~-4%%date:~3,2%%date:~0,2%
 
 cd
-cd /D X:\raw\
+cd /D "P:\TempRawVideos"
 cd
 
 :: Generate a list of directories that contain settings files for video conversion
@@ -50,7 +55,7 @@ for /f "tokens=1,2,3 delims=\" %%A in (%today%_SettingsList.txt) do (
 
 
 cd
-cd /D X:\raw\
+cd /D "P:\TempRawVideos"
 cd
 
 :: Generate lossless compressions of video and send back to Synology
