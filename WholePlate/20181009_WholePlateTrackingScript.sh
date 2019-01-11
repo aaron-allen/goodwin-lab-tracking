@@ -139,6 +139,27 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		rm AutoTracking.m
 		rm script_reassign_identities.m
 		rm run_calibrator_non_interactive_xflies.m
+		
+
+		mkdir Backups
+		mkdir Logs
+
+		if [ -f tracker_logfile.log ]; then mv tracker_logfile.log Logs/; fi
+		if [ -f JAABA_logfile.log ]; then mv JAABA_logfile.log Logs/; fi
+		if [ -f DeleteSingleFly_logfile.log ]; then mv DeleteSingleFly_logfile.log Logs/; fi
+
+		cd "$X"/
+
+		if [ -f ${X%/}-track_old.mat ]; then mv ${X%/}-track_old.mat ../Backups/; fi
+		if [ -f ${X%/}-track_id_corrected.mat ]; then mv ${X%/}-track_id_corrected.mat ../Backups/; fi
+
+		if [ -f ${X%/}-feat_old.mat ]; then mv ${X%/}-feat_old.mat ../Backups/; fi
+		if [ -f ${X%/}-feat_id_corrected.mat.mat ]; then mv ${X%/}-feat_id_corrected.mat ../Backups/; fi
+
+		if [ -f ${X%/}-trackBackup.mat ]; then mv ${X%/}-trackBackup.mat ../Backups/; fi
+		if [ -f ${X%/}-featBackup.mat ]; then mv ${X%/}-featBackup.mat ../Backups/; fi
+		if [ -d ${X%/}_JAABA/perframe/BackupPerframe ]; then mv ${X%/}_JAABA/perframe/BackupPerframe ../Backups/; fi
+
 		cd $CurrentDirectory
 	done
 
@@ -152,7 +173,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		for L in *DiagnosticPlot_errors.log
 		do
 			Directory=${L%%DiagnosticPlot_errors.log}
-			mv $L $Directory/
+			mv $L $Directory/Logs/
 		done
 	else
 		echo No Diagnostic Plot errors
@@ -164,7 +185,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		for L in *ExtractData_errors.log
 		do
 			Directory=${L%%ExtractData_errors.log}
-			mv $L $Directory/
+			mv $L $Directory/Logs/
 		done
 	else
 		echo No Extract Data Plot errors
