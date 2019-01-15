@@ -73,8 +73,8 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 			/usr/local/bin/matlab  -r "run_calibrator_non_interactive_xflies"
 			cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 			echo Now tracking: "$A"
-			bash AutoTracking.sh &
-			#gnome-terminal -- ./AutoTracking.sh &
+			#bash AutoTracking.sh &
+			gnome-terminal -- ./AutoTracking.sh &
 		done
 		cd $CurrentDirectory
 		sleep 5s    # 5 second lag to allow MATLAB to open
@@ -147,6 +147,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		if [ -f tracker_logfile.log ]; then mv tracker_logfile.log Logs/; fi
 		if [ -f JAABA_logfile.log ]; then mv JAABA_logfile.log Logs/; fi
 		if [ -f DeleteSingleFly_logfile.log ]; then mv DeleteSingleFly_logfile.log Logs/; fi
+		if [ -f Results/CalculateIndicesError.log ]; then mv Results/CalculateIndicesError.log Logs/; fi
 
 		cd "$X"/
 
@@ -154,10 +155,11 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		if [ -f ${X%/}-track_id_corrected.mat ]; then mv ${X%/}-track_id_corrected.mat ../Backups/; fi
 
 		if [ -f ${X%/}-feat_old.mat ]; then mv ${X%/}-feat_old.mat ../Backups/; fi
-		if [ -f ${X%/}-feat_id_corrected.mat.mat ]; then mv ${X%/}-feat_id_corrected.mat ../Backups/; fi
+		if [ -f ${X%/}-feat_id_corrected.mat ]; then mv ${X%/}-feat_id_corrected.mat ../Backups/; fi
 
 		if [ -f ${X%/}-trackBackup.mat ]; then mv ${X%/}-trackBackup.mat ../Backups/; fi
 		if [ -f ${X%/}-featBackup.mat ]; then mv ${X%/}-featBackup.mat ../Backups/; fi
+		if [ -d ${X%/}_JAABA/trxBackup.mat ]; then mv ${X%/}_JAABA/trxBackup.mat ../Backups/; fi
 		if [ -d ${X%/}_JAABA/perframe/BackupPerframe ]; then mv ${X%/}_JAABA/perframe/BackupPerframe ../Backups/; fi
 
 		cd $CurrentDirectory
