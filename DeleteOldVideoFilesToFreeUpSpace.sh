@@ -12,19 +12,24 @@
 # then the sript stops, otherwise it continues to the next video.
 #
 # 
+# Updated - 2019.02.18
+# Now looks for raw videos on the 2P Synology.
+#
 
-
-DIR=/mnt/Synology/Archive/lossless
+LossDIR=/mnt/Synology/Archive/lossless
+RawDIR=/mnt/Synology/RawVideos/TempRawVideos
 CAPACITY_LIMIT=80
-echo "DIR = $DIR"
+echo "Lossless DIR = $LossDIR"
+echo "Raw DIR = $RawDIR"
 echo "CAPACITY_LIMIT = $CAPACITY_LIMIT"
 echo $(pwd)
-cd $DIR
+cd $RawDIR
 echo $(pwd)
 CAPACITY=$(df -k . | awk '{gsub("%",""); capacity=$5}; END {print capacity}')
 echo "CAPACITY = $CAPACITY"
 if [ $CAPACITY -gt $CAPACITY_LIMIT ]
 then
+    cd $LossDIR
     find . -type f -name 'settings.txt' -printf "%T@ %Tc %p\n" | sort -n | cut -f 2- -d '/' > ListOfSettingsListFilesByDate.txt
     while read line
     do
@@ -36,11 +41,11 @@ then
         do
             Movie="${line%%,*}"
             echo "Movie = $Movie"
-            rm -f "/mnt/Synology/Archive/raw/$MovieDir/$Movie"
-			rm -f "/mnt/Synology/Archive/#recycle/raw/$MovieDir/$Movie"
-			cd ~/.local/share/Trash/files/
+            rm -f "/mnt/Synology/RawVideos/TempRawVideos/$MovieDir/$Movie"
+            rm -f "/mnt/Synology/RawVideos/#recycle/TempRawVideos/$MovieDir/$Movie"
+            cd ~/.local/share/Trash/files/
             rm -rf "*.avi"
-            cd $DIR
+            cd $LossDIR
             sleep 30
             echo "Deleted $Movie in /mnt/Synology/Archive/raw/$MovieDir"
         done < $SettingsFile
