@@ -73,8 +73,8 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 			/usr/local/bin/matlab  -r "run_calibrator_non_interactive_xflies"
 			cp -r  $WorkingDirectory/$today/"$FileName"/*_calibration.mat  $WorkingDirectory/$today/"$FileName"/calibration.mat
 			echo Now tracking: "$A"
-			#bash AutoTracking.sh &
-			gnome-terminal -- ./AutoTracking.sh &
+			bash AutoTracking.sh &
+			# gnome-terminal -- ./AutoTracking.sh &
 		done
 		cd $CurrentDirectory
 		sleep 5s    # 5 second lag to allow MATLAB to open
