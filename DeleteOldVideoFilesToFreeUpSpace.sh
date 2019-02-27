@@ -18,7 +18,7 @@
 
 LossDIR=/mnt/Synology/Archive/lossless
 RawDIR=/mnt/Synology/RawVideos/TempRawVideos
-CAPACITY_LIMIT=80
+CAPACITY_LIMIT=60
 echo "Lossless DIR = $LossDIR"
 echo "Raw DIR = $RawDIR"
 echo "CAPACITY_LIMIT = $CAPACITY_LIMIT"
@@ -47,9 +47,10 @@ then
             rm -rf "*.avi"
             cd $LossDIR
             sleep 30
-            echo "Deleted $Movie in /mnt/Synology/Archive/raw/$MovieDir"
+            echo "Deleted $Movie in /mnt/Synology/RawVideos/TempRawVideos/$MovieDir"
         done < $SettingsFile
         mv "/mnt/Synology/Archive/lossless/$SettingsFile" "/mnt/Synology/Archive/lossless/$MovieDir/settingsBackup.txt"
+        cd $RawDIR
         CAPACITY=$(df -k . | awk '{gsub("%",""); capacity=$5}; END {print capacity}')
         echo "Current capacity is $CAPACITY"
         if [ $CAPACITY -le $CAPACITY_LIMIT ]
@@ -60,4 +61,5 @@ then
         fi
     done < ListOfSettingsListFilesByDate.txt
 fi
+
 exit
