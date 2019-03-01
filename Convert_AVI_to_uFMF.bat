@@ -78,7 +78,6 @@ if exist "%today%_SettingsList.txt" (
 			echo COMPRESSING LOSSLESS VIDEO %%D
 			ffmpeg -hide_banner -i "%%D" -c:v libx264 -preset medium -crf 0 "D:\%%~nD_lossless.avi"
 			xcopy /Y "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\"
-			move /Y settings.txt "X:\lossless\%%B\%%C\"
 			fc /b "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\%%~nD_lossless.avi" > nul
 			echo THE ERROR LEVEL EQUALS    %errorlevel%
 			if %errorlevel% EQU 0 (
@@ -86,6 +85,7 @@ if exist "%today%_SettingsList.txt" (
 				del "D:\%%~nD_lossless.avi"
 			)
 		)
+		move /Y settings.txt "X:\lossless\%%B\%%C\"
 	)
 
 
