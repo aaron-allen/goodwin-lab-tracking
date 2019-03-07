@@ -56,7 +56,6 @@ if exist "%today%_SettingsList.txt" (
 			echo CONVERTING VIDEO %%D TO UFMF
 			any2ufmf "D:\%%~nD_cut.avi" "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" C:\Users\GoodwinLab\UFMF\ufmfCompressionParams.txt
 			xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" "Y:\%today%Converted\"
-			fc /b "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" "Y:\%today%Converted\%%B-%%C-%%~nD.ufmf" > nul
 			echo THE ERROR LEVEL EQUALS    %errorlevel%
 			if %errorlevel% EQU 0 (
 				echo NOW DELTING FILES
@@ -71,6 +70,29 @@ if exist "%today%_SettingsList.txt" (
 	cd /D "P:\TempRawVideos"
 	cd
 
+	for /f "tokens=1,2,3 delims=\" %%A in ("C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt") do (
+		cd \%%A\%%B\%%C
+		for %%D in ("*.avi") do (
+			echo COMPRESSING "%%D" into mp4 VIDEO
+			set "invar=%%D"
+			echo Input file is:          "!invar!"
+			set "outvar=!invar:~0,-4!.mp4"
+			echo Output file is:         "!outvar!"
+			"C:\Program Files\HandBrakeCLI\HandBrakeCLI.exe" -i "!invar!" -o "C:\Users\GoodwinLab\UFMF\videos\!outvar!" -e x264 --encoder-preset veryfast -q 24 -2
+			xcopy /Y "!outvar!" "Z:\%%B\%%C\"
+			echo THE ERROR LEVEL EQUALS    %errorlevel%
+			if %errorlevel% EQU 0 (
+				echo NOW DELETING FILES
+				del "C:\Users\GoodwinLab\UFMF\videos\!outvar!"
+			)
+		)
+
+
+
+	cd
+	cd /D "P:\TempRawVideos"
+	cd
+
 	:: Generate lossless compressions of video and send back to Synology
 	for /f "tokens=1,2,3 delims=\" %%A in ("C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt") do (
 		cd \%%A\%%B\%%C
@@ -78,7 +100,6 @@ if exist "%today%_SettingsList.txt" (
 			echo COMPRESSING LOSSLESS VIDEO %%D
 			ffmpeg -hide_banner -i "%%D" -c:v libx264 -preset medium -crf 0 "D:\%%~nD_lossless.avi"
 			xcopy /Y "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\"
-			fc /b "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\%%~nD_lossless.avi" > nul
 			echo THE ERROR LEVEL EQUALS    %errorlevel%
 			if %errorlevel% EQU 0 (
 				echo NOW DELETING FILES
