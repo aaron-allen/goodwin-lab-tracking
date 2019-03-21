@@ -41,12 +41,16 @@ for /f %%X in ('dir /s /b settings.txt') do echo %%~pX >> "C:\Users\GoodwinLab\U
 :: Subsection videos from Synology based on the settings files,
 :: convert them to ufmf, and copy ufmf to other Synology
 
-if exist "%today%_SettingsList.txt" (
+if exist "C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt" (
 	echo.
 	echo There are video to be processed
 	echo.
-	for /f "tokens=1,2,3 delims=\" %%A in ("C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt") do (
+	cd /D "P:\TempRawVideos"
+	cd
+	for /f "tokens=1,2,3 delims=\" %%A in (C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt) do (
+		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
+		cd
 		for /f "tokens=1,2,3 delims=," %%D in (settings.txt) do (
 			::echo SUBSECTIONING VIDEO %%D FROM %%E SECONDS FOR %%F SECONDS
 			echo SUBSECTIONING VIDEO %%D FROM %%E SECONDS FOR 3600 SECONDS
@@ -70,22 +74,21 @@ if exist "%today%_SettingsList.txt" (
 	cd /D "P:\TempRawVideos"
 	cd
 
-	for /f "tokens=1,2,3 delims=\" %%A in ("C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt") do (
+	for /f "tokens=1,2,3 delims=\" %%A in (C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt) do (
+		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
+		cd
 		for %%D in ("*.avi") do (
 			echo COMPRESSING "%%D" into mp4 VIDEO
-			set "invar=%%D"
-			echo Input file is:          "!invar!"
-			set "outvar=!invar:~0,-4!.mp4"
-			echo Output file is:         "!outvar!"
-			"C:\Program Files\HandBrakeCLI\HandBrakeCLI.exe" -i "!invar!" -o "C:\Users\GoodwinLab\UFMF\videos\!outvar!" -e x264 --encoder-preset veryfast -q 24 -2
-			xcopy /Y "!outvar!" "Z:\%%B\%%C\"
+			"C:\Program Files\HandBrakeCLI\HandBrakeCLI.exe" -i "%%D" -o "C:\Users\GoodwinLab\UFMF\videos\%%~nD.mp4" -e x264 --encoder-preset veryfast -q 24 -2
+			xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%~nD.mp4" "Z:\%%B\%%C\"
 			echo THE ERROR LEVEL EQUALS    %errorlevel%
 			if %errorlevel% EQU 0 (
 				echo NOW DELETING FILES
-				del "C:\Users\GoodwinLab\UFMF\videos\!outvar!"
+				del "C:\Users\GoodwinLab\UFMF\videos\%%D"
 			)
 		)
+	)
 
 
 
@@ -94,9 +97,11 @@ if exist "%today%_SettingsList.txt" (
 	cd
 
 	:: Generate lossless compressions of video and send back to Synology
-	for /f "tokens=1,2,3 delims=\" %%A in ("C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt") do (
+	for /f "tokens=1,2,3 delims=\" %%A in (C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt) do (
+		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
-		for /f "tokens=1,2,3 delims=," %%D in (settings.txt) do (
+		cd
+		for %%D in ("*.avi") do (
 			echo COMPRESSING LOSSLESS VIDEO %%D
 			ffmpeg -hide_banner -i "%%D" -c:v libx264 -preset medium -crf 0 "D:\%%~nD_lossless.avi"
 			xcopy /Y "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\"
@@ -119,3 +124,5 @@ if exist "%today%_SettingsList.txt" (
 echo All Done.
 date /T
 time /T
+
+pause
