@@ -1,0 +1,10 @@
+function onframes=ison(videoname)
+[avimg,vinfo]=makeavimg(videoname)
+onframes=zeros(vinfo.nframes);
+for id=0:(vinfo.n_frames-1)
+    [im,idnew] = video_read_frame(vinfo, id);
+    numabovethresh=finddiff(avimg,im,0.35,2200,2400,750,1100)
+    if numabovethresh>40
+        onframes(id)=1;
+    end
+end
