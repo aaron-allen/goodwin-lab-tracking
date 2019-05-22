@@ -18,7 +18,7 @@
 
 LossDIR=/mnt/Synology/Archive/lossless
 RawDIR=/mnt/Synology/RawVideos/TempRawVideos
-CAPACITY_LIMIT=60
+CAPACITY_LIMIT=20
 echo "Lossless DIR = $LossDIR"
 echo "Raw DIR = $RawDIR"
 echo "CAPACITY_LIMIT = $CAPACITY_LIMIT"
