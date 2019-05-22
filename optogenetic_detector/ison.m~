@@ -1,10 +1,20 @@
-function onframes=ison(videoname)
-[avimg,vinfo]=makeavimg(videoname)
-onframes=zeros(vinfo.nframes);
-for id=0:(vinfo.n_frames-1)
+function [t0,t2,t4,onframes]=ison(videoname,numframes)
+outputfilename=s
+tic
+[avimg,vinfo]=makeavimg(videoname,numframes);
+t0=toc;
+tic
+frames=min(numframes,vinfo.n_frames);
+onframes=zeros(frames,1);
+t2=toc;
+
+for id=0:(frames-1)
+    tic
     [im,idnew] = video_read_frame(vinfo, id);
-    numabovethresh=finddiff(avimg,im,0.35,2200,2400,750,1100)
+    t4=toc;
+    numabovethresh=finddiff(avimg,im,0.35,2100,2400,600,1000);
     if numabovethresh>40
-        onframes(id)=1;
+        onframes(id+1)=1;
     end
+    
 end
