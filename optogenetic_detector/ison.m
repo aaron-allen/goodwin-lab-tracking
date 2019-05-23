@@ -8,16 +8,17 @@ tic
 frames=min(numframes,vinfo.n_frames);
 onframes=zeros(frames,1);
 t2=toc;
-
+tic
 for id=0:(frames-1)
-    tic
+    
     [im,idnew] = video_read_frame(vinfo, id);
-    t4=toc;
+    
     numabovethresh=finddiff(avimg,im,0.35,2100,2400,600,1000);
     if numabovethresh>40
         onframes(id+1)=1;
     end
     
 end
+t4=toc;
 save(outputfilename,'onframes');
 save(output_timings,'t0','t2','t4');
