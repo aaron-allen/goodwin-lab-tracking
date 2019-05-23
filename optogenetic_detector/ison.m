@@ -1,4 +1,4 @@
-function [t0,t2,t4,onframes]=ison(videoname,numframes)
+function ison(videoname,numframes)
 outputfilename=strrep(videoname,'.ufmf','_onframes.mat');
 output_timings=strrep(videoname,'.ufmf','_performance.mat');
 tic
