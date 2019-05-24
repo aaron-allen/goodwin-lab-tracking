@@ -65,6 +65,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		do
 			echo Copying Matlab files into tracking directory
 			cp -r $MasterDirectory/AutoTracking.sh $WorkingDirectory/$today/"$FileName"/AutoTracking.sh
+			cp -r $MasterDirectory/script_detect_optogenetic_light.m $WorkingDirectory/$today/"$FileName"/script_detect_optogenetic_light.m
 			cp -r $MasterDirectory/AutoTracking.m $WorkingDirectory/$today/"$FileName"/AutoTracking.m
 			cp -r $MasterDirectory/run_calibrator_non_interactive_xflies.m $WorkingDirectory/$today/"$FileName"/run_calibrator_non_interactive_xflies.m
 			cp -r $MasterDirectory/DeleteSingletonFlies.m $WorkingDirectory/$today/"$FileName"/DeleteSingletonFlies.m
@@ -139,7 +140,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		rm AutoTracking.m
 		rm script_reassign_identities.m
 		rm run_calibrator_non_interactive_xflies.m
-		
+		rm script_detect_optogenetic_light.m
 
 		mkdir Backups
 		mkdir Logs
