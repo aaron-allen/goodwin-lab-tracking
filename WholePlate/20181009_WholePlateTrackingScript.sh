@@ -39,7 +39,7 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 	#read -p "Enter the directory you with the files you wish to track:  " InputDirectory
 	#read -p "Enter the directory where you wish results to go:  " WorkingDirectory
 	InputDirectory=/mnt/Synology/ToBeTracked/*Converted
-	WorkingDirectory=/mnt/LocalData/WorkingDirectory
+	WorkingDirectory=/mnt/LocalData/Tracking
 	echo This is the input directory: $InputDirectory
 	echo This is the ouptut directory: $WorkingDirectory
 
