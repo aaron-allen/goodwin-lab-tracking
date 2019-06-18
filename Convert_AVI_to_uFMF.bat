@@ -51,20 +51,41 @@ if exist "C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt" (
 		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
 		cd
-		for /f "tokens=1,2,3 delims=," %%D in (settings.txt) do (
-			::echo SUBSECTIONING VIDEO %%D FROM %%E SECONDS FOR %%F SECONDS
-			echo SUBSECTIONING VIDEO %%D FROM %%E SECONDS FOR 3600 SECONDS
-			::ffmpeg -hide_banner -i %%D -ss %%E.000 -t %%F.000 -c:v libx264 -preset ultrafast -crf 0 "D:\%%~nD_cut.avi"
-			::ffmpeg -hide_banner -i %%D -ss %%E.000 -t %%F.000 -c:v rawvideo "D:\%%~nD_cut.avi"
-			ffmpeg -hide_banner -i %%D -ss %%E.000 -t 3600.000 -c:v rawvideo "D:\%%~nD_cut.avi"
-			echo CONVERTING VIDEO %%D TO UFMF
-			any2ufmf "D:\%%~nD_cut.avi" "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" C:\Users\GoodwinLab\UFMF\ufmfCompressionParams.txt
-			xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" "Y:\%today%Converted\"
-			echo THE ERROR LEVEL EQUALS    %errorlevel%
-			if %errorlevel% EQU 0 (
-				echo NOW DELTING FILES
-				del "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf"
-				del "D:\%%~nD_cut.avi"
+		for /f "tokens=1,2,3 delims=," "%%D" in (settings.txt) do (
+			if "%%~xD" == ".avi" (
+				echo File extension matches.
+				::echo SUBSECTIONING VIDEO "%%D" FROM %%E SECONDS FOR %%F SECONDS
+				echo SUBSECTIONING VIDEO "%%D" FROM %%E SECONDS FOR 3600 SECONDS
+				::ffmpeg -hide_banner -i "%%D" -ss %%E.000 -t %%F.000 -c:v libx264 -preset ultrafast -crf 0 "D:\%%~nD_cut.avi"
+				::ffmpeg -hide_banner -i "%%D" -ss %%E.000 -t %%F.000 -c:v rawvideo "D:\%%~nD_cut.avi"
+				ffmpeg -hide_banner -i "%%D" -ss %%E.000 -t 3600.000 -c:v rawvideo "D:\%%~nD_cut.avi"
+				echo CONVERTING VIDEO "%%D" TO UFMF
+				any2ufmf "D:\%%~nD_cut.avi" "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" C:\Users\GoodwinLab\UFMF\ufmfCompressionParams.txt
+				xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" "Y:\%today%Converted\"
+				echo THE ERROR LEVEL EQUALS    %errorlevel%
+				if %errorlevel% EQU 0 (
+					echo NOW DELTING FILES
+					del "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf"
+					del "D:\%%~nD_cut.avi"
+				)
+			) else (
+				echo File extension DOES NOT matches
+				echo video "%%D" should be "%%~D.avi"
+				echo File extension matches.
+				::echo SUBSECTIONING VIDEO "%%D.avi" FROM %%E SECONDS FOR %%F SECONDS
+				echo SUBSECTIONING VIDEO "%%D.avi" FROM %%E SECONDS FOR 3600 SECONDS
+				::ffmpeg -hide_banner -i "%%D.avi" -ss %%E.000 -t %%F.000 -c:v libx264 -preset ultrafast -crf 0 "D:\%%~nD_cut.avi"
+				::ffmpeg -hide_banner -i "%%D.avi" -ss %%E.000 -t %%F.000 -c:v rawvideo "D:\%%~nD_cut.avi"
+				ffmpeg -hide_banner -i "%%D.avi" -ss %%E.000 -t 3600.000 -c:v rawvideo "D:\%%~nD_cut.avi"
+				echo CONVERTING VIDEO "%%D.avi" TO UFMF
+				any2ufmf "D:\%%~nD_cut.avi" "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" C:\Users\GoodwinLab\UFMF\ufmfCompressionParams.txt
+				xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf" "Y:\%today%Converted\"
+				echo THE ERROR LEVEL EQUALS    %errorlevel%
+				if %errorlevel% EQU 0 (
+					echo NOW DELTING FILES
+					del "C:\Users\GoodwinLab\UFMF\videos\%%B-%%C-%%~nD.ufmf"
+					del "D:\%%~nD_cut.avi"
+				)
 			)
 		)
 	)
@@ -78,7 +99,7 @@ if exist "C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt" (
 		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
 		cd
-		for %%D in ("*.avi") do (
+		for "%%D" in ("*.avi") do (
 			echo COMPRESSING "%%D" into mp4 VIDEO
 			"C:\Program Files\HandBrakeCLI\HandBrakeCLI.exe" -i "%%D" -o "C:\Users\GoodwinLab\UFMF\videos\%%~nD.mp4" -e x264 --encoder-preset veryfast -q 24 -2
 			xcopy /Y "C:\Users\GoodwinLab\UFMF\videos\%%~nD.mp4" "Z:\%%B\%%C\"
@@ -101,7 +122,7 @@ if exist "C:\Users\GoodwinLab\UFMF\SettingsListFiles\%today%_SettingsList.txt" (
 		echo path is \%%A\%%B\%%C
 		cd \%%A\%%B\%%C
 		cd
-		for %%D in ("*.avi") do (
+		for "%%D" in ("*.avi") do (
 			echo COMPRESSING LOSSLESS VIDEO %%D
 			ffmpeg -hide_banner -i "%%D" -c:v libx264 -preset medium -crf 0 "D:\%%~nD_lossless.avi"
 			xcopy /Y "D:\%%~nD_lossless.avi" "X:\lossless\%%B\%%C\"
