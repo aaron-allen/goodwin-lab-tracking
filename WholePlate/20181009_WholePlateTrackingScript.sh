@@ -148,6 +148,9 @@ if [ -d /mnt/Synology/ToBeTracked/*Converted ]; then
 		if [ -f tracker_logfile.log ]; then mv tracker_logfile.log Logs/; fi
 		if [ -f JAABA_logfile.log ]; then mv JAABA_logfile.log Logs/; fi
 		if [ -f DeleteSingleFly_logfile.log ]; then mv DeleteSingleFly_logfile.log Logs/; fi
+		if [ -f calibration_errors.log ]; then mv calibration_errors.log Logs/; fi
+		if [ -f identity_assignment_errors.log ]; then mv identity_assignment_errors.log Logs/; fi
+		if [ -f optogenetic_light_detection_errors.log ]; then mv optogenetic_light_detection_errors.log Logs/; fi
 		if [ -f Results/CalculateIndicesError.log ]; then mv Results/CalculateIndicesError.log Logs/; fi
 
 		cd "$X"/
