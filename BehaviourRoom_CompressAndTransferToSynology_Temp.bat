@@ -76,11 +76,11 @@ echo.
 echo.
 echo.
 
-if exist "P:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt" (
+if exist "X:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt" (
 	echo. >> "P:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
-	type %SettingsFile% >> "P:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
+	type %SettingsFile% >> "X:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
 ) else (
-	type "%SettingsFile%" > "P:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
+	type "%SettingsFile%" > "X:\TempRawVideos\%UserName%\%today%_Courtship\settings.txt"
 )
 
 
