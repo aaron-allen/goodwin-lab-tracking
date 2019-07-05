@@ -8,6 +8,27 @@ time /T
 :: Batch script to transfer videos to Synology.
 :: The raw video and settings.txt file to the '2P' Synology.
 
+
+
+
+if exist "X:\TempRawVideos\" (
+	echo.
+	echo Networked drive found.
+	echo.
+) else (
+	echo.
+	echo.
+	echo.
+	echo DRIVE NOT FOUND.
+	echo.
+	echo First, Mount the networked drive,
+	echo then close this window, and start again.
+	echo.
+	GOTO :Waiting
+)
+
+
+
 set today=%date:~-4%_%date:~3,2%_%date:~0,2%
 set "WorDir=%cd%"
 mkdir %today%_Courtship
@@ -93,3 +114,7 @@ echo.
 echo All Done.
 date /T
 time /T
+
+
+:Waiting
+pause
