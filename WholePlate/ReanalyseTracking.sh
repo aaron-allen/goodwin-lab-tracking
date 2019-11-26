@@ -28,9 +28,9 @@ echo REAPPLYING CLASSIFIERS
 for Z in */
 do
 	cd $Z
-	find . -name "scores*.mat" -type f -delete
-	rm -rf Results/
-	rm JAABA_logfile.log
+	# find . -name "scores*.mat" -type f -delete
+	# rm -rf Results/
+	# rm JAABA_logfile.log
 	cp -r $MasterDirectory/ApplyClassifiers.m $WorkingDirectory/$Z/ApplyClassifiers.m
 	cp -r $MasterDirectory/script_reassign_identities.m $WorkingDirectory/$Z/script_reassign_identities.m
 	/usr/local/bin/matlab -nodisplay -nosplash -r "ApplyClassifiers"
@@ -39,98 +39,127 @@ do
 done
 
 
-# Generate Diagnostic Plots
-# -------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo DIAGNOSTIC PLOT
-cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/DiagnosticPlots.m
-/usr/local/bin/matlab -nodisplay -nosplash -r "DiagnosticPlots"
-# Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
-for P in */
-do
-	cd $P/Results
-	echo MERGING DIAGNOSTIC PLOTS INTO ONE PDF FOR $P
-	pdftk *.pdf cat output ${P%%/*}_DiagnosticPlots.pdf
-	rm *[0-9].pdf
-	cd $WorkingDirectory
-done
+# # Generate Diagnostic Plots
+# # -------------------------------------------------------------------------------------------------------------------------------------------------------------
+# echo DIAGNOSTIC PLOT
+# cp -r $MasterDirectory/DiagnosticPlots.m $WorkingDirectory/$today/DiagnosticPlots.m
+# /usr/local/bin/matlab -nodisplay -nosplash -r "DiagnosticPlots"
+# # Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
+# for P in */
+# do
+# 	cd $P/Results
+# 	echo MERGING DIAGNOSTIC PLOTS INTO ONE PDF FOR $P
+# 	pdftk *.pdf cat output ${P%%/*}_DiagnosticPlots.pdf
+# 	rm *[0-9].pdf
+# 	cd $WorkingDirectory/
+# done
 
-# Extracting Data for Each Plate
-# -------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo EXTRACT DATA
-cp -r $MasterDirectory/ExtractData.m $WorkingDirectory/ExtractData.m
-/usr/local/bin/matlab -nodisplay -nosplash -r "ExtractData"
+# # Extracting Data for Each Plate
+# # -------------------------------------------------------------------------------------------------------------------------------------------------------------
+# echo EXTRACT DATA AND PDFs
+# cp -r $MasterDirectory/ExtractData.m $WorkingDirectory/$today/ExtractData.m
+# /usr/local/bin/matlab -nodisplay -nosplash -r "ExtractData"
 
-# Calculate indices with R
-# -------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo CALCULATE INDICES
-cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/CalculateIndices.R
-Rscript CalculateIndices.R
-
-
-
-# Clean up ...
-# -------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# Clean up of matlab files
-rm DiagnosticPlots.m
-rm ExtractData.m
-rm CalculateIndices.R
-for X in */
-do
-	cd "$X"/
-	rm ApplyClassifiers.m
-	rm script_reassign_identities.m
-	cd $WorkingDirectory
-done
+# # Calculate indices with R
+# # -------------------------------------------------------------------------------------------------------------------------------------------------------------
+# echo CALCULATE INDICES
+# cp -r $MasterDirectory/CalculateIndices.R $WorkingDirectory/$today/CalculateIndices.R
+# Rscript CalculateIndices.R
 
 
-# Moving any error log files for the Diagnostic... and Extract...
-echo "Now moving any error log files"
-DiagnosticErrors=$(ls *DiagnosticPlot_errors.log 2> /dev/null | wc -l)
-if [ "$DiagnosticErrors" != "0" ]
-then
-	echo Diagnostic Plot errors exist
-	for L in *DiagnosticPlot_errors.log
-	do
-		LogFile=$L
-		Directory=${LogFile%%DiagnosticPlot_errors.log}
-	done
-else
-	echo No Diagnostic Plot errors
-fi
-ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
-if [ "$ExtractError" != "0" ]
-then
-	echo Extract Data errors exist
-	for L in *ExtractData_errors.log
-	do
-		LogFile=$L
-		Directory=${LogFile%%ExtractData_errors.log}
-		mv $LogFile $Directory/
-	done
-else
-	echo No Extract Data Plot errors
 
-fi
+# # Clean up ...
+# # -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Move the resulting tracking results to the Synology in each users folder
-echo MOVING TRACKING RESULTS TO SYNOLOGY
-for D in */
-do
-	Directory=$D
-	User=${Directory%%-*}
-	RecordingDate=${Directory#*-}
-	VideoName=${RecordingDate#*-}
-	RecordingDate=${RecordingDate%%-*}
-	VideoName=${VideoName%%/}
-	echo This is the Directory: $Directory
-	echo This is the User: $User
-	echo This is the Recording Date: $RecordingDate
-	echo This is the Video Name: $VideoName
-	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
-	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
-	cd $WorkingDirectory
- done
+# # Clean up of matlab files
+# rm DiagnosticPlots.m
+# rm ExtractData.m
+# rm CalculateIndices.R
+# for X in */
+# do
+# 	cd "$X"/
+# 	rm DeleteSingletonFlies.m
+# 	rm ApplyClassifiers.m
+# 	rm AutoTracking.sh
+# 	rm AutoTracking.m
+# 	rm script_reassign_identities.m
+# 	rm run_calibrator_non_interactive_xflies.m
+# 	rm script_detect_optogenetic_light.m
+
+# 	mkdir Backups
+# 	mkdir Logs
+
+# 	if [ -f tracker_logfile.log ]; then mv tracker_logfile.log Logs/; fi
+# 	if [ -f JAABA_logfile.log ]; then mv JAABA_logfile.log Logs/; fi
+# 	if [ -f DeleteSingleFly_logfile.log ]; then mv DeleteSingleFly_logfile.log Logs/; fi
+# 	if [ -f calibration_errors.log ]; then mv calibration_errors.log Logs/; fi
+# 	if [ -f identity_assignment_errors.log ]; then mv identity_assignment_errors.log Logs/; fi
+# 	if [ -f optogenetic_light_detection_errors.log ]; then mv optogenetic_light_detection_errors.log Logs/; fi
+# 	if [ -f Results/CalculateIndicesError.log ]; then mv Results/CalculateIndicesError.log Logs/; fi
+
+# 	cd "$X"/
+
+# 	if [ -f ${X%/}-track_old.mat ]; then mv ${X%/}-track_old.mat ../Backups/; fi
+# 	if [ -f ${X%/}-track_id_corrected.mat ]; then mv ${X%/}-track_id_corrected.mat ../Backups/; fi
+
+# 	if [ -f ${X%/}-feat_old.mat ]; then mv ${X%/}-feat_old.mat ../Backups/; fi
+# 	if [ -f ${X%/}-feat_id_corrected.mat ]; then mv ${X%/}-feat_id_corrected.mat ../Backups/; fi
+
+# 	if [ -f ${X%/}-trackBackup.mat ]; then mv ${X%/}-trackBackup.mat ../Backups/; fi
+# 	if [ -f ${X%/}-featBackup.mat ]; then mv ${X%/}-featBackup.mat ../Backups/; fi
+# 	if [ -d ${X%/}_JAABA/trxBackup.mat ]; then mv ${X%/}_JAABA/trxBackup.mat ../Backups/; fi
+# 	if [ -d ${X%/}_JAABA/perframe/BackupPerframe ]; then mv ${X%/}_JAABA/perframe/BackupPerframe ../Backups/; fi
+
+# 	cd $WorkingDirectory/
+# done
+
+
+# # Moving any error log files for the Diagnostic... and Extract...
+# echo "Now moving any error log files"
+# DiagnosticErrors=$(ls *DiagnosticPlot_errors.log 2> /dev/null | wc -l)
+# if [ "$DiagnosticErrors" != "0" ]
+# then
+# 	echo Diagnostic Plot errors exist
+# 	for L in *DiagnosticPlot_errors.log
+# 	do
+# 		Directory=${L%%DiagnosticPlot_errors.log}
+# 		mv $L $Directory/Logs/
+# 	done
+# else
+# 	echo No Diagnostic Plot errors
+# fi
+# ExtractError=$(ls *ExtractData_errors.log 2> /dev/null | wc -l)
+# if [ "$ExtractError" != "0" ]
+# then
+# 	echo Extract Data errors exist
+# 	for L in *ExtractData_errors.log
+# 	do
+# 		Directory=${L%%ExtractData_errors.log}
+# 		mv $L $Directory/Logs/
+# 	done
+# else
+# 	echo No Extract Data Plot errors
+# fi
+
+# # Move the resulting tracking results to the Synology in each users folder
+# echo MOVING TRACKING RESULTS TO SYNOLOGY
+# for D in */
+# do
+# 	Directory=$D
+# 	User=${Directory%%-*}
+# 	RecordingDate=${Directory#*-}
+# 	VideoName=${RecordingDate#*-}
+# 	RecordingDate=${RecordingDate%%-*}
+# 	VideoName=${VideoName%%/}
+# 	echo This is the Directory: $Directory
+# 	echo This is the User: $User
+# 	echo This is the Recording Date: $RecordingDate
+# 	echo This is the Video Name: $VideoName
+# 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
+# 	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
+# 	cd $WorkingDirectory/
+#  done
+
 
 
 echo All Done.
