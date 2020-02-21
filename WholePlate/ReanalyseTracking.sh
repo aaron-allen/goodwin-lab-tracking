@@ -57,7 +57,7 @@ done
 # Extracting Data for Each Plate
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo EXTRACT DATA
-cp -r $MasterDirectory/ExtractData.m $WorkingDirectory/ExtractData_non_id_corrected.m
+cp -r $MasterDirectory/ExtractData_non_id_corrected.m $WorkingDirectory/ExtractData_non_id_corrected.m
 /usr/local/bin/matlab -nodisplay -nosplash -r "ExtractData_non_id_corrected"
 
 # Calculate indices with R
