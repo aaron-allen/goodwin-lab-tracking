@@ -21,7 +21,7 @@ for (i in list.dirs(getwd(),recursive = FALSE)){
     # subset the data to only the variables we'll be working with
     CleanedData <- select(AllRawData,
                          FileName,
-                         StartPosition,
+                         # StartPosition,
                          Arena,
                          Id,
                          Frame,
