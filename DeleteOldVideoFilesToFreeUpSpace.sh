@@ -16,6 +16,9 @@
 # Now looks for raw videos on the 2P Synology.
 #
 
+today=$(date)
+echo -e "\n\n\n\n$today"
+
 LossDIR=/mnt/Synology/Archive/lossless
 RawDIR=/mnt/Synology/RawVideos/TempRawVideos
 CAPACITY_LIMIT=60

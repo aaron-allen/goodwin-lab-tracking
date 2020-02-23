@@ -10,6 +10,9 @@
 #
 # 
 
+today=$(date)
+echo -e "\n\n\n\n$today"
+
 LossDIR=/mnt/Synology/Archive/lossless
 CAPACITY_LIMIT=80
 echo "Lossless DIR = $LossDIR"
