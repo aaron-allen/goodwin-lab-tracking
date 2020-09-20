@@ -20,7 +20,7 @@ options.num_chunks   = 1;       % set either granularity or num_chunks - using m
 options.num_cores    = 1;       
 options.max_minutes  = 15;      % tracking 15 minutes to save on RAM
 options.save_JAABA   = 1;
-options.save_seg     = 1;
+options.save_seg     = 0;
 diary on
 disp('Now Tracking Videos');
 
