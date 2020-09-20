@@ -32,7 +32,9 @@ for p = 1:numel(dirs)
         cd ..
         cd(name);
         
-        % Moving the segmentation file to a subdirectory.
+ % 2020.09.20 - we no longer save the segmentation file while tracking.
+ %{
+       % Moving the segmentation file to a subdirectory.
         % The segmentation file slows down the opening and loading of data into the Visualizer
         % script, and by moving it, things load much faster.
         SegFile = dir('*seg.mat');
@@ -44,6 +46,8 @@ for p = 1:numel(dirs)
             disp(['Now moving Segmentation file for: ' name]);
             movefile(SegFile(1).name, SegFolder)
         end
+%}
+
 
 
         % Extracting the data from the track.mat, feat.mat, and JAABA score*.mat files
