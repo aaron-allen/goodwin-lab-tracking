@@ -1,21 +1,24 @@
-addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
-addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/reassign_identities'));
-dirs = dir();
 
-for p = 1:numel(dirs)
-    if ~dirs(p).isdir
-      continue;
-    end
-    dirname = dirs(p).name;
-    videoname = strcat(dirname,'.ufmf');
-    if ismember(dirname,{'.','..'})
-      continue;
-    end 
-    
-    disp(['Now detecting optogenetic light for: ' dirname]);
-    error_handling_wrapper('optogenetic_light_detection_errors.log','ison',videoname,22500);
-   
+% add our MATLAB code to path if its not there already
+check = which('ApplyClassifiers');
+if isempty(check)
+    parentdir = fileparts(mfilename('fullpath'));
+    addpath(genpath(parentdir));
 end
 
-exit
 
+
+
+# The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
+# Do I need to change directory?
+cd ([OutputDirectory '/' FileName]);
+
+
+
+
+videoname = strcat(FileName,'.',video_type);
+disp(['Now detecting optogenetic light for: ' FileName]);
+error_handling_wrapper('optogenetic_light_detection_errors.log','ison',videoname,22500);
+
+
+exit

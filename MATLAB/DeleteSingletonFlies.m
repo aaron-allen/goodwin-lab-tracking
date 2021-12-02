@@ -1,5 +1,9 @@
-% Aaron M. Allen, 2019.01.04
-% 
+% Author: Aaron M. Allen
+% Date: 2019.01.04
+%     updated: 2021.12.02
+
+% Description:
+
 % Added a bit of code to asses the number of flies per chamber, and if it varies
 % between chambers, to delete the offending rows from the trx.mat file. The Classifiers
 % have been trained assuming that there are 2 flies in each chamber, and won't work if
@@ -23,12 +27,36 @@
 % trk.flies_in_chambers structure so they correspond to the trx file.
 
 
-% 
+%
 % ==========================================================================
+
+
+# The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
+# Do I need to change directory?
+cd ([OutputDirectory '/' FileName]);
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% add bit to check user sepcified number of flies %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% flies_per_arena
+
+
+
+
+
+
+
 dirs = dir();
 CurrDir = (pwd);
-diary('DeleteSingleFly_logfile.log')
+
+diary([OutputDirectory '/' FileName '/Logs/DeleteSingleFly_logfile.log'])
 diary on
+
 disp(datetime('now'));
 for p = 1:numel(dirs)
     if ~dirs(p).isdir
@@ -37,10 +65,10 @@ for p = 1:numel(dirs)
     DIRname = dirs(p).name;
     if ismember(DIRname,{'.','..'})
       continue;
-    end 
+    end
     cd (DIRname);
     TrackDir =(pwd);
-    
+
     % load files
     TrackFile = dir('*track.mat');
     disp(['Loading ' TrackFile.name]);
@@ -61,7 +89,7 @@ for p = 1:numel(dirs)
     if (1 < FliesPerChamber) && (FliesPerChamber < 2)
         disp('The number of flies differs between chambers');
         save('trxBackup.mat', 'trx', 'timestamps');
-        
+
         % Create a logical array of the location of the singleton flies
         disp('Creating logical array of the location of the singleton flies');
         LM = [];
@@ -99,7 +127,7 @@ for p = 1:numel(dirs)
             data(:,LM)=[];
             save(perframeDataFiles(P).name, 'data', 'units');
         end
-        
+
         % renumbering flies_in_chambers and deleting single fly trk data
         cd (TrackDir);
         disp('Renumbering flies_in_chambers in trk file');
@@ -119,7 +147,7 @@ for p = 1:numel(dirs)
         save([DIRname '-featBackup.mat'], 'feat');
         feat.data(LM,:,:) = [];
         save(FeatFile.name, 'feat');
-        
+
     else
         if (FliesPerChamber == 2)
             disp('There are 2 flies per chamber.')

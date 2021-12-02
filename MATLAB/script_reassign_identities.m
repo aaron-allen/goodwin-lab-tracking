@@ -1,21 +1,18 @@
 
-addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/WholePlate'));
-addpath(genpath('/home/goodwintracking/TheCompleteFlyTrackingBundle/reassign_identities'));
-dirs = dir();
-
-for p = 1:numel(dirs)
-    if ~dirs(p).isdir
-      continue;
-    end
-    dirname = dirs(p).name;
-    if ismember(dirname,{'.','..'})
-      continue;
-    end 
-    
-    disp(['Now reassigning identities for: ' dirname]);
-    error_handling_wrapper('identity_assignment_errors.log','reassign_identities',dirname)
-   
+% add our MATLAB code to path if its not there already
+check = which('DiagnosticPlots');
+if isempty(check)
+    parentdir = fileparts(mfilename('fullpath'));
+    addpath(genpath(parentdir));
 end
 
-exit
 
+# The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
+# Do I need to change directory?
+cd ([OutputDirectory '/' FileName]);
+
+
+disp(['Now reassigning identities for: ' FileName]);
+error_handling_wrapper('identity_assignment_errors.log','reassign_identities',FileName)
+
+exit
