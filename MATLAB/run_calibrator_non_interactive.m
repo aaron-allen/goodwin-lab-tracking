@@ -25,5 +25,10 @@ videonames={videos.name};
 videonamestr=cellfun(@(vid) strrep(vid,'.ufmf',''), videonames,'UniformOutput',false);
 cellfun(@(videoname) mkdir(videoname), videonamestr);
 calibfilenames=cellfun(@(vidname) strcat(vidname,'_calibration.mat'), videonamestr,'UniformOutput',false);
+
+% if we pass the number of flies into this script, then there doesn't need to be 3 versions of it and we
+% could just append the number of flies to the function name (maybe?)
 cellfun(@(vid,calibfilename) error_handling_wrapper('calibration_errors.log','calibrator_non_interactive',char(vid),char(calibfilename)),videonames,calibfilenames,'UniformOutput',false);
+
+
 exit;

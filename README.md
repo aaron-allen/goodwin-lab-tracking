@@ -1,11 +1,33 @@
 # Goodwin-Lab-Tracking
-"Pipeline" for processing and tracking courtship videos
+
+"Pipeline" (I use the the term very loosely...) for processing and tracking courtship videos
 
 
 
 # **UNDER CONSTRUCTION**
 
 I would not advise trying to use any of this at the moment ...
+
+
+
+
+# Dependencies:
+
+So far this has only been used/tested on Ubuntu 16.04.
+
+
+`MATLAB` 2018b (we haven't tested any other versions yet)
+    [Kristin Branson's modified Caltech FlyTracker](https://github.com/kristinbranson/FlyTracker)
+    [JAABA](https://github.com/kristinbranson/JAABA)
+
+
+`R` 3.5.3 (we haven't tested any other versions yet)
+    tidyverse vX.X.X
+    data.table vX.X.X
+    gridExtra vX.X.X
+    zoo vX.X.X
+
+`ghostsctipt` (required for making multipage pdfs in MATLAB)
 
 
 

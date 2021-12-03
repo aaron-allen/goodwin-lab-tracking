@@ -19,9 +19,9 @@
 #
 #
 #
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -29,7 +29,7 @@
 
 
 
-#-------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Inherit/import/accept variables:
 today="${1}"
 CodeDirectory="${2}"
@@ -46,7 +46,7 @@ sex_ratio="${12}"
 number_of_arenas="${13}"
 arena_shape="${14}"
 assay_type="${15}"
-#-------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -64,35 +64,20 @@ mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir "${OutputDirectory}/${FileName}/Results"
 
 
-#-----------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ### log file paths that need to be modified in scripts:
-# tracker_logfile.log
-# JAABA_logfile.log
-# DeleteSingleFly_logfile.log
+
+# optogenetic_light_detection_errors.log
 # calibration_errors.log
 # identity_assignment_errors.log
-# optogenetic_light_detection_errors.log
-# CalculateIndicesError.log
-# DiagnosticPlot_errors.log
-# ExtractData_errors.log
-#-----------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-#-----------------------------------------------------------------------
-# CALIBRATION
-### Do we need this bit with Kristin Bransons 'force_calib' option for the tracker. We may be able to supply template
-### calibration files and then just force re-calibration to adjust the masks etc (need to test if this works). Also
-### need to compare Annika's other changes to the 'calibrator.m' to see what else we may need to patch.
-
-# echo Now calibrating: "$A"
-# /usr/local/bin/matlab  -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; run_calibrator_non_interactive_xflies"
-# # do we still need to have a copy of this file? could we just rename it, instead of copying it?
-# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
-#-----------------------------------------------------------------------
 
 
-#-----------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # add some code logic to sort out the optimat "template" calibration files
 # based on the imported variables.
 # "${video_type}"
@@ -100,8 +85,29 @@ mkdir "${OutputDirectory}/${FileName}/Results"
 # "${flies_per_arena}"
 # "${number_of_arenas}"
 # "${assay_type}"
-#-----------------------------------------------------------------------
+best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
+    | grep "${flies_per_arena}fly" \
+    | grep "${number_of_arenas}arenas" \
+    | grep "${arena_shape}" \
+    | grep "${courtship}")
 
+if [ -z "${best_calib_file}" ]; then
+    echo No matching calib file.
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+	# CALIBRATION
+	### Do we need this bit with Kristin Bransons 'force_calib' option for the tracker. We may be able to supply template
+	### calibration files and then just force re-calibration to adjust the masks etc (need to test if this works). Also
+	### need to compare Annika's other changes to the 'calibrator.m' to see what else we may need to patch.
+
+	# echo Now calibrating: "$A"
+	# /usr/local/bin/matlab  -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; run_calibrator_non_interactive_xflies"
+	# # do we still need to have a copy of this file? could we just rename it, instead of copying it?
+	# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+else
+    echo There is a matching calib file.
+fi
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -109,7 +115,7 @@ mkdir "${OutputDirectory}/${FileName}/Results"
 
 
 echo Now tracking: "${FileName}"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; track_start=${track_start}; ../MATLAB/AutoTracking"
+/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; track_start=${track_start}; best_calib_file=${best_calib_file}; flies_per_arena=${flies_per_arena}; ../MATLAB/AutoTracking"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; ../MATLAB/script_detect_optogenetic_light"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; flies_per_arena=${flies_per_arena}; ../MATLAB/DeleteSingletonFlies"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ApplyClassifiers"
@@ -117,12 +123,12 @@ echo Now tracking: "${FileName}"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/script_reassign_identities"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
-Rscript ../R/CalculateIndices.R --args "${FileName}" # replace with new function in my Tracking-Scripts repo
+Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
 
 
 
 
-#-----------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Can I figure out how to make a multi-page plot im MATLAB? It would be great to get rid of this bit.
 
 # Take all the individual pdfs of the Diagnotic plots and merge them into one pdf per video
@@ -134,12 +140,12 @@ Rscript ../R/CalculateIndices.R --args "${FileName}" # replace with new function
 # 	rm *[0-9].pdf
 # 	cd $CurrentDirectory
 # done
-#-----------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# save paths of backup files that need to change in each script. also should name these
 	# backups more clearly ...
 
@@ -161,12 +167,13 @@ Rscript ../R/CalculateIndices.R --args "${FileName}" # replace with new function
 	#
 	# 	cd $CurrentDirectory
 	# done
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-# ------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
 echo MOVING TRACKING RESULTS TO SYNOLOGY
 for D in */
@@ -185,7 +192,7 @@ do
 	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
 
 done
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 echo Done tracking video.

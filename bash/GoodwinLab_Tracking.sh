@@ -15,22 +15,23 @@
 #		4.
 #		5.
 #		6.
-#		7. 
+#		7.
 #
 #
 #
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 echo $(date)
 today=$(date +%Y%m%d)
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
-CodeDirectory=$(pwd)
-ToBeTrackedDirectory=/mnt/Synology/ToBeTracked/VideosFromStaions
-WorkingDirectory=/mnt/LocalData/Tracking
+CodeDirectory="$(pwd)"
+ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStaions"
+WorkingDirectory="/mnt/LocalData/Tracking"
+ArchiveDirectory="/mnt/Synology/Archive/uFMF"
 
 # echo The Code Directory is: $CodeDirectory
 # echo This is the input directory: $ToBeTrackedDirectory
@@ -42,44 +43,51 @@ WorkingDirectory=/mnt/LocalData/Tracking
 csv_file="$ToBeTrackedDirectory/video_list.csv"
 if [ -s $csv_file ]; then
 	echo "There are videos to be tracked"
+
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+	# add bit to kill any processes that might interfer with tracking, like
+	# matlab, geneious, python, R, etc.
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}Tracked"
 	mkdir $OutputDirectory
 
 
-	#---------------------------------------------------------------------------
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Setup freeze of videos that need to be tracked
-	mv synology/ToBeTracked/video_list.csv synology/NowTracking/video_list.csv
-	ls synology/ToBeTracked/videos > synology/NowTracking/videos_in_ToBeTracked.txt
-	echo -n "" > synology/ToBeTracked/video_list.csv
+	mv "${ToBeTrackedDirectory}/video_list.csv" "${InputDirectory}/../video_list.csv"
+	ls "${ToBeTrackedDirectory}/videos/" > "${InputDirectory}/../videos_in_ToBeTracked.txt"
+	echo -n "" > "${ToBeTrackedDirectory}/video_list.csv"
 
 
-	csv_file='synology/NowTracking/video_list.csv'
+	csv_file="${InputDirectory}/../video_list.csv"
 	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type; do
 	    echo -e "Video Name:\t $video_name"
-	    if [ -f "synology/ToBeTracked/videos/$video_name" ]; then
+	    if [ -f "${ToBeTrackedDirectory}/videos/$video_name" ]; then
 	      echo -e '\tMoving video to NowTracking'
-	      mv synology/ToBeTracked/videos/$video_name synology/NowTracking/videos/
+	      mv "${ToBeTrackedDirectory}/videos/$video_name" "${InputDirectory}"
 	    fi
 	done < $csv_file
 
 	# any video that's not in the to be tracked settings file will be moved to the non-tracked directory
 	echo -e "\n\n"
-	csv_file='synology/NowTracking/videos_in_ToBeTracked.txt'
+	csv_file="${InputDirectory}/../videos_in_ToBeTracked.txt"
 	while IFS=',' read -r video_name; do
 	    #echo -e "Video Name\t:\t $video_name"
-	    if [ -f "synology/ToBeTracked/videos/$video_name" ]; then
+	    if [ -f "${ToBeTrackedDirectory}/videos/$video_name" ]; then
 	      echo -e "Video Name:\t $video_name"
 	      echo -e '\tMoving video to NonTrackedVideos'
-	      mv "synology/ToBeTracked/videos/$video_name" synology/NonTrackedVideos/videos/
+	      mv "${ToBeTrackedDirectory}/videos/$video_name" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
 	    fi
 	done < $csv_file
-	#---------------------------------------------------------------------------
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-	# --------------------------------------------------------------------------
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
 	echo FILE TRANSFER AND TRACKING
 	csv_file="${InputDirectory}/../video_list.csv"
@@ -99,19 +107,23 @@ if [ -s $csv_file ]; then
 									  ${sex_ratio} \
 									  ${number_of_arenas} \
 									  ${arena_shape} \
-									  ${assay_type}
+									  ${assay_type} &
 
+		sleep 5s    # 5 second lag to allow single_video_tracking to start
+		# Check to make sure no more than 2 single_video_tracking scripts are running.
+		while [ $(pgrep -fc "single_video_tracking") -gt 1 ]
+		do
+			sleep 10m
+		done
 	done
 
-
-	# --------------------------------------------------------------------------
+	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup
 	echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
-	mv $InputDirectory/ /mnt/Synology/Archive/uFMF/${today}
+	mv "${InputDirectory}/" "${ArchiveDirectory}/${today}/"
 
 	echo All Done.
 	echo $(date)
-
 
 
 else
