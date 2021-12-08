@@ -1,5 +1,5 @@
 % add our MATLAB code to path if its not there already
-check = which('DiagnosticPlots');
+check = which('AutoTracking');
 if isempty(check)
     parentdir = fileparts(mfilename('fullpath'));
     addpath(genpath(parentdir));
@@ -15,6 +15,6 @@ cd ([OutputDirectory ',' FileName]);
 
 disp(['Now reassigning identities for: ' FileName]);
 cd(FileName);
-error_handling_wrapper('trk_for_visualizer_errors.log','fix_trk','../track_correction.mat','../feat_correction.mat')
+error_handling_wrapper([OutputDirectory '/' FileName '/Logs/trk_for_visualizer_errors.log'],'fix_trk','../track_correction.mat','../feat_correction.mat')
 
 exit

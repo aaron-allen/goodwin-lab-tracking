@@ -1,6 +1,6 @@
 
 % add our MATLAB code to path if its not there already
-check = which('DiagnosticPlots');
+check = which('AutoTracking');
 if isempty(check)
     parentdir = fileparts(mfilename('fullpath'));
     addpath(genpath(parentdir));
@@ -13,6 +13,6 @@ cd ([OutputDirectory '/' FileName]);
 
 
 disp(['Now reassigning identities for: ' FileName]);
-error_handling_wrapper('identity_assignment_errors.log','reassign_identities',FileName)
+error_handling_wrapper([OutputDirectory '/' FileName '/Logs/identity_assignment_errors.log'],'reassign_identities',FileName)
 
 exit

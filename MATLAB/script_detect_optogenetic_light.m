@@ -1,6 +1,6 @@
 
 % add our MATLAB code to path if its not there already
-check = which('ApplyClassifiers');
+check = which('AutoTracking');
 if isempty(check)
     parentdir = fileparts(mfilename('fullpath'));
     addpath(genpath(parentdir));
@@ -18,7 +18,7 @@ cd ([OutputDirectory '/' FileName]);
 
 videoname = strcat(FileName,'.',video_type);
 disp(['Now detecting optogenetic light for: ' FileName]);
-error_handling_wrapper('optogenetic_light_detection_errors.log','ison',videoname,22500);
+error_handling_wrapper([OutputDirectory '/' FileName '/Logs/optogenetic_light_detection_errors.log'],'ison',videoname,22500);
 
 
 exit

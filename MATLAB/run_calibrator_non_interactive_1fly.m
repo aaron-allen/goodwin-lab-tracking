@@ -1,5 +1,5 @@
 % add our MATLAB code to path if its not there already
-check = which('DiagnosticPlots');
+check = which('AutoTracking');
 if isempty(check)
     parentdir = fileparts(mfilename('fullpath'));
     addpath(genpath(parentdir));
@@ -28,7 +28,7 @@ calibfilenames=cellfun(@(vidname) strcat(vidname,'_calibration.mat'), videonames
 
 % if we pass the number of flies into this script, then there doesn't need to be 3 versions of it and we
 % could just append the number of flies to the function name (maybe?)
-cellfun(@(vid,calibfilename) error_handling_wrapper('calibration_errors.log','calibrator_non_interactive_1fly',char(vid),char(calibfilename)),videonames,calibfilenames,'UniformOutput',false);
+cellfun(@(vid,calibfilename) error_handling_wrapper([OutputDirectory '/' FileName '/Logs/calibration_errors.log'],'calibrator_non_interactive_1fly',char(vid),char(calibfilename)),videonames,calibfilenames,'UniformOutput',false);
 
 
 exit;

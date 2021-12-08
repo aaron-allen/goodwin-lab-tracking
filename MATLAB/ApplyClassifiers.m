@@ -38,7 +38,7 @@ diary on
 
 disp(datetime('now'));
 disp(['Now applying classifiers for: ' FileName]);
-error_handling_wrapper('JAABA_errors.log','JAABADetect',[FileName '/' FileName '_JAABA'],'jablistfile',JABFiles);
+error_handling_wrapper([OutputDirectory '/' FileName '/Logs/JAABA_errors.log'],'JAABADetect',[FileName '/' FileName '_JAABA'],'jablistfile',JABFiles);
 
 
 diary off
