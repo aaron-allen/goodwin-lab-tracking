@@ -67,7 +67,7 @@ options.force_tracking  = true;
 options.force_features  = true;
 
 
-options_def.f_parent_calib  = ['calibration_files/' best_calib_file];
+options.f_parent_calib  = ['calibration_files/' best_calib_file];
 video_file_name = [FileName '.' video_type];
 
 

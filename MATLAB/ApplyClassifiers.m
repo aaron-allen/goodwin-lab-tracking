@@ -10,7 +10,7 @@
 
 
 % add our MATLAB code to path if its not there already
-check = which('DiagnosticPlots');
+check = which('AutoTracking');
 if isempty(check)
     parentdir = fileparts(mfilename('fullpath'));
     addpath(genpath(parentdir));
