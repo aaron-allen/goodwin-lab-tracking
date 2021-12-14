@@ -9,7 +9,7 @@
 
 
 
-printf "$(date)"
+printf "$(date)\n\n"
 today=$(date +%Y-%m-%d)
 
 printf "

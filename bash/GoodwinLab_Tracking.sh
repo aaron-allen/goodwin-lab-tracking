@@ -47,10 +47,24 @@ if [ -s $csv_file ]; then
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# add bit to kill any processes that might interfer with tracking, like
 	# matlab, geneious, python, R, etc.
-	# pkill MATLAB
-	# pkill R
-	# pkill ipython
-	#### pkill java  # geneious doesn't show up as geneious, it shows up as java, but killing anything java seems a bit poor form...
+	printf "Killing all MATLAB processes..."
+	pkill MATLAB
+	printf "Killing all R processes..."
+	pkill R
+	printf "Killing all ipython processes..."
+	pkill ipython
+	printf "Killing all Geneious processes..."
+	# Geneious doesn't show up as Geneious in top/pgrep/etc, it shows up as java, but killing anything java seems a bit poor form...
+	# So we'll feed the pid into a ps call with a more detailed output and grep for Geneious.
+	pgrep java | while read -r java_pid ; do
+    	printf "\tChecking if java pid = ${java_pid} is a Geneious instance.\n"
+		if ps -Flww -p ${java_pid} | grep -q "Geneious"; then
+		    printf "\tIt is! Kill it!"
+			pkill ${java_pid}
+		else
+		    printf "\tMust be some other java application, so let it be.\n"
+		fi
+    done
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -100,7 +114,7 @@ if [ -s $csv_file ]; then
 		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
 		# to add an if statement here and run a different shell script to start Ctrax.
 
-		# if [[ ${assay_type}=="oviposition" ]]; then
+		# if [[ ${assay_type} == "oviposition" ]]; then
 		# 	# run Ctrax_tracking.sh
 		# 	bash ctrax_video_tracking.sh ${today} \
 		# 						   ${CodeDirectory} \
@@ -118,7 +132,7 @@ if [ -s $csv_file ]; then
 		# 						   ${assay_type} &
 		# fi
 
-		if [[ ${assay_type}=="courtship" ]]; then
+		if [[ ${assay_type} == "courtship" ]]; then
 			# run single_video_tracking.sh
 			bash single_video_tracking.sh ${today} \
 										  ${CodeDirectory} \

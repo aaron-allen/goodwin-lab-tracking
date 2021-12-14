@@ -11,7 +11,7 @@
 
 
 
-printf $(date)
+printf "$(date)\n\n"
 today=$(date +%Y%m%d)
 
 read -p 'Username: ' user_name

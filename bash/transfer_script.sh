@@ -26,14 +26,16 @@ full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
 # Check if the supplied local user directory exists
 if [[ -d "${full_path}" ]]; then
     if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
-        printf "Remote Synology is moutned. We will now start copying the videos...\n"
+        printf "Remote Synology is moutned. We will now start copying the videos...\n\n"
         for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
             printf "Copying ${file} ..."
             cp "${file}" "/mnt/Synology/ToBeTracked/VideosFromStaions/videos/"
             local_size=wc -c "${file}" | awk '{print $1}'
             remote_size=wc -c "/mnt/Synology/ToBeTracked/VideosFromStaions/videos/${file}" | awk '{print $1}'
-            if [[ $local_size == $remote_size ]]; then
-                printf "Local and remote file sizes are equal. Copying was succesfull\n"
+            printf "Local file size = ${local_size}"
+            printf "Remote file size = ${remote_size}"
+            if [[ ${local_size} == ${remote_size} ]]; then
+                printf "Local and remote file sizes are equal. Copying was succesfull.\n"
             else
                 printf "Local and remote file sizes are NOT equal. Something has gone wrong ....\n"
             fi

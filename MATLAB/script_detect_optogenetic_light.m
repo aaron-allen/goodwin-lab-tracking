@@ -9,8 +9,8 @@ end
 
 
 
-# The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
-# Do I need to change directory?
+% The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
+% Do I need to change directory?
 cd ([OutputDirectory '/' FileName]);
 
 

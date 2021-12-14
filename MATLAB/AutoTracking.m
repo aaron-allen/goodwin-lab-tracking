@@ -16,8 +16,8 @@ if isempty(check)
     addpath(genpath(parentdir));
 end
 
-# still need to add the tracker path though ..
-# this is not as clean as above, but might clean up later.
+% still need to add the tracker path though ..
+% this is not as clean as above, but might clean up later.
 addpath(genpath('../../FlyTracker'));
 % ==============================================================================================================================================================
 

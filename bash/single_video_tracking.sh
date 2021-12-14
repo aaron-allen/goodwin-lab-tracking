@@ -53,7 +53,7 @@ assay_type="${15}"
 
 FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
 mkdir "${OutputDirectory}/${FileName}"
-printf Copying video files from Synology
+printf "Copying video files from Synology\n"
 cp "${video_name}" "${OutputDirectory}/${FileName}/"
 
 
@@ -70,7 +70,6 @@ mkdir "${OutputDirectory}/${FileName}/Results"
 # optogenetic_light_detection_errors.log
 # calibration_errors.log
 # identity_assignment_errors.log
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -92,7 +91,7 @@ best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
     | grep "${courtship}")
 
 if [ -z "${best_calib_file}" ]; then
-    printf No matching calib file.
+    printf "No matching calib file.\n"
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# CALIBRATION
 	### Do we need this bit with Kristin Bransons 'force_calib' option for the tracker. We may be able to supply template
@@ -105,7 +104,7 @@ if [ -z "${best_calib_file}" ]; then
 	# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 else
-    printf There is a matching calib file.
+    printf "There is a matching calib file.\n"
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -114,7 +113,8 @@ fi
 
 
 
-printf Now tracking: "${FileName}"
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+printf "Now tracking: ${FileName}\n"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; track_start=${track_start}; best_calib_file=${best_calib_file}; flies_per_arena=${flies_per_arena}; ../MATLAB/AutoTracking"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; ../MATLAB/script_detect_optogenetic_light"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; flies_per_arena=${flies_per_arena}; ../MATLAB/DeleteSingletonFlies"
@@ -129,38 +129,9 @@ Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${Fil
 
 
 
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# save paths of backup files that need to change in each script. also should name these
-	# backups more clearly ...
-
-	# for X in */
-	# do
-	# 	cd "$X"/
-	# 	cd "$X"/
-	#
-	# 	if [ -f ${X%/}-track_old.mat ]; then mv ${X%/}-track_old.mat ../Backups/; fi
-	# 	if [ -f ${X%/}-track_id_corrected.mat ]; then mv ${X%/}-track_id_corrected.mat ../Backups/; fi
-	#
-	# 	if [ -f ${X%/}-feat_old.mat ]; then mv ${X%/}-feat_old.mat ../Backups/; fi
-	# 	if [ -f ${X%/}-feat_id_corrected.mat ]; then mv ${X%/}-feat_id_corrected.mat ../Backups/; fi
-	#
-	# 	if [ -f ${X%/}-trackBackup.mat ]; then mv ${X%/}-trackBackup.mat ../Backups/; fi
-	# 	if [ -f ${X%/}-featBackup.mat ]; then mv ${X%/}-featBackup.mat ../Backups/; fi
-	# 	if [ -d ${X%/}_JAABA/trxBackup.mat ]; then mv ${X%/}_JAABA/trxBackup.mat ../Backups/; fi
-	# 	if [ -d ${X%/}_JAABA/perframe/BackupPerframe ]; then mv ${X%/}_JAABA/perframe/BackupPerframe ../Backups/; fi
-	#
-	# 	cd $CurrentDirectory
-	# done
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
-printf MOVING TRACKING RESULTS TO SYNOLOGY
+printf "Moving tracking results to the Synology\n"
 for D in */
 do
 	Directory=$D
@@ -180,5 +151,5 @@ done
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-printf Done tracking video.
-printf $(date)
+printf "Done tracking video.\n"
+printf "$(date)\n"
