@@ -24,7 +24,7 @@
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-echo $(date)
+printf "$(date)\n"
 today=$(date +%Y%m%d)
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
@@ -33,20 +33,24 @@ ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStaions"
 WorkingDirectory="/mnt/LocalData/Tracking"
 ArchiveDirectory="/mnt/Synology/Archive/uFMF"
 
-# echo The Code Directory is: $CodeDirectory
-# echo This is the input directory: $ToBeTrackedDirectory
-# echo This is the ouptut directory: $WorkingDirectory
+# printf "The Code Directory is: $CodeDirectory\n"
+# printf "This is the input directory: $ToBeTrackedDirectory\n"
+# printf "This is the ouptut directory: $WorkingDirectory\n"
 
 
 
 # Check to see if there are any videos to be tracked
 csv_file="$ToBeTrackedDirectory/video_list.csv"
 if [ -s $csv_file ]; then
-	echo "There are videos to be tracked"
+	printf "There are videos to be tracked\n"
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# add bit to kill any processes that might interfer with tracking, like
 	# matlab, geneious, python, R, etc.
+	# pkill MATLAB
+	# pkill R
+	# pkill ipython
+	#### pkill java  # geneious doesn't show up as geneious, it shows up as java, but killing anything java seems a bit poor form...
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -59,27 +63,27 @@ if [ -s $csv_file ]; then
 	# Setup freeze of videos that need to be tracked
 	mv "${ToBeTrackedDirectory}/video_list.csv" "${InputDirectory}/../video_list.csv"
 	ls "${ToBeTrackedDirectory}/videos/" > "${InputDirectory}/../videos_in_ToBeTracked.txt"
-	echo -n "" > "${ToBeTrackedDirectory}/video_list.csv"
+	printf "" > "${ToBeTrackedDirectory}/video_list.csv"
 
 
 	csv_file="${InputDirectory}/../video_list.csv"
 	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type; do
-	    echo -e "Video Name:\t $video_name"
-	    if [ -f "${ToBeTrackedDirectory}/videos/$video_name" ]; then
-	      echo -e '\tMoving video to NowTracking'
-	      mv "${ToBeTrackedDirectory}/videos/$video_name" "${InputDirectory}"
+	    printf "Video Name:\t ${video_name}\n"
+	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
+	      printf '\tMoving video to NowTracking\n'
+	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
 	    fi
 	done < $csv_file
 
 	# any video that's not in the to be tracked settings file will be moved to the non-tracked directory
-	echo -e "\n\n"
+	printf "\n\n"
 	csv_file="${InputDirectory}/../videos_in_ToBeTracked.txt"
 	while IFS=',' read -r video_name; do
-	    #echo -e "Video Name\t:\t $video_name"
-	    if [ -f "${ToBeTrackedDirectory}/videos/$video_name" ]; then
-	      echo -e "Video Name:\t $video_name"
-	      echo -e '\tMoving video to NonTrackedVideos'
-	      mv "${ToBeTrackedDirectory}/videos/$video_name" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
+	    #printf "Video Name\t:\t ${video_name}\n"
+	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
+	      printf "Video Name:\t ${video_name}\n"
+	      printf '\tMoving video to NonTrackedVideos\n'
+	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
 	    fi
 	done < $csv_file
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,29 +93,52 @@ if [ -s $csv_file ]; then
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
-	echo FILE TRANSFER AND TRACKING
+	printf "FILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
 	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type; do
 
-		# run single_video_tracking.sh
-		bash single_video_tracking.sh ${today} \
-									  ${CodeDirectory} \
-									  ${ToBeTrackedDirectory} \
-									  ${WorkingDirectory} \
-									  ${InputDirectory} \
-									  ${user} \
-									  ${video_name} \
-									  ${video_type} \
-									  ${tracking_start_time_in_seconds} \
-									  ${flies_per_arena} \
-									  ${sex_ratio} \
-									  ${number_of_arenas} \
-									  ${arena_shape} \
-									  ${assay_type} &
+		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
+		# to add an if statement here and run a different shell script to start Ctrax.
+
+		# if [[ ${assay_type}=="oviposition" ]]; then
+		# 	# run Ctrax_tracking.sh
+		# 	bash ctrax_video_tracking.sh ${today} \
+		# 						   ${CodeDirectory} \
+		# 						   ${ToBeTrackedDirectory} \
+		# 						   ${WorkingDirectory} \
+		# 						   ${InputDirectory} \
+		# 						   ${user} \
+		# 						   ${video_name} \
+		# 						   ${video_type} \
+		# 						   ${tracking_start_time_in_seconds} \
+		# 						   ${flies_per_arena} \
+		# 						   ${sex_ratio} \
+		# 						   ${number_of_arenas} \
+		# 						   ${arena_shape} \
+		# 						   ${assay_type} &
+		# fi
+
+		if [[ ${assay_type}=="courtship" ]]; then
+			# run single_video_tracking.sh
+			bash single_video_tracking.sh ${today} \
+										  ${CodeDirectory} \
+										  ${ToBeTrackedDirectory} \
+										  ${WorkingDirectory} \
+										  ${InputDirectory} \
+										  ${user} \
+										  ${video_name} \
+										  ${video_type} \
+										  ${tracking_start_time_in_seconds} \
+										  ${flies_per_arena} \
+										  ${sex_ratio} \
+										  ${number_of_arenas} \
+										  ${arena_shape} \
+										  ${assay_type} &
+		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
-		# Check to make sure no more than 2 single_video_tracking scripts are running.
-		while [ $(pgrep -fc "single_video_tracking") -gt 1 ]
+		# Check to make sure no more than 2 *_video_tracking scripts are running.
+		while [ $(pgrep -fc "_video_tracking") -gt 1 ]
 		do
 			sleep 10m
 		done
@@ -119,16 +146,16 @@ if [ -s $csv_file ]; then
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup
-	echo MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY
+	printf "MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY\n"
 	mv "${InputDirectory}/" "${ArchiveDirectory}/${today}/"
 
-	echo All Done.
-	echo $(date)
+	printf "All Done.\n"
+
 
 
 else
-  echo "No videos to be tracked."
+  printf "No videos to be tracked.\n"
 fi
 
 
-echo $(date)
+printf "$(date)\n"

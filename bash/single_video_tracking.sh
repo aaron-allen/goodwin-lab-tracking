@@ -53,7 +53,7 @@ assay_type="${15}"
 
 FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
 mkdir "${OutputDirectory}/${FileName}"
-echo Copying video files from Synology
+printf Copying video files from Synology
 cp "${video_name}" "${OutputDirectory}/${FileName}/"
 
 
@@ -92,20 +92,20 @@ best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
     | grep "${courtship}")
 
 if [ -z "${best_calib_file}" ]; then
-    echo No matching calib file.
+    printf No matching calib file.
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# CALIBRATION
 	### Do we need this bit with Kristin Bransons 'force_calib' option for the tracker. We may be able to supply template
 	### calibration files and then just force re-calibration to adjust the masks etc (need to test if this works). Also
 	### need to compare Annika's other changes to the 'calibrator.m' to see what else we may need to patch.
 
-	# echo Now calibrating: "$A"
+	# printf Now calibrating: "$A"
 	# /usr/local/bin/matlab  -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; run_calibrator_non_interactive_xflies"
 	# # do we still need to have a copy of this file? could we just rename it, instead of copying it?
 	# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 else
-    echo There is a matching calib file.
+    printf There is a matching calib file.
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ fi
 
 
 
-echo Now tracking: "${FileName}"
+printf Now tracking: "${FileName}"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; track_start=${track_start}; best_calib_file=${best_calib_file}; flies_per_arena=${flies_per_arena}; ../MATLAB/AutoTracking"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; ../MATLAB/script_detect_optogenetic_light"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; flies_per_arena=${flies_per_arena}; ../MATLAB/DeleteSingletonFlies"
@@ -160,7 +160,7 @@ Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${Fil
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
-echo MOVING TRACKING RESULTS TO SYNOLOGY
+printf MOVING TRACKING RESULTS TO SYNOLOGY
 for D in */
 do
 	Directory=$D
@@ -169,10 +169,10 @@ do
 	VideoName=${RecordingDate#*-}
 	RecordingDate=${RecordingDate%%-*}
 	VideoName=${VideoName%%/}
-	echo This is the Directory: $Directory
-	echo This is the User: $User
-	echo This is the Recording Date: $RecordingDate
-	echo This is the Video Name: $VideoName
+	printf This is the Directory: $Directory
+	printf This is the User: $User
+	printf This is the Recording Date: $RecordingDate
+	printf This is the Video Name: $VideoName
 	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
 	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
 
@@ -180,5 +180,5 @@ done
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-echo Done tracking video.
-echo $(date)
+printf Done tracking video.
+printf $(date)
