@@ -5,7 +5,7 @@
 # Date: 2021.12.14
 
 # Description:
-# This script transfers the users videos to the Synologies for tracking.
+# This script transfers the users videos to the Synologys for tracking.
 
 
 
