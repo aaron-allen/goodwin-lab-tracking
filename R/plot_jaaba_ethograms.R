@@ -43,7 +43,7 @@ plot_jaaba_ethograms <- function(input_Data,
     library("tidyverse")
 
     ethogram_plot <- input_Data %>%
-        filter(Id==fly_id) %>%
+        filter(Fly_Id==fly_id) %>%
         select(Frame, Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>%
         gather("Behaviour", "Score", Facing, Approaching, Turning, Encircling, WingGesture, Contact, Copulation) %>%
         ggplot(aes(x=Frame,y=1)) +

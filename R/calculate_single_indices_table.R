@@ -11,13 +11,13 @@
 
 ## This function calculates summary indices for tracking data out of our pipeline
 ## based on the JAABA annotations. It assumes the normal directory structure that
-## is generated with the tracking pipeline. It reads in the '*ALLDATA.csv' files
+## is generated with the tracking pipeline. It reads in the '*ALLDATA_R.csv.gz' files
 ## from the 'Results' directories for each video. It outputs a '*_Indices.csv'
 ## file.
 
 
 ## Input Arguments:
-##   input_dir: string, the full file path to the directory to be analysed (of the form "path/to/my_video/Results/")
+##   input: string, the full file path to the directory to be analysed (of the form "path/to/my_video/Results/")
 ##   inc_cop: boolean, whether to include the copulatory frames in the indices (default FALSE)
 ##   cop_wind: integer, the length of time in seconds that the JAABA copulation score must be at least 50% to count as copulation (default 50)
 ##   court_init: boolean, whether to impose a threshold for courtship initiation (default FALSE)
@@ -29,7 +29,7 @@
 
 
 ## Output variables in '*_Indices.csv' file:
-##   FileName: name of the video file
+##   Video_name: name of the video file
 ##   ArenaNumber: the arena number for the fly
 ##   FlyId: the id number for the fly
 ##   CI: the courtship index in percent
@@ -41,7 +41,6 @@
 ##   turning: the turning index in percent
 ##   wing: the wing index in percent
 ##   denominator: the duration of time used to normalize the indices in seconds
-
 
 
 ## Dependencies:
@@ -63,7 +62,7 @@
 
 ## This example should recapitulate what is automatically generated from the pipeline
 
-# calculate_single_indices_table(input_dir = "path/to/my_video/Results/",
+# calculate_single_indices_table(input = "path/to/my_video/Results/",
 #                         court_init = TRUE,
 #                         max_court = TRUE
 #                         )
@@ -71,12 +70,12 @@
 
 ## This example doesn't include copulation frames, doesn't have a 10min max courtship time, and doesn't have the initiation 'trigger'
 
-# calculate_single_indices_table(input_dir = "path/to/my_video/Results/")
+# calculate_single_indices_table(input = "path/to/my_video/Results/")
 
 
 
 
-calculate_single_indices_table <- function(input_dir,
+calculate_single_indices_table <- function(input,
                                         inc_cop = FALSE,
                                         cop_wind = 50,
                                         court_init = FALSE,
@@ -84,23 +83,34 @@ calculate_single_indices_table <- function(input_dir,
                                         max_court = FALSE,
                                         max_court_dur = 600,
                                         frame_rate = 25,
-                                        return_obj = FALSE){
+                                        return_obj = FALSE,
+                                        save_data = TRUE,
+                                        save_path = NULL){
 
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
     library("zoo")
 
-    setwd(input_dir)
+    if ( is.character(input) ) {
+        if ( .Platform$OS.type == "windows" ) {
+            input <- input %>% stringr::str_replace_all(pattern = "\\\\", "/")
+        }
+        if ( !stringr::str_detect(input, "/$") ) {
+            input <- paste0(input, "/")
+        }
+        my_data_file <- list.files(input) %>% str_subset("ALLDATA_R.csv.gz")
+        message(paste0("Loading ",my_data_file))
+        raw_data <- fread(paste0(input,my_data_file),sep = ",", showProgress = FALSE)
+    }
+    if ( is.data.frame(input) | is_tibble(input) ) {
+        raw_data <- input
+    }
 
-
-    message(paste0("Loading ",list.files(pattern=glob2rx('*ALLDATA.csv'))))
-    raw_data <- fread(list.files(pattern=glob2rx('*ALLDATA.csv')),sep = ",", showProgress = FALSE)
-    message("Calculating Indices")
+    message("    Calculating Indices")
     indices <- raw_data %>%
-        select(FileName,
+        select(Video_name,
              Arena,
-             Id,
+             Fly_Id,
              Frame,
              Approaching,
              Contact,
@@ -110,7 +120,7 @@ calculate_single_indices_table <- function(input_dir,
              Turning,
              WingGesture) %>%
         drop_na() %>%
-        group_by(Id) %>%
+        group_by(Fly_Id) %>%
         mutate(
         Multitasking = (Approaching + Encircling + Contact + Turning + WingGesture),
         MultitaskingWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture),
@@ -141,9 +151,9 @@ calculate_single_indices_table <- function(input_dir,
         else
           .
         ) %>%
-        summarise(FileName = unique(FileName),
+        summarise(FileName = unique(Video_name),
                 ArenaNumber = unique(Arena),
-                FlyId = unique(Id),
+                FlyId = unique(Fly_Id),
                 CI = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Courtship)),
                 CIwF = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(CourtshipWithFacing)),
                 approaching = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Approaching)),
@@ -154,10 +164,12 @@ calculate_single_indices_table <- function(input_dir,
                 wing = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(WingGesture)),
                 denominator = length(Frame)/frame_rate
         ) %>%
-        select(-Id)
-    message("Saving Indices Table")
-    SaveName <- paste0(unique(raw_data$FileName),'_Indices.csv')
-    fwrite(indices, SaveName)
+        select(-Fly_Id)
+    if (save_data) {
+        message("    Saving Indices Table")
+        SaveName <- paste0(save_path, unique(raw_data$Video_name),'_Indices.csv')
+        fwrite(indices, SaveName)
+    }
     if (return_obj) {
         return(indices)
     }

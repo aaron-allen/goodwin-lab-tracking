@@ -52,59 +52,51 @@
 
 
 library("data.table")
-library("dtplyr")
 library("tidyverse")
-library("gridExtra")
+library("cowplot")
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
 
 
-setwd("Results/")
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.log"))
 
 tryCatch({
 
+    input_dir <- paste0(OutputDirectory,"/",FileName,"/Results/")
+    my_data_file <- list.files(paste0(OutputDirectory,"/",FileName,"/Results/")) %>% str_subset("ALLDATA_R.csv.gz")
+    message(paste0("Loading ",my_data_file))
+    raw_data <- fread(paste0(input_dir,my_data_file),sep = ",",nThread = 8, showProgress = FALSE)
+
+    message(paste0("Wrangling the Data..."))
+    raw_data_spread <- raw_data %>%
+        select(-Units, -Data_Source) %>%
+        spread("Feature","Value")
+
     # Calculate Indices Table
     #############################################
-
-    source("calculate_indices_table.R")
-    calculate_single_indices_table(input_dir = paste0(OutputDirectory,"/",FileName,"/Results/"),
+    source("../R/calculate_single_indices_table.R")
+    message(paste0("Calculating indicies..."))
+    calculate_single_indices_table(input = raw_data_spread,
                                 court_init = TRUE,
-                                max_court = TRUE
+                                max_court = TRUE,
+                                save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
                                 )
-
-
 
     # Ethogram Plots of JAABA Classifiers
     #############################################
-    source("plot_jaaba_ethograms.R")
-    AllRawData <- fread(list.files(pattern=glob2rx('*ALLDATA.csv')),sep = ",", showProgress = FALSE)
-    # subset the data to only the variables we'll be working with
-    CleanedData <- select(AllRawData,
-                         FileName,
-                         Arena,
-                         Id,
-                         Frame,
-                         Approaching,
-                         Contact,
-                         Copulation,
-                         Encircling,
-                         Facing,
-                         Turning,
-                         WingGesture)
-    CleanedData$FileName <- as_factor(CleanedData$FileName)
+    source("../R/plot_jaaba_ethograms.R")
+    message(paste0("Plotting ethograms..."))
 
-    FlyId <- (unique(CleanedData$Id))
-    ArenaNumber <- ceiling(FlyId/2)
-    OddFly <- (unique(ArenaNumber)*2)-1
-    EthoFileName <- paste0(FileName, "_Ethogram.pdf")
+    FlyId <- unique(raw_data_spread$Fly_Id)
+    OddFly <- FlyId[FlyId %% 2 == 1]
 
+    EthoFileName <- paste0(OutputDirectory,"/",FileName,"/Results/",FileName, "_Ethogram.pdf")
     pdf(EthoFileName,width=10,height=7,paper='a4r')
     for (P in OddFly){
-      Plot1 <- plot_jaaba_ethograms(CleanedData, P)
-      Plot2 <- plot_jaaba_ethograms(CleanedData, P+1)
-      grid.arrange(Plot1,Plot2,nrow=2)
+      Plot1 <- plot_jaaba_ethograms(raw_data_spread, P)
+      Plot2 <- plot_jaaba_ethograms(raw_data_spread, P+1)
+      print(plot_grid(Plot1,Plot2, ncol = 1))
     }
     dev.off()
 

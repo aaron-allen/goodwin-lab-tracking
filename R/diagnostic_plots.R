@@ -42,7 +42,6 @@
 diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
 
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
     library("cowplot")
 

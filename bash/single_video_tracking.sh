@@ -121,8 +121,9 @@ printf "Now tracking: ${FileName}\n"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ApplyClassifiers"
 # add detect sex, modify Kristin Branson's "FlyTracker/tracking/CtraxJAABA/FlyTrackerClassifySex.m"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/script_reassign_identities"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
+#/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
+#/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
+Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}"
 Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
 
 

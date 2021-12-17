@@ -43,17 +43,10 @@
 
 
 
-## To Do:
-
-# 1. spread the Features and values columns for the data. The Tidy format is about 4GB for one video, instead of 500MB ...
-# 2. sort out usage of dtplyr to speed things up a little
-
-
 
 
 extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
     library("R.matlab")
 
@@ -65,7 +58,7 @@ extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
     }
 
     vid_name <- tracking_dir_path %>% stringr::str_extract(pattern = "[^/]*/$") %>% stringr::str_remove(pattern = "/")
-    cat(paste0("Video name is :      ", vid_name,"\n"))
+    cat(paste0("Video name is :    ", vid_name,"\n"))
 
     cat(paste0("    Now extracting track data\n"))
     my_track_data <- extract_track_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "-track.mat"))
@@ -82,8 +75,8 @@ extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
                ) %>%
         dplyr::group_by(Video_name, Fly_Id, Frame)
     if (save_data) {
-        cat(paste0("Now saving csv\n"))
-        SaveName <- paste0(tracking_dir_path, "Results/", vid_name,'_ALLDATA_2.csv')
+        cat(paste0("    Now saving csv\n"))
+        SaveName <- paste0(tracking_dir_path, "Results/", vid_name,'_ALLDATA_R.csv.gz')
         fwrite(my_data, SaveName)
     }
     return(my_data)
@@ -97,7 +90,6 @@ extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
 
 extract_track_data <- function(file_path) {
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
     library("R.matlab")
 
@@ -159,9 +151,7 @@ extract_track_data <- function(file_path) {
 
 extract_feat_data <- function(file_path) {
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
-    library("zoo")
     library("R.matlab")
 
     ufmf_feat <- R.matlab::readMat(file_path)
@@ -198,9 +188,7 @@ extract_feat_data <- function(file_path) {
 
 extract_jaaba_data <- function(dir_path,raw = FALSE) {
     library("data.table")
-    library("dtplyr")
     library("tidyverse")
-    library("zoo")
     library("R.matlab")
 
     i <- dplyr::if_else(raw, 1, 4)

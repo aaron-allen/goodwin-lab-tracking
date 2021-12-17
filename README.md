@@ -23,10 +23,8 @@ MATLAB 2018b (we haven't tested any other versions yet)
 
 R 3.5.3 (we haven't tested any other versions yet)
 * tidyverse vX.X.X
-* dtplyr vX.X.X
 * data.table vX.X.X
 * cowplot vX.X.X
-* gridExtra vX.X.X
 * zoo vX.X.X
 
 
