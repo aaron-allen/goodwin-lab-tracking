@@ -128,27 +128,11 @@ Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${Fil
 
 
 
-
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
 printf "Moving tracking results to the Synology\n"
-for D in */
-do
-	Directory=$D
-	User=${Directory%%-*}
-	RecordingDate=${Directory#*-}
-	VideoName=${RecordingDate#*-}
-	RecordingDate=${RecordingDate%%-*}
-	VideoName=${VideoName%%/}
-	printf This is the Directory: $Directory
-	printf This is the User: $User
-	printf This is the Recording Date: $RecordingDate
-	printf This is the Video Name: $VideoName
-	mkdir -p /mnt/Synology/Tracked/$User/$RecordingDate
-	cp -R $D /mnt/Synology/Tracked/$User/$RecordingDate/
-
-done
+mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
+cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
