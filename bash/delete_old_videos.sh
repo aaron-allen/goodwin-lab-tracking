@@ -7,10 +7,11 @@
 # Description:
 #
 # This script is used to delete old video files in the event that the videos disk gets too full.
-# If the disk usage ('CAPACITY') is more than the set limit ('CAPACITY_LIMIT'), then
-# the script starts to delete video files. The script finds all '.avi', '.mp4', '.mkv', '.fmf', and '.ufmf' files in the
-# /mnt/local_data/videos/ directory and ranks by modification date (oldest to newest). The script then checks to
-# see if it is now below the capacity limit; if it is, then the sript stops, otherwise it continues to the next video.
+# If the disk usage ('CAPACITY') is more than the set limit ('CAPACITY_LIMIT'), then the script
+# starts to delete video files. The script finds all '.avi', '.mp4', '.mkv', '.fmf', and '.ufmf'
+# files in the /mnt/local_data/videos/ directory and ranks by modification date (oldest to newest).
+# The script then checks to see if it is now below the capacity limit; if it is, then the sript
+# stops, otherwise it continues to the next video.
 
 
 
@@ -36,6 +37,13 @@ then
         sort -n | \
         cut -f 2- -d '/' > "${video_dir}/list_of_videos_by_date.txt"
 
+    # Wait for all transfer scripts to finish running before you start deleting anything.
+    while [ $(pgrep -fc "transfer_script") -gt 0 ]
+    do
+        sleep 10m
+    done
+
+    # Now let's go through line/video by line/video, deleting until we get below the setting.
     while read line
     do
         printf "removing ${video_dir}/${line}\n"

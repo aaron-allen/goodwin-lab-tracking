@@ -19,8 +19,8 @@ end
 
 % this is not as clean as above, but might clean up later.
 addpath(genpath('../../JAABA/perframe'));
-JABFiles = 'JABsFromFlyTracker/JABfilelist.txt';     # add genpath() ?
-wingJAB = 'JABsFromFlyTracker/WingGesture.jab';      # add genpath() ?
+JABFiles = 'JABsFromFlyTracker/JABfilelist.txt';     % add genpath() ?
+wingJAB = 'JABsFromFlyTracker/WingGesture.jab';      % add genpath() ?
 
 
 % The variable "OutputDirectory" and "FileName" are passed to the script when running from bash

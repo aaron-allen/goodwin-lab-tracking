@@ -18,7 +18,7 @@ settings_file="${3}"
 
 printf "Username = ${user_name}\n"
 printf "Recording directory = ${vid_dir}\n"
-printf "Settings file = ${settings_file}\n"
+printf "Settings file = ${settings_file}\n\n\n"
 
 user_dir="/mnt/local_data/videos/${user_name}"
 full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
@@ -28,16 +28,16 @@ if [[ -d "${full_path}" ]]; then
     if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
         printf "Remote Synology is moutned. We will now start copying the videos...\n\n"
         for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
-            printf "Copying ${file} ..."
+            printf "\tCopying ${file} ...\n"
             cp "${file}" "/mnt/Synology/ToBeTracked/VideosFromStaions/videos/"
             local_size=wc -c "${file}" | awk '{print $1}'
             remote_size=wc -c "/mnt/Synology/ToBeTracked/VideosFromStaions/videos/${file}" | awk '{print $1}'
-            printf "Local file size = ${local_size}"
-            printf "Remote file size = ${remote_size}"
+            printf "\tLocal file size = ${local_size}\n"
+            printf "\tRemote file size = ${remote_size}\n"
             if [[ ${local_size} == ${remote_size} ]]; then
-                printf "Local and remote file sizes are equal. Copying was succesfull.\n"
+                printf "\tLocal and remote file sizes are equal. Copying was succesfull.\n"
             else
-                printf "Local and remote file sizes are NOT equal. Something has gone wrong ....\n"
+                printf "\tLocal and remote file sizes are NOT equal. Something has gone wrong ....\n"
             fi
             printf "\n\n"
         done
