@@ -19,15 +19,15 @@ if nargin < 4 || check
     if ~isstruct(aStruct)
         error('first input supplied is not a struct.')
     end % if
-    
+
     if sum(size(aStruct)>1)>1 % if more than one non-singleton dimension
         error('I don''t want to sort your multidimensional struct array.')
     end % if
-    
+
     if ~ischar(fieldName) || ~isfield(aStruct, fieldName)
         error('second input is not a valid fieldname.')
     end % if
-    
+
     if nargin < 3
         direction = 1;
     elseif ~isnumeric(direction) || numel(direction)>1 || ~ismember(direction, [-1 1])

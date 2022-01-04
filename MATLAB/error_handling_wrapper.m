@@ -14,5 +14,5 @@ function error_handling_wrapper(errorlogfile,myfun,varargin)
            fprintf(fidd, '%s\n', errorMessage); % To file
            fclose(fidd);
     end
-    
+
 end

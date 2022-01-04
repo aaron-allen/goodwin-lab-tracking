@@ -26,6 +26,8 @@
 ##   max_court_dur: integer, the maximum length of time in seconds over which to calculate the indices (defualt 600 seconds, only used it 'max_court' is set to TRUE)
 ##   frame_rate: integer, the number of frames per second of the video that was tracked (defualt 25 frames per second)
 ##   return_obj: boolean, whether or not to return the tibble of indices
+##   save_data: boolean, whether or not to write data to disk
+##   save_path: string, full or relative file path to write data to disk (only used if save_data == TRUE)
 
 
 ## Output variables in '*_Indices.csv' file:

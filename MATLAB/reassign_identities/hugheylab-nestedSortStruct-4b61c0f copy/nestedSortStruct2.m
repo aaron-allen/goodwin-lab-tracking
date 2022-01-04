@@ -41,7 +41,7 @@ if nargin < 4 % if classFields does not exist, check inputs
     if ~isstruct(aStruct)
         error('first input supplied is not a struct.')
     end % if
-    
+
     if sum(size(aStruct)>1)>1 % if more than one non-singleton dimension
         error('I don''t want to sort your multidimensional struct array.')
     end % if
@@ -54,14 +54,14 @@ if nargin < 4 % if classFields does not exist, check inputs
             error('second input supplied is not a cell array or simple string of a fieldname.')
         end % if isfield
     end % if ~iscell
-    
+
     if ~isfield(aStruct, fieldNamesCell)
         for ii=find(~isfield(aStruct, fieldNamesCell))
             fprintf('%s is not a fieldname in the struct.\n', fieldNamesCell{ii})
         end % for
         error('at least one entry in fieldNamesCell is not actually a fieldname in the struct.')
     end % if
-    
+
     % check classes of fieldnames, construct classFields (0 for numeric, 1 for char)
     classFields = zeros(1, length(fieldNamesCell));
     for ii=1:length(fieldNamesCell)
@@ -74,7 +74,7 @@ if nargin < 4 % if classFields does not exist, check inputs
         end % for ii
         error('at least one fieldname is not a valid one by which to sort.')
     end % if any...
-    
+
     % check directions, create directNew
     if nargin < 3 % if directions doesn't exist
         directNew = ones(1, length(fieldNamesCell));
@@ -82,7 +82,7 @@ if nargin < 4 % if classFields does not exist, check inputs
         if ~(isnumeric(directions) && all(ismember(directions, [-1 1])))
             error('directions, if given, must be a single number or a vector with 1 (ascending) and -1 (descending).')
         end % if ~(...
-        
+
         if numel(directions)==1
             directNew = directions * ones(1, length(fieldNamesCell)); % create vector from single element
         elseif length(fieldNamesCell)~=length(directions)
@@ -99,7 +99,7 @@ if length(fieldNamesCell)==1 % if one fieldname
     [sortedStruct index] = sortStruct2(aStruct, fieldNamesCell{1}, directNew(1), 0); % don't check inputs
 else
     [sortedStruct1 index1] = sortStruct2(aStruct, fieldNamesCell{1}, directNew(1), 0); % don't check inputs
-    
+
     switch classFields(1)
         case 0 % numeric
             [b m n] = unique([sortedStruct1.(fieldNamesCell{1})]);
@@ -108,25 +108,24 @@ else
         otherwise
             error('invalid classFields value encountered. you shouldn''t be here.')
     end % switch
-     
+
     index2 = zeros(length(aStruct),1); % initialize index2
     sortedStruct = aStruct; % initialization of sortedStruct
-    
+
     for ii=1:length(b) % for each group that has the same value for fieldname1
         startIdx = find(n==ii, 1, 'first'); % starting index of the group
         nNum = sum(n==ii); % number of members are in the group
-        
+
         if nNum == 1 % don't sort if only one member in the group
             sortedStruct(startIdx) = sortedStruct1(n==ii);
             indexTemp = 1; % with only one member, that member is in position 1 of its group
         else % sort multiple members of the group
             [sortedStruct(startIdx:startIdx+nNum-1) indexTemp] = nestedSortStruct2(sortedStruct1(n==ii), fieldNamesCell(2:end), directNew(2:end), classFields(2:end)); % nested sort of remaining fieldnames
         end
-        
+
         index2(startIdx:startIdx+nNum-1) = indexTemp + startIdx - 1; % correct the index offset for that group
     end % for ii
-    
+
     index = index1(index2); % correct for two rounds of sorting
-    
+
 end % if length(fieldNamesCell)>1
-    

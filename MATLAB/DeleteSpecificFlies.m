@@ -51,9 +51,9 @@ for p = 1:numel(dirs)
                 trx(j)=trx(j+1);
             end
         end
-        
+
         trx(sizetrx+1-num2delete:sizetrx)=[];
-        
+
         disp('Re-numbering Ids in trx file');
         for I = 1:length(trx)
             trx(I).id = I;
@@ -67,12 +67,12 @@ for p = 1:numel(dirs)
     for P = 1:length(perframeDataFiles)
         copyfile(perframeDataFiles(P).name, ['BackupPerframe/Backup_' perframeDataFiles(P).name]);
         load(perframeDataFiles(P).name);
-        
+
         disp(['    ' perframeDataFiles(P).name]);
         data(:,LM)=[];
         save(perframeDataFiles(P).name, 'data', 'units');
     end
-    
+
     % renumbering flies_in_chambers and deleting single fly trk data
     cd (TrackDir);
     save([DIRname '-trackBackup.mat'], 'trk');
@@ -81,7 +81,7 @@ for p = 1:numel(dirs)
         for A = 1:(size(trx,2)/2)
             trk.flies_in_chamber{A} = [2.*A-1,2.*A];
         end
-    
+
      disp('Deleting row(s) from track file');
         trk.data(LM,:,:) = [];
         save(TrackFilename_new, 'trk');

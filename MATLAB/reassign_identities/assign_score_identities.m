@@ -15,8 +15,8 @@ function assign_score_identities(scoresdir,idsfile)
 startdir=pwd;
 load(idsfile);
 if ~isempty(dir('*track_old.mat'))
-    
-else    
+
+else
     trackfile=dir('*-track.mat');
     trackfilename=trackfile(1).name;
     trackfilename_old=strrep(trackfilename,'.mat','_old.mat');
@@ -24,7 +24,7 @@ else
     id_correct_trackfile(trackfilename,trackoutputfile,ids);
     movefile(trackfilename, trackfilename_old);
     copyfile(trackoutputfile,trackfilename);
-    
+
     featfile=dir('*-feat.mat');
     featfilename=featfile(1).name;
     featfilename_old=strrep(featfilename,'.mat','_old.mat');

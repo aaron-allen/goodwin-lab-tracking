@@ -44,7 +44,7 @@ end % if
 if ~iscell(fieldNamesCell)
     if isfield(aStruct, fieldNamesCell) % if fieldNamesCell is a simple string of a valid fieldname
         if ~exist('directions')
-            directions = 1; 
+            directions = 1;
         end
         [sortedStruct index] = sortStruct(aStruct, fieldNamesCell, directions);
         return
@@ -81,7 +81,7 @@ else % check directions if it does exist
     if ~(isnumeric(directions) && all(ismember(directions, [-1 1])))
         error('directions, if given, must be a single number or a vector with 1 (ascending) and -1 (descending).')
     end % if ~(...
-    
+
     if numel(directions)==1
         directions = directions * ones(1, length(fieldNamesCell)); % create vector from single element
     elseif length(fieldNamesCell)~=length(directions)

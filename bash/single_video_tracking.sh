@@ -77,13 +77,13 @@ mkdir "${OutputDirectory}/${FileName}/Results"
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-# add some code logic to sort out the optimat "template" calibration files
+# add some code logic to sort out the optimal "template" calibration files
 # based on the imported variables.
-# "${video_type}"
-# "${arena_shape}"
-# "${flies_per_arena}"
-# "${number_of_arenas}"
-# "${assay_type}"
+#   "${video_type}"
+#   "${arena_shape}"
+#   "${flies_per_arena}"
+#   "${number_of_arenas}"
+#   "${assay_type}"
 best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
     | grep "${flies_per_arena}fly" \
     | grep "${number_of_arenas}arenas" \
@@ -105,6 +105,7 @@ if [ -z "${best_calib_file}" ]; then
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 else
     printf "There is a matching calib file.\n"
+    printf "\tThe best match is: ${best_calib_file}\n\n"
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
