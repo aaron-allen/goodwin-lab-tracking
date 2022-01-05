@@ -114,7 +114,7 @@ for p = 1:numel(dirs)
         perframeDataFiles = dir('*.mat');
         for P = 1:length(perframeDataFiles)
             copyfile([OutputDirectory '/' FileName '/' FileName '_JAABA/' perframeDataFiles(P).name], ...
-                     [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_deletesingleton.mat']);
+                     [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_pre_deletesingleton.mat']);
             load(perframeDataFiles(P).name);
             disp(['    ' perframeDataFiles(P).name]);
             data(:,LM)=[];
@@ -125,7 +125,7 @@ for p = 1:numel(dirs)
         cd (TrackDir);
         disp('Renumbering flies_in_chambers in trk file');
         copyfile([OutputDirectory '/' FileName '-track.mat'], ...
-                 [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_2_deletesingleton.mat']);
+                 [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_2_pre_deletesingleton.mat']);
         trk.flies_in_chamber = [];
         for A = 1:(size(trx,2)/2)
             trk.flies_in_chamber{A} = [2.*A-1,2.*A];
@@ -137,7 +137,7 @@ for p = 1:numel(dirs)
         % deleting single fly feat data
         disp('Deleting row(s) from feat file');
         copyfile([OutputDirectory '/' FileName '-feat.mat'], ...
-                 [OutputDirectory '/' FileName '/Backups/' FileName '-feat--backup_2_deletesingleton.mat']);
+                 [OutputDirectory '/' FileName '/Backups/' FileName '-feat--backup_2_pre_deletesingleton.mat']);
         FeatFile = dir('*feat.mat');
         load(FeatFile.name);
         feat.data(LM,:,:) = [];

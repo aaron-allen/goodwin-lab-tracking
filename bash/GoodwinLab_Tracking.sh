@@ -70,7 +70,7 @@ if [ -s $csv_file ]; then
 
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}Tracked"
-	mkdir $OutputDirectory
+	mkdir -p "${OutputDirectory}/tracking_logs"
 
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ if [ -s $csv_file ]; then
 										  ${number_of_arenas} \
 										  ${arena_shape} \
 										  ${assay_type} \
-										  ${optogenetics_light} &
+										  ${optogenetics_light} 2>&1 "${OutputDirectory}/tracking_logs/${today}_${user_name}_${video_name}_tracking.log" &
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start

@@ -116,7 +116,7 @@ fi
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-printf "Now tracking: ${FileName}\n"
+printf "\n\n\nNow tracking: ${FileName} ...\n"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
                                                 OutputDirectory=${OutputDirectory}; \
                                                 video_type=${video_type}; \
@@ -125,29 +125,41 @@ printf "Now tracking: ${FileName}\n"
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
                                                 ../MATLAB/AutoTracking"
+
+# Only run the optogenetic light detector if the video is an optogenetics experiment
 if [[ ${optogenetics_light} ]]; then
+    printf "\n\n\n\tDetecting optogenetic light ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
                                                     OutputDirectory=${OutputDirectory}; \
                                                     video_type=${video_type}; \
                                                     ../MATLAB/script_detect_optogenetic_light"
 fi
-if [[ ${flies_per_arena} == 2 ]] && [[ ${assay_type} == "courtship" ]] ; then
-    printf "\tThe number of flies per arena is 2.\n"
-    printf "\tWill now apply classifiers and reassign identities.\n"
+
+# Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
+# were trained with.
+if [[ ${flies_per_arena} == 2 ]]; then
+    printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
                                                     OutputDirectory=${OutputDirectory}; \
                                                     ../MATLAB/DeleteSingletonFlies"
+    printf "\n\n\n\tApplying classifiers ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
                                                     OutputDirectory=${OutputDirectory}; \
                                                     ../MATLAB/ApplyClassifiers"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                    OutputDirectory=${OutputDirectory}; \
-                                                    ../MATLAB/script_reassign_identities"
-    #/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
-    #/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
-    printf "\tExtracting tracking data and plotting diagnotic plots.\n"
+fi
+
+# Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
+# are in arena 2, etc...
+printf "\n\n\n\tRe-assigning identities ...\n"
+/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                OutputDirectory=${OutputDirectory}; \
+                                                ../MATLAB/script_reassign_identities"
+
+# Only extract the matlab data and calculate indices if there are 2 flies per arena
+if [[ ${flies_per_arena} == 2 ]]; then
+    printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
     /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}"
-    printf "\tCalculating indices and plotting ethograms.\n"
+    printf "\n\n\n\tCalculating indices and plotting ethograms ...\n"
     /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
 fi
 
@@ -155,11 +167,11 @@ fi
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
-printf "Moving tracking results to the Synology\n"
+printf "\n\n\nMoving tracking results to the Synology\n"
 mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
 cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-printf "Done tracking video.\n"
-printf "$(date)\n"
+printf "\n\n\nDone tracking video.\n"
+printf "$(date)\n\n\n"
