@@ -74,6 +74,37 @@ video_file_name = [FileName '.' video_type];
 
 % track video
 tracker([],options,[],video_file_name);
+% ==============================================================================================================================================================
+
+
+
+
+
+% ==============================================================================================================================================================
+% Predict Sex
+
+% make backups ...
+copyfile([OutputDirectory '/' FileName '-track.mat'], ...
+         [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_1_predictsex.mat']);
+
+% first predict the sex of the flies and add to the the track.mat file
+FlyTrackerClassifySex_generic([OutputDirectory '/' FileName '-track.mat'],'track',sex_ratio,true)
+
+if options.save_JAABA,
+    % second predict the sex of the flies and add to the the trx.mat file
+    copyfile([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_1_predictsex.mat']);
+    FlyTrackerClassifySex_generic([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'],'trx',sex_ratio,true)
+end
+
+% I realize that this is a bit silly to do the predictions and save to files twice,
+% instead of predicting once and then writing to either or both files ... but oh well ...
+% maybe I'll address this later ...
+% ==============================================================================================================================================================
+
+
+
+
 
 
 diary off

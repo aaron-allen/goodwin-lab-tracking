@@ -1,1 +1,1 @@
-<user>,<video_name_with_extension>,<video_type>,<tracking_start_time_in_seconds>,<flies_per_arena>,<sex_ratio>,<number_of_arenas>,<arena_shape>,<assay_type>,<recording_station>
+<user>,<video_name_with_extension>,<video_type>,<tracking_start_time_in_seconds>,<flies_per_arena>,<sex_ratio>,<number_of_arenas>,<arena_shape>,<assay_type>,<optogenetics_light>,<recording_station>

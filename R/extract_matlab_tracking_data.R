@@ -106,7 +106,7 @@ extract_track_data <- function(file_path) {
     track_units <- c("px", "px", "rad", "px", "px", "px", "px", "au", "px",
                      "px", "px", "px", "px", "rad", "px", "rad", "px", "px",
                      "px", "px", "px", "px", "px", "px", "px", "px", "px",
-                     "px", "px", "rad", "rad", "rad", "rad", "rad", "rad")
+                     "px", "px", "rad", "rad", "rad", "rad", "rad", "rad", "au")
 
     # flies.in.chamber
     for (i in seq_along(ufmf_track[["trk"]][[3]])) {

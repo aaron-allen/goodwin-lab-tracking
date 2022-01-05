@@ -12,10 +12,10 @@
 #		1. Pulls videos off the Synology,
 #		2. Tracks the videos with FlyTracker, in MatLab
 #		3. Applies the 'classifiers' with JAABADetect in MatLab, for behaviours that have already been trained
-#		4. Correct the Ids for flies in multi-arena video
-#		5. Generates diagnostic plot to evaluate the efficacy of tracking
-#		6. Extracts the data tracking data and tabulates them into one csv file per video
-#		7. Calculates indices and plots ethograms in R
+#		4. Correct the Ids for flies in multi-arena video, in Matlab
+#		5. Extracts the track.mat and feat.mat data and saves a .csv file, in R
+#       6. Generates diagnostic plot to evaluate the efficacy of tracking, in R
+#		7. Calculates indices and plots ethograms, in R
 #
 #
 #
@@ -46,6 +46,7 @@ sex_ratio="${12}"
 number_of_arenas="${13}"
 arena_shape="${14}"
 assay_type="${15}"
+optogenetics_light="${16}"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -59,7 +60,7 @@ cp "${video_name}" "${OutputDirectory}/${FileName}/"
 
 # Before doing anything else, let's set up the directory structure in bash and not in the individual
 # other scripts.
-mkdir "${OutputDirectory}/${FileName}/Backups"
+mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
 mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir "${OutputDirectory}/${FileName}/Results"
 
@@ -88,7 +89,7 @@ best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
     | grep "${flies_per_arena}fly" \
     | grep "${number_of_arenas}arenas" \
     | grep "${arena_shape}" \
-    | grep "${courtship}")
+    | grep "${assay_type}")
 
 if [ -z "${best_calib_file}" ]; then
     printf "No matching calib file.\n"
@@ -116,16 +117,39 @@ fi
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 printf "Now tracking: ${FileName}\n"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; track_start=${track_start}; best_calib_file=${best_calib_file}; flies_per_arena=${flies_per_arena}; ../MATLAB/AutoTracking"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; ../MATLAB/script_detect_optogenetic_light"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; flies_per_arena=${flies_per_arena}; ../MATLAB/DeleteSingletonFlies"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ApplyClassifiers"
-# add detect sex, modify Kristin Branson's "FlyTracker/tracking/CtraxJAABA/FlyTrackerClassifySex.m"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/script_reassign_identities"
-#/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
-#/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
-Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}"
-Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
+/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                OutputDirectory=${OutputDirectory}; \
+                                                video_type=${video_type}; \
+                                                track_start=${track_start}; \
+                                                best_calib_file=${best_calib_file}; \
+                                                flies_per_arena=${flies_per_arena}; \
+                                                sex_ratio=${sex_ratio}; \
+                                                ../MATLAB/AutoTracking"
+if [[ ${optogenetics_light} ]]; then
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                    OutputDirectory=${OutputDirectory}; \
+                                                    video_type=${video_type}; \
+                                                    ../MATLAB/script_detect_optogenetic_light"
+fi
+if [[ ${flies_per_arena} == 2 ]] && [[ ${assay_type} == "courtship" ]] ; then
+    printf "\tThe number of flies per arena is 2.\n"
+    printf "\tWill now apply classifiers and reassign identities.\n"
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                    OutputDirectory=${OutputDirectory}; \
+                                                    ../MATLAB/DeleteSingletonFlies"
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                    OutputDirectory=${OutputDirectory}; \
+                                                    ../MATLAB/ApplyClassifiers"
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                    OutputDirectory=${OutputDirectory}; \
+                                                    ../MATLAB/script_reassign_identities"
+    #/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/DiagnosticPlots"
+    #/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; ../MATLAB/ExtractData"
+    printf "\tExtracting tracking data and plotting diagnotic plots.\n"
+    /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}"
+    printf "\tCalculating indices and plotting ethograms.\n"
+    /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
+fi
 
 
 

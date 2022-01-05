@@ -109,7 +109,7 @@ if [ -s $csv_file ]; then
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
 	printf "FILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
-	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type; do
+	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type optogenetics_light; do
 
 		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
 		# to add an if statement here and run a different shell script to start Ctrax.
@@ -147,7 +147,8 @@ if [ -s $csv_file ]; then
 										  ${sex_ratio} \
 										  ${number_of_arenas} \
 										  ${arena_shape} \
-										  ${assay_type} &
+										  ${assay_type} \
+										  ${optogenetics_light} &
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start

@@ -40,15 +40,6 @@ cd ([OutputDirectory '/' FileName]);
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% add bit to check user sepcified number of flies %%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% flies_per_arena
-
-
-
-
-
 
 
 dirs = dir();
@@ -88,7 +79,8 @@ for p = 1:numel(dirs)
 
     if (1 < FliesPerChamber) && (FliesPerChamber < 2)
         disp('The number of flies differs between chambers');
-        save('trxBackup.mat', 'trx', 'timestamps');
+        copyfile([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+                 [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_1_predictsex.mat']);
 
         % Create a logical array of the location of the singleton flies
         disp('Creating logical array of the location of the singleton flies');
@@ -121,7 +113,8 @@ for p = 1:numel(dirs)
         mkdir BackupPerframe
         perframeDataFiles = dir('*.mat');
         for P = 1:length(perframeDataFiles)
-            copyfile(perframeDataFiles(P).name, ['BackupPerframe/Backup_' perframeDataFiles(P).name]);
+            copyfile([OutputDirectory '/' FileName '/' FileName '_JAABA/' perframeDataFiles(P).name], ...
+                     [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_deletesingleton.mat']);
             load(perframeDataFiles(P).name);
             disp(['    ' perframeDataFiles(P).name]);
             data(:,LM)=[];
@@ -131,7 +124,8 @@ for p = 1:numel(dirs)
         % renumbering flies_in_chambers and deleting single fly trk data
         cd (TrackDir);
         disp('Renumbering flies_in_chambers in trk file');
-        save([DIRname '-trackBackup.mat'], 'trk');
+        copyfile([OutputDirectory '/' FileName '-track.mat'], ...
+                 [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_2_deletesingleton.mat']);
         trk.flies_in_chamber = [];
         for A = 1:(size(trx,2)/2)
             trk.flies_in_chamber{A} = [2.*A-1,2.*A];
@@ -142,9 +136,10 @@ for p = 1:numel(dirs)
 
         % deleting single fly feat data
         disp('Deleting row(s) from feat file');
+        copyfile([OutputDirectory '/' FileName '-feat.mat'], ...
+                 [OutputDirectory '/' FileName '/Backups/' FileName '-feat--backup_2_deletesingleton.mat']);
         FeatFile = dir('*feat.mat');
         load(FeatFile.name);
-        save([DIRname '-featBackup.mat'], 'feat');
         feat.data(LM,:,:) = [];
         save(FeatFile.name, 'feat');
 
