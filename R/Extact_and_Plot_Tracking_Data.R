@@ -45,6 +45,7 @@ library(tidyverse)
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
+FliesPerArena <- commandArgs(trailingOnly=T)[3]
 
 
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log"))
@@ -55,7 +56,7 @@ tryCatch({
     source("../R/diagnostic_plots.R")
 
     message(paste0("Reading the Data..."))
-    alldata <- extract_all_data(tracking_dir_path = paste0(OutputDirectory,"/",FileName,"/"),save_data = TRUE)
+    alldata <- extract_all_data(tracking_dir_path = paste0(OutputDirectory,"/",FileName,"/"),flies_per_arena=FliesPerArena,save_data = TRUE)
 
     message(paste0("Wrangling the Data..."))
     alldata_plotting <- alldata %>%

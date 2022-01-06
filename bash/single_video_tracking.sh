@@ -155,10 +155,11 @@ printf "\n\n\n\tRe-assigning identities ...\n"
                                                 OutputDirectory=${OutputDirectory}; \
                                                 ../MATLAB/script_reassign_identities"
 
-# Only extract the matlab data and calculate indices if there are 2 flies per arena
+printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
+/usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+
+# Only calculate indices if there are 2 flies per arena
 if [[ ${flies_per_arena} == 2 ]]; then
-    printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
-    /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}"
     printf "\n\n\n\tCalculating indices and plotting ethograms ...\n"
     /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
 fi

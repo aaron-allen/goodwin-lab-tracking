@@ -43,7 +43,7 @@
 
 
 
-extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
+extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FALSE) {
     library("data.table")
     library("tidyverse")
     library("R.matlab")
@@ -69,7 +69,7 @@ extract_all_data <- function(tracking_dir_path, save_data=FALSE) {
     my_data <-dplyr::bind_rows(my_track_data,
                                dplyr::bind_rows(my_feat_data,my_jaaba_data)) %>%
         dplyr::mutate(Video_name = vid_name,
-               Arena = dplyr::if_else((Fly_Id %% 2) == 0, Fly_Id/2, ceiling(Fly_Id/2))
+               Arena = dplyr::if_else((Fly_Id %% flies_per_arena) == 0, Fly_Id/flies_per_arena, ceiling(Fly_Id/flies_per_arena))
                ) %>%
         dplyr::group_by(Video_name, Fly_Id, Frame)
     if (save_data) {
