@@ -31,7 +31,7 @@ today=$(date +%Y%m%d)
 CodeDirectory="$(pwd)"
 ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStaions"
 WorkingDirectory="/mnt/LocalData/Tracking"
-ArchiveDirectory="/mnt/Synology/Archive/uFMF"
+ArchiveDirectory="/mnt/Synology/Archive/mkv"
 
 # printf "The Code Directory is: $CodeDirectory\n"
 # printf "This is the input directory: $ToBeTrackedDirectory\n"
@@ -116,7 +116,7 @@ if [ -s ${csv_file} ]; then
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
-	printf "FILE TRANSFER AND TRACKING\n"
+	printf "\n\nFILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
 	while IFS=',' read -r user \
 							video_name \
@@ -128,6 +128,8 @@ if [ -s ${csv_file} ]; then
 							arena_shape \
 							assay_type \
 							optogenetics_light; do
+
+		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
 		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
 		# to add an if statement here and run a different shell script to start Ctrax.

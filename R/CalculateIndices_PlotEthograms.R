@@ -60,7 +60,6 @@ FileName <- commandArgs(trailingOnly=T)[3]
 
 
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.log"))
-
 tryCatch({
 
     input_dir <- paste0(OutputDirectory,"/",FileName,"/Results/")

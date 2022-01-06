@@ -97,7 +97,7 @@ if options.save_JAABA,
     FlyTrackerClassifySex_generic([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'],'trx',sex_ratio,true)
 end
 
-% I realize that this is a bit silly to do the predictions and save to files twice,
+% I realize that this is a bit silly to do the predictions twice and save to files twice,
 % instead of predicting once and then writing to either or both files ... but oh well ...
 % maybe I'll address this later ...
 % ==============================================================================================================================================================
