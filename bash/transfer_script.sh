@@ -37,7 +37,7 @@ if [[ -d "${full_path}" ]]; then
             if [[ ${local_size} == ${remote_size} ]]; then
                 printf "\tLocal and remote file sizes are equal. Copying was succesfull.\n"
             else
-                printf "\tLocal and remote file sizes are NOT equal. Something has gone wrong ....\n"
+                printf "\tLocal and remote file sizes are NOT equal. Something has gone wrong ...\n"
             fi
             printf "\n\n"
         done
