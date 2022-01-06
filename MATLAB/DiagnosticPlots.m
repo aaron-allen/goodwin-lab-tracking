@@ -2,6 +2,12 @@
 % Date: 2018.10.04
 %     updated: 2021.12.02
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEPRECATED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 % Description:
 % DiagnosticPlots.m loads the tracking data .mat files and generates plots of different features.
 % These include: area, facing angle, distance to other, x and y postion, amoung others.
