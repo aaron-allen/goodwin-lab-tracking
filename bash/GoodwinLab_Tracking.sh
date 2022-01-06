@@ -40,8 +40,8 @@ ArchiveDirectory="/mnt/Synology/Archive/uFMF"
 
 
 # Check to see if there are any videos to be tracked
-csv_file="$ToBeTrackedDirectory/video_list.csv"
-if [ -s $csv_file ]; then
+csv_file="${ToBeTrackedDirectory}/video_list.csv"
+if [ -s ${csv_file} ]; then
 	printf "There are videos to be tracked\n"
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -81,13 +81,22 @@ if [ -s $csv_file ]; then
 
 
 	csv_file="${InputDirectory}/../video_list.csv"
-	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type; do
+	while IFS=',' read -r user \
+							video_name \
+							video_type \
+							tracking_start_time_in_seconds \
+							flies_per_arena \
+							sex_ratio \
+							number_of_arenas \
+							arena_shape \
+							assay_type \
+							optogenetics_light; do
 	    printf "Video Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
 	      printf '\tMoving video to NowTracking\n'
 	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
 	    fi
-	done < $csv_file
+	done < ${csv_file}
 
 	# any video that's not in the to be tracked settings file will be moved to the non-tracked directory
 	printf "\n\n"
@@ -99,7 +108,7 @@ if [ -s $csv_file ]; then
 	      printf '\tMoving video to NonTrackedVideos\n'
 	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
 	    fi
-	done < $csv_file
+	done < ${csv_file}
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -109,7 +118,16 @@ if [ -s $csv_file ]; then
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
 	printf "FILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
-	while IFS=',' read -r user video_name video_type tracking_start_time_in_seconds flies_per_arena sex_ratio number_of_arenas arena_shape assay_type optogenetics_light; do
+	while IFS=',' read -r user \
+							video_name \
+							video_type \
+							tracking_start_time_in_seconds \
+							flies_per_arena \
+							sex_ratio \
+							number_of_arenas \
+							arena_shape \
+							assay_type \
+							optogenetics_light; do
 
 		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
 		# to add an if statement here and run a different shell script to start Ctrax.
@@ -148,7 +166,8 @@ if [ -s $csv_file ]; then
 										  ${number_of_arenas} \
 										  ${arena_shape} \
 										  ${assay_type} \
-										  ${optogenetics_light} 2>&1 "${OutputDirectory}/tracking_logs/${today}_${user_name}_${video_name}_tracking.log" &
+										  ${optogenetics_light} 2>&1 \
+				"${OutputDirectory}/tracking_logs/${today}_${user_name}_${video_name}_tracking.log" &
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
