@@ -148,12 +148,14 @@ if [[ ${flies_per_arena} == 2 ]]; then
                                                     ../MATLAB/ApplyClassifiers"
 fi
 
-# Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
-# are in arena 2, etc...
-printf "\n\n\n\tRe-assigning identities ...\n"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                OutputDirectory=${OutputDirectory}; \
-                                                ../MATLAB/script_reassign_identities"
+if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
+    # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
+    # are in arena 2, etc...
+    printf "\n\n\n\tRe-assigning identities ...\n"
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
+                                                    OutputDirectory=${OutputDirectory}; \
+                                                    ../MATLAB/script_reassign_identities"
+fi
 
 printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
 /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"

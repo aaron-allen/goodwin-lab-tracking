@@ -27,11 +27,13 @@ read -p 'Settings File: ' settings_file
 
 full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
 
-while [[ ! -d "${full_path}" ]]; do
-    printf "\n\nERROR! - Can't find the video path.\n"
+while [[ ! -f "${full_path}/${settings_file}" ]]; do
+    printf "\n\n\n\n\n\n"
+    printf "\e[1;31mERROR! - Can't find the video path or settings file.\e[0m\n"
     printf "\t1. Double check your spelling.\n"
     printf "\t2. Make sure your recording folder is in your named folder.\n"
     printf "\t3. Only use the recording folder name, and not the full path.\n"
+    printf "\t4. Make sure to include the '.txt' file extension when entering the settings file name.\n"
     printf "\nNow let's try entering the variables again.\n\n"
     read -p 'Username: ' user_name
     read -p 'Your recording folder: ' vid_dir
