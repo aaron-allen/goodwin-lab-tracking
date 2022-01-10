@@ -42,17 +42,17 @@ This _"user guide"_ is intended to aid the members of the Gooodwin Lab to use th
 Settings file description:
 
 The settings file is a comma separated values plain text file (*.txt) where the user can specify multiple parameters to ensure their video gets tracked accordingly. These parameters need to be in this exact order and all should be present.
-    * `user`: your first name, as it appears in the video recording directory.
-    * `video_name_with_extension`: The name of your video to be tracked.
-    * `video_type`: The container used for the video (will typically be "mkv" or "ufmf", but can also be "mp4", "avi", "fmf", etc).
-    * `tracking_start_time_in_seconds`: The time (in seconds) that you want tracking to start for your video.
-    * `flies_per_arena`: The number of flies per arena.
-    * `sex_ratio`: The proportion of male flies per arena (one male and one female would be 0.5, two males and one female would be 0.67, all females would be 0, etc).
-    * `number_of_arenas`: How many full arenas are visible in the video (default for courtship is 20, but may also be 1 or 5).
-    * `arena_shape`: Either "circle" or "rectangle".
-    * `assay_type`: This will be "courtship" for the most part, but potentially "oviposition" or "phototaxis" as we add support for other behaviours.
-    * `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and should attempt detection of it.
-    * `recording_station`: Which station was used. Either A, B, or C. This is only for documentation purposes and to keep track of any issues.
+* `user`: your first name, as it appears in the video recording directory.
+* `video_name_with_extension`: The name of your video to be tracked.
+* `video_type`: The container used for the video (will typically be "mkv" or "ufmf", but can also be "mp4", "avi", "fmf", etc).
+* `tracking_start_time_in_seconds`: The time (in seconds) that you want tracking to start for your video.
+* `flies_per_arena`: The number of flies per arena.
+* `sex_ratio`: The proportion of male flies per arena (one male and one female would be 0.5, two males and one female would be 0.67, all females would be 0, etc).
+* `number_of_arenas`: How many full arenas are visible in the video (default for courtship is 20, but may also be 1 or 5).
+* `arena_shape`: Either "circle" or "rectangle".
+* `assay_type`: This will be "courtship" for the most part, but potentially "oviposition" or "phototaxis" as we add support for other behaviours.
+* `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and should attempt detection of it.
+* `recording_station`: Which station was used. Either A, B, or C. This is only for documentation purposes and to keep track of any issues.
 
 An example line for a settings file:
 
@@ -79,10 +79,10 @@ It should also be noted that these Synology's are not centrally managed, Univers
 #### FileZilla:
 
 [FileZilla](https://filezilla-project.org/) is a free and open source piece of software that allows you to make an `ftp` connection. To make a connection to the Synology, you'll need to enter the following:
-    * `Host`: the ip address of the Synology, of the form xxx.x.xx.xxx
-    * `Username`: your username
-    * `Password`: your password
-    * `Port`: 22
+* `Host`: the ip address of the Synology, of the form xxx.x.xx.xxx
+* `Username`: your username
+* `Password`: your password
+* `Port`: 22
 
 When making a connection for the first time you will be prompted with ...
 
@@ -95,14 +95,14 @@ By using "Map a network drive" or "Connect to Server", you will be able to view 
 
 
 macOS - here are a few links that may help:
-    * [link1](https://support.apple.com/en-mt/guide/mac-help/mchlp1140/mac)
-    * [link2](https://setapp.com/how-to/map-a-network-drive-on-mac)
-    * [link3](https://www.lifewire.com/how-to-map-network-drive-mac-4707917)
+* [link1](https://support.apple.com/en-mt/guide/mac-help/mchlp1140/mac)
+* [link2](https://setapp.com/how-to/map-a-network-drive-on-mac)
+* [link3](https://www.lifewire.com/how-to-map-network-drive-mac-4707917)
 
 Windows - here are a few links that may help:
-    * [link1](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-10-29ce55d1-34e3-a7e2-4801-131475f9557d)
-    * [link2](https://www.dummies.com/article/technology/information-technology/networking/general-networking/mapping-network-drives-164954)
-    * [link3](https://www.howtogeek.com/762111/how-to-map-a-network-drive-on-windows-10/)
+* [link1](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-10-29ce55d1-34e3-a7e2-4801-131475f9557d)
+* [link2](https://www.dummies.com/article/technology/information-technology/networking/general-networking/mapping-network-drives-164954)
+* [link3](https://www.howtogeek.com/762111/how-to-map-a-network-drive-on-windows-10/)
 
 
 
