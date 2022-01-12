@@ -55,7 +55,7 @@ optogenetics_light="${16}"
 FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
 mkdir "${OutputDirectory}/${FileName}"
 printf "Copying video files from Synology\n"
-cp "${video_name}" "${OutputDirectory}/${FileName}/"
+cp "${InputDirectory}/${video_name}" "${OutputDirectory}/${FileName}/"
 
 
 # Before doing anything else, let's set up the directory structure in bash and not in the individual
@@ -65,14 +65,32 @@ mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir "${OutputDirectory}/${FileName}/Results"
 
 
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-### log file paths that need to be modified in scripts:
 
-# optogenetic_light_detection_errors.log
-# calibration_errors.log
-# identity_assignment_errors.log
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ### need to convert Strand-Camera mkv files to constant frame rate videos
+# if [[ ${video_type} == "mkv" ]]; then
+#     my_bitrate=4M
+#     n_cores=nproc --all
+#     ffmpeg \
+#         -hide_banner \
+#         -i "${OutputDirectory}/${FileName}/"${video_name}" \
+#         -filter:v fps=25 \
+#         -c:v libx264 \
+#         #-x264-params "nal-hrd=cbr" \
+#         #-b:v ${my_bitrate} \
+#         #-minrate ${my_bitrate} \
+#         #-maxrate ${my_bitrate} \
+#         #-bufsize ${my_bitrate} \
+#         -crf 18 \
+#         -preset fast \
+#         -threads ${n_cores} \
+#         -y \
+#         "${OutputDirectory}/${FileName}/"${video_name}"
+# fi
+# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -85,9 +103,9 @@ mkdir "${OutputDirectory}/${FileName}/Results"
 #   "${flies_per_arena}"
 #   "${number_of_arenas}"
 #   "${assay_type}"
-best_calib_file=$(ls ../MATLAB/calib_files/ | grep "${video_type}" \
+best_calib_file=$(ls ../MATLAB/parent_calib_files/ | grep "${video_type}" \
     | grep "${flies_per_arena}fly" \
-    | grep "${number_of_arenas}arenas" \
+    | grep "${number_of_arenas}arena" \
     | grep "${arena_shape}" \
     | grep "${assay_type}")
 
@@ -117,11 +135,11 @@ fi
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 printf "\n\n\nNow tracking: ${FileName} ...\n"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                OutputDirectory=${OutputDirectory}; \
-                                                video_type=${video_type}; \
+/usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                OutputDirectory='${OutputDirectory}'; \
+                                                video_type='${video_type}'; \
                                                 track_start=${track_start}; \
-                                                best_calib_file=${best_calib_file}; \
+                                                best_calib_file='${best_calib_file}'; \
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
                                                 ../MATLAB/AutoTracking"
@@ -129,8 +147,8 @@ printf "\n\n\nNow tracking: ${FileName} ...\n"
 # Only run the optogenetic light detector if the video is an optogenetics experiment
 if [[ ${optogenetics_light} ]]; then
     printf "\n\n\n\tDetecting optogenetic light ...\n"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                    OutputDirectory=${OutputDirectory}; \
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                    OutputDirectory='${OutputDirectory}'; \
                                                     video_type=${video_type}; \
                                                     ../MATLAB/script_detect_optogenetic_light"
 fi
@@ -139,12 +157,12 @@ fi
 # were trained with.
 if [[ ${flies_per_arena} == 2 ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                    OutputDirectory=${OutputDirectory}; \
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                    OutputDirectory='${OutputDirectory}'; \
                                                     ../MATLAB/DeleteSingletonFlies"
     printf "\n\n\n\tApplying classifiers ...\n"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                    OutputDirectory=${OutputDirectory}; \
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                    OutputDirectory='${OutputDirectory}'; \
                                                     ../MATLAB/ApplyClassifiers"
 fi
 
@@ -152,8 +170,8 @@ if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
     # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
     # are in arena 2, etc...
     printf "\n\n\n\tRe-assigning identities ...\n"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName=${FileName}; \
-                                                    OutputDirectory=${OutputDirectory}; \
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                    OutputDirectory='${OutputDirectory}'; \
                                                     ../MATLAB/script_reassign_identities"
 fi
 
@@ -172,7 +190,7 @@ fi
 # Move the resulting tracking results to the Synology in each users folder
 printf "\n\n\nMoving tracking results to the Synology\n"
 mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
-cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
+cp -R "${OutputDirectory}/${video_name}" "/mnt/Synology/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
