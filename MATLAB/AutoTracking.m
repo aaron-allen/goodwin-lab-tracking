@@ -50,7 +50,7 @@ disp('Now Tracking Videos');
 % set options (omit any or all to use default options)
 options.num_chunks   = maxNumCompThreads;
 options.num_cores    = maxNumCompThreads*2;
-options.max_minutes  = 15;
+options.max_minutes  = 2;
 options.save_JAABA   = true;
 options.save_xls     = false;
 options.save_seg     = false;

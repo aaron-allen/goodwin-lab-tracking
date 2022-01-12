@@ -49,6 +49,24 @@ assay_type="${15}"
 optogenetics_light="${16}"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+printf "\n\n\n"
+printf "\n\ntoday is : ${today}\n"
+printf "code dir is : ${CodeDirectory}\n"
+printf "tobetracked dir is : ${ToBeTrackedDirectory}\n"
+printf "working dir is : ${WorkingDirectory}\n"
+printf "input dir is : ${InputDirectory}\n"
+printf "output dir is : ${OutputDirectory}\n"
+printf "user is : ${user}\n"
+printf "video name is  : ${video_name}\n"
+printf "video type is : ${video_type}\n"
+printf "start time is  : ${track_start}\n"
+printf "n flies is : ${flies_per_arena}\n"
+printf "sex ratio is : ${sex_ratio}\n"
+printf "n arenas is : ${number_of_arenas}\n"
+printf "arena shape is : ${arena_shape}\n"
+printf "assay type is : ${assay_type}\n"
+printf "opto light is : ${optogenetics_light}\n"
+printf "\n\n\n"
 
 
 
@@ -65,33 +83,13 @@ mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir "${OutputDirectory}/${FileName}/Results"
 
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+### log file paths that need to be modified in scripts:
 
-
-
-
-# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-# ### need to convert Strand-Camera mkv files to constant frame rate videos
-# if [[ ${video_type} == "mkv" ]]; then
-#     my_bitrate=4M
-#     n_cores=nproc --all
-#     ffmpeg \
-#         -hide_banner \
-#         -i "${OutputDirectory}/${FileName}/"${video_name}" \
-#         -filter:v fps=25 \
-#         -c:v libx264 \
-#         #-x264-params "nal-hrd=cbr" \
-#         #-b:v ${my_bitrate} \
-#         #-minrate ${my_bitrate} \
-#         #-maxrate ${my_bitrate} \
-#         #-bufsize ${my_bitrate} \
-#         -crf 18 \
-#         -preset fast \
-#         -threads ${n_cores} \
-#         -y \
-#         "${OutputDirectory}/${FileName}/"${video_name}"
-# fi
-# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+# optogenetic_light_detection_errors.log
+# calibration_errors.log
+# identity_assignment_errors.log
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -110,6 +108,7 @@ best_calib_file=$(ls ../MATLAB/parent_calib_files/ | grep "${video_type}" \
     | grep "${assay_type}")
 
 if [ -z "${best_calib_file}" ]; then
+    printf "\n\n\n"
     printf "No matching calib file.\n"
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# CALIBRATION
@@ -123,6 +122,7 @@ if [ -z "${best_calib_file}" ]; then
 	# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 else
+    printf "\n\n\n"
     printf "There is a matching calib file.\n"
     printf "\tThe best match is: ${best_calib_file}\n\n"
 fi
@@ -130,11 +130,12 @@ fi
 
 
 
+printf "\n\n\n"
 
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-printf "\n\n\nNow tracking: ${FileName} ...\n"
+printf "\n\n\nNow tracking: ${video_name} ...\n"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                 OutputDirectory='${OutputDirectory}'; \
                                                 video_type='${video_type}'; \
@@ -142,15 +143,17 @@ printf "\n\n\nNow tracking: ${FileName} ...\n"
                                                 best_calib_file='${best_calib_file}'; \
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
-                                                ../MATLAB/AutoTracking"
+                                                path='${CodeDirectory}'; \
+                                                AutoTracking"
 
 # Only run the optogenetic light detector if the video is an optogenetics experiment
 if [[ ${optogenetics_light} ]]; then
     printf "\n\n\n\tDetecting optogenetic light ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    video_type=${video_type}; \
-                                                    ../MATLAB/script_detect_optogenetic_light"
+                                                    video_type='${video_type}'; \
+                                                    path='${CodeDirectory}'; \
+                                                    script_detect_optogenetic_light"
 fi
 
 # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
@@ -159,11 +162,13 @@ if [[ ${flies_per_arena} == 2 ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    ../MATLAB/DeleteSingletonFlies"
+                                                    path='${CodeDirectory}'; \
+                                                    DeleteSingletonFlies"
     printf "\n\n\n\tApplying classifiers ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    ../MATLAB/ApplyClassifiers"
+                                                    path='${CodeDirectory}'; \
+                                                    ApplyClassifiers"
 fi
 
 if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
@@ -172,7 +177,8 @@ if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
     printf "\n\n\n\tRe-assigning identities ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    ../MATLAB/script_reassign_identities"
+                                                    path='${CodeDirectory}'; \
+                                                    script_reassign_identities"
 fi
 
 printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"

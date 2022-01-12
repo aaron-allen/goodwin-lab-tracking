@@ -47,7 +47,7 @@ if [ -s ${csv_file} ]; then
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# add bit to kill any processes that might interfer with tracking, like
 	# matlab, geneious, python, R, etc.
-	printf "\n\n\n\nKilling all MATLAB processes...\n"
+	printf "\n\nKilling all MATLAB processes...\n"
 	pkill MATLAB
 	printf "Killing all R processes...\n"
 	pkill R
@@ -90,8 +90,9 @@ if [ -s ${csv_file} ]; then
 							number_of_arenas \
 							arena_shape \
 							assay_type \
-							optogenetics_light; do
-	    printf "Video Name:\t ${video_name}\n"
+							optogenetics_light \
+							station; do
+	    printf "\n\nVideo Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
 	      printf '\tMoving video to NowTracking\n'
 	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
@@ -127,7 +128,8 @@ if [ -s ${csv_file} ]; then
 							number_of_arenas \
 							arena_shape \
 							assay_type \
-							optogenetics_light; do
+							optogenetics_light \
+							station; do
 
 		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
@@ -175,7 +177,7 @@ if [ -s ${csv_file} ]; then
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
 		# Check to make sure no more than 2 *_video_tracking scripts are running.
-		while [ $(pgrep -fc "_video_tracking") -gt 1 ]
+		while [ $(pgrep -fc "_video_tracking") -gt 0 ]
 		do
 			sleep 10m
 		done
