@@ -65,14 +65,32 @@ mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir "${OutputDirectory}/${FileName}/Results"
 
 
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-### log file paths that need to be modified in scripts:
 
-# optogenetic_light_detection_errors.log
-# calibration_errors.log
-# identity_assignment_errors.log
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ### need to convert Strand-Camera mkv files to constant frame rate videos
+# if [[ ${video_type} == "mkv" ]]; then
+#     my_bitrate=4M
+#     n_cores=nproc --all
+#     ffmpeg \
+#         -hide_banner \
+#         -i "${OutputDirectory}/${FileName}/"${video_name}" \
+#         -filter:v fps=25 \
+#         -c:v libx264 \
+#         #-x264-params "nal-hrd=cbr" \
+#         #-b:v ${my_bitrate} \
+#         #-minrate ${my_bitrate} \
+#         #-maxrate ${my_bitrate} \
+#         #-bufsize ${my_bitrate} \
+#         -crf 18 \
+#         -preset fast \
+#         -threads ${n_cores} \
+#         -y \
+#         "${OutputDirectory}/${FileName}/"${video_name}"
+# fi
+# # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 

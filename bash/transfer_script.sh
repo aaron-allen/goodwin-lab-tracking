@@ -28,6 +28,30 @@ if [[ -d "${full_path}" ]]; then
     if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
         printf "Remote Synology is moutned. We will now start copying the videos...\n\n"
         for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
+            
+            # # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+            # ### need to convert Strand-Camera mkv files to constant frame rate videos
+            # if [[ ${video_type} == "mkv" ]]; then
+            #     my_bitrate=4M
+            #     n_cores=nproc --all
+            #     ffmpeg \
+            #         -hide_banner \
+            #         -i "${OutputDirectory}/${FileName}/"${video_name}" \
+            #         -filter:v fps=25 \
+            #         -c:v libx264 \
+            #         #-x264-params "nal-hrd=cbr" \
+            #         #-b:v ${my_bitrate} \
+            #         #-minrate ${my_bitrate} \
+            #         #-maxrate ${my_bitrate} \
+            #         #-bufsize ${my_bitrate} \
+            #         -crf 18 \
+            #         -preset fast \
+            #         -threads ${n_cores} \
+            #         -y \
+            #         "${OutputDirectory}/${FileName}/"${video_name}"
+            # fi
+            # # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
             printf "\tCopying ${file} ...\n"
             cp "${file}" "/mnt/Synology/ToBeTracked/VideosFromStaions/videos/"
             local_size=wc -c "${file}" | awk '{print $1}'
