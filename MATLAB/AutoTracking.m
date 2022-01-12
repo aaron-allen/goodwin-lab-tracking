@@ -23,7 +23,6 @@ addpath(genpath('../../FlyTracker'));
 
 
 
-
 % ==============================================================================================================================================================
 % The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
 % Do I need to change directory?
@@ -32,15 +31,10 @@ cd ([OutputDirectory '/' FileName]);
 
 
 
-
-
-
-
 % ==============================================================================================================================================================
 % Track videos
 
 
-folders = {pwd};
 
 diary([OutputDirectory '/' FileName '/Logs/tracker_logfile.log'])
 diary on
@@ -57,7 +51,7 @@ options.save_seg     = false;
 
 
 options.startframe   = track_start;
-options.fr_samp      = 200;
+options.fr_samp      = 100;
 options.arena_r_mm   = 20;
 options.n_flies      = flies_per_arena;
 
@@ -67,7 +61,7 @@ options.force_tracking  = true;
 options.force_features  = true;
 
 
-options.f_parent_calib  = ['calibration_files/' best_calib_file];
+options.f_parent_calib  = ['parent_calib_files/' best_calib_file];
 video_file_name = [FileName '.' video_type];
 
 
@@ -84,7 +78,7 @@ tracker([],options,[],video_file_name);
 % Predict Sex
 
 % make backups ...
-copyfile([OutputDirectory '/' FileName '-track.mat'], ...
+copyfile([OutputDirectory '/' FileName '/' FileName '-track.mat'], ...
          [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_1_pre_predictsex.mat']);
 
 % first predict the sex of the flies and add to the the track.mat file
@@ -92,7 +86,7 @@ FlyTrackerClassifySex_generic([OutputDirectory '/' FileName '-track.mat'],'track
 
 if options.save_JAABA,
     % second predict the sex of the flies and add to the the trx.mat file
-    copyfile([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
              [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_1_pre_predictsex.mat']);
     FlyTrackerClassifySex_generic([OutputDirectory '/' FileName '/' FileName '_JAABA/trx.mat'],'trx',sex_ratio,true)
 end
