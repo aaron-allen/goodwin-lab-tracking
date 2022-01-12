@@ -28,8 +28,8 @@ printf "$(date)\n"
 today=$(date +%Y%m%d)
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
-CodeDirectory="$(pwd)"
-ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStaions"
+CodeDirectory=$( dirname "$PWD" )
+ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStations"
 WorkingDirectory="/mnt/LocalData/Tracking"
 ArchiveDirectory="/mnt/Synology/Archive/mkv"
 
@@ -47,19 +47,19 @@ if [ -s ${csv_file} ]; then
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# add bit to kill any processes that might interfer with tracking, like
 	# matlab, geneious, python, R, etc.
-	printf "Killing all MATLAB processes..."
+	printf "\n\n\n\nKilling all MATLAB processes...\n"
 	pkill MATLAB
-	printf "Killing all R processes..."
+	printf "Killing all R processes...\n"
 	pkill R
-	printf "Killing all ipython processes..."
+	printf "Killing all ipython processes...\n"
 	pkill ipython
-	printf "Killing all Geneious processes..."
+	printf "Killing all Geneious processes...\n"
 	# Geneious doesn't show up as Geneious in top/pgrep/etc, it shows up as java, but killing anything java seems a bit poor form...
 	# So we'll feed the pid into a ps call with a more detailed output and grep for Geneious.
 	pgrep java | while read -r java_pid ; do
     	printf "\tChecking if java pid = ${java_pid} is a Geneious instance.\n"
 		if ps -Flww -p ${java_pid} | grep -q "Geneious"; then
-		    printf "\tIt is! Kill it!"
+		    printf "\tIt is! Kill it!\n"
 			pkill ${java_pid}
 		else
 		    printf "\tMust be some other java application, so let it be.\n"
@@ -159,6 +159,7 @@ if [ -s ${csv_file} ]; then
 										  ${ToBeTrackedDirectory} \
 										  ${WorkingDirectory} \
 										  ${InputDirectory} \
+										  ${OutputDirectory} \
 										  ${user} \
 										  ${video_name} \
 										  ${video_type} \
@@ -178,7 +179,7 @@ if [ -s ${csv_file} ]; then
 		do
 			sleep 10m
 		done
-	done
+	done < ${csv_file}
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup
