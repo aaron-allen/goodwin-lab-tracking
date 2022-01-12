@@ -143,7 +143,7 @@ printf "\n\n\nNow tracking: ${video_name} ...\n"
                                                 best_calib_file='${best_calib_file}'; \
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
-                                                path='${CodeDirectory}'; \
+                                                addpath(genpath('${CodeDirectory}')); \
                                                 AutoTracking"
 
 # Only run the optogenetic light detector if the video is an optogenetics experiment
@@ -152,7 +152,7 @@ if [[ ${optogenetics_light} ]]; then
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     video_type='${video_type}'; \
-                                                    path='${CodeDirectory}'; \
+                                                    addpath(genpath('${CodeDirectory}')); \
                                                     script_detect_optogenetic_light"
 fi
 
@@ -162,12 +162,12 @@ if [[ ${flies_per_arena} == 2 ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    path='${CodeDirectory}'; \
+                                                    addpath(genpath('${CodeDirectory}')); \
                                                     DeleteSingletonFlies"
     printf "\n\n\n\tApplying classifiers ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    path='${CodeDirectory}'; \
+                                                    addpath(genpath('${CodeDirectory}')); \
                                                     ApplyClassifiers"
 fi
 
@@ -177,7 +177,7 @@ if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
     printf "\n\n\n\tRe-assigning identities ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    path='${CodeDirectory}'; \
+                                                    addpath(genpath('${CodeDirectory}')); \
                                                     script_reassign_identities"
 fi
 
