@@ -147,7 +147,8 @@ printf "\n\n\nNow tracking: ${video_name} ...\n"
                                                 AutoTracking"
 
 # Only run the optogenetic light detector if the video is an optogenetics experiment
-if [[ ${optogenetics_light} ]]; then
+test_file="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
+if [[ ${optogenetics_light} == "true" ]] && [[ -f "${test_file}" ]]; then
     printf "\n\n\n\tDetecting optogenetic light ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
@@ -158,7 +159,7 @@ fi
 
 # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
 # were trained with.
-if [[ ${flies_per_arena} == 2 ]]; then
+if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
@@ -171,7 +172,9 @@ if [[ ${flies_per_arena} == 2 ]]; then
                                                     ApplyClassifiers"
 fi
 
-if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
+# Does reassign identities require there to be 'scores_*.mat' files?
+test_file=$(ls "${OutputDirectory}/${FileName}/${FileName}/${FileName}_JAABA/" | grep "scores_")
+if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ ! -z "${test_file}" ]]; then
     # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
     # are in arena 2, etc...
     printf "\n\n\n\tRe-assigning identities ...\n"
@@ -181,11 +184,23 @@ if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
                                                     script_reassign_identities"
 fi
 
-printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
-/usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+
+
+
+# Need to double check that the 'Extact_and_Plot_Tracking_Data.R' doesn't fail if there are no
+# JAABA 'scores_*.mat' files.
+
+# test_file=$(ls "${OutputDirectory}/${FileName}/${FileName}/${FileName}_JAABA/" | grep "scores_")
+# if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ ! -z "${test_file}" ]]; then
+    printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
+    /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+# fi
+
+
 
 # Only calculate indices if there are 2 flies per arena
-if [[ ${flies_per_arena} == 2 ]]; then
+test_file=$(ls "${OutputDirectory}/${FileName}/${FileName}/${FileName}_JAABA/" | grep "scores_")
+if [[ ${flies_per_arena} == 2 ]] && [[ ! -z "${test_file}" ]]; then
     printf "\n\n\n\tCalculating indices and plotting ethograms ...\n"
     /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
 fi
