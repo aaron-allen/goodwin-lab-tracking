@@ -9,13 +9,13 @@
 #
 #
 # This script does the following;
-#		1.
-#		2.
-#		3.
-#		4.
-#		5.
-#		6.
-#		7.
+#		1. Checks to see if there are any videos in 'ToBeTracked' to be tracked.
+#		2. Kills any CPU or RAM hungry applications that may have been left running.
+#		3. Takes a 'snap shot' of the videos that need to be tracked in the 'video_list.csv' file,
+#          and moves them to the 'NowTracking' directory on the Synology.
+#		4. Read through the 'video_list.csv' file and start a sub-process tracking the
+#          video. At this momonet it is just 'single_video_tracking.sh' for 'courtship' style videos.
+#		5. Once the tracking is done, moves the 'NowTracking' directory to archive.
 #
 #
 #
@@ -70,7 +70,7 @@ if [ -s ${csv_file} ]; then
 
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}Tracked"
-	mkdir -p "${OutputDirectory}/tracking_logs"
+	mkdir -p "${OutputDirectory}/_tracking_logs"
 
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,27 +133,6 @@ if [ -s ${csv_file} ]; then
 
 		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
-		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
-		# to add an if statement here and run a different shell script to start Ctrax.
-
-		# if [[ ${assay_type} == "oviposition" ]]; then
-		# 	# run Ctrax_tracking.sh
-		# 	bash ctrax_video_tracking.sh ${today} \
-		# 						   ${CodeDirectory} \
-		# 						   ${ToBeTrackedDirectory} \
-		# 						   ${WorkingDirectory} \
-		# 						   ${InputDirectory} \
-		# 						   ${user} \
-		# 						   ${video_name} \
-		# 						   ${video_type} \
-		# 						   ${tracking_start_time_in_seconds} \
-		# 						   ${flies_per_arena} \
-		# 						   ${sex_ratio} \
-		# 						   ${number_of_arenas} \
-		# 						   ${arena_shape} \
-		# 						   ${assay_type} &
-		# fi
-
 		if [[ ${assay_type} == "courtship" ]]; then
 			# run single_video_tracking.sh
 			bash single_video_tracking.sh ${today} \
@@ -174,6 +153,48 @@ if [ -s ${csv_file} ]; then
 										  ${optogenetics_light} >> \
 				"${OutputDirectory}/tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
 				&
+		fi
+
+
+		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
+		# to add an if statement here and run a different shell script to start Ctrax.
+		if [[ ${assay_type} == "oviposition" ]]; then
+			# run Ctrax_tracking.sh
+			printf "\n\n ... haven't coded this yet ... \n"
+		# 	bash ctrax_video_tracking.sh ${today} \
+		# 						   ${CodeDirectory} \
+		# 						   ${ToBeTrackedDirectory} \
+		# 						   ${WorkingDirectory} \
+		# 						   ${InputDirectory} \
+		# 						   ${user} \
+		# 						   ${video_name} \
+		# 						   ${video_type} \
+		# 						   ${tracking_start_time_in_seconds} \
+		# 						   ${flies_per_arena} \
+		# 						   ${sex_ratio} \
+		# 						   ${number_of_arenas} \
+		# 						   ${arena_shape} \
+		# 						   ${assay_type} &
+		fi
+
+		# add some code for DLC?
+		if [[ ${assay_type} == "DLC" ]]; then
+			# run Ctrax_tracking.sh
+			printf "\n\n ... haven't coded this yet ... \n"
+		# 	bash DLC_video_tracking.sh ${today} \
+		# 						   ${CodeDirectory} \
+		# 						   ${ToBeTrackedDirectory} \
+		# 						   ${WorkingDirectory} \
+		# 						   ${InputDirectory} \
+		# 						   ${user} \
+		# 						   ${video_name} \
+		# 						   ${video_type} \
+		# 						   ${tracking_start_time_in_seconds} \
+		# 						   ${flies_per_arena} \
+		# 						   ${sex_ratio} \
+		# 						   ${number_of_arenas} \
+		# 						   ${arena_shape} \
+		# 						   ${assay_type} &
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start

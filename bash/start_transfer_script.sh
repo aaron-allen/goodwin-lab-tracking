@@ -43,7 +43,7 @@ done
 # I don't think we need this if statement with the above while statement, but oh well... I'll leave it for now.
 if [[ -d "${full_path}" ]]; then
     printf "\nWe will now start transfering your videos ...\n\n"
-    bash transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | tee -a "/mnt/local_data/videos/transfer_logs/${today}_${user_name}_transfer.log"
+    bash transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | tee -a "/mnt/local_data/videos/_logs/transfer_logs/${today}_${user_name}_transfer.log"
 else
     printf "\nStill can't find the directory ...\n"
     printf "Probably best to find Aaron or Annika ...\n\n"

@@ -32,6 +32,9 @@ else
     cd "/mnt/local_data/videos/orphan_videos"
 fi
 
-strand-cam-pylon &
+today_plus=$(date +%Y%m%d-%H%M%S)
+strand-cam-pylon >> \
+    "/mnt/local_data/videos/_logs/recording_logs/${today_plus}_${user_name}_recording.log" 2>&1 \
+    &
 
 printf "Don't close this window until you are all finished recording."

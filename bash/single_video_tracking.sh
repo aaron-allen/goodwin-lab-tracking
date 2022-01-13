@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# Author: Aaron M Allen
+# Author: Aaron M. Allen
 # Date: 2018.10.09
 #     updated: 2021.12.02
 #
@@ -26,6 +26,9 @@
 
 
 
+
+printf "$(date)\n"
+printf "Start tracking video ...\n\n\n\n"
 
 
 
@@ -78,9 +81,9 @@ cp "${InputDirectory}/${video_name}" "${OutputDirectory}/${FileName}/"
 
 # Before doing anything else, let's set up the directory structure in bash and not in the individual
 # other scripts.
-mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
-mkdir "${OutputDirectory}/${FileName}/Logs"
-mkdir "${OutputDirectory}/${FileName}/Results"
+mkdir "${OutputDirectory}/${FileName}/1_Results"
+mkdir "${OutputDirectory}/${FileName}/2_Logs"
+mkdir -p "${OutputDirectory}/${FileName}/3_Backups/${FileName}_JAABA/perframe/"
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------

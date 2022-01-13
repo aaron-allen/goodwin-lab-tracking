@@ -28,9 +28,21 @@ if [[ -d "${full_path}" ]]; then
     if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
         printf "Remote Synology is moutned. We will now start copying the videos...\n\n"
         for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
-            
+
             # # --------------------------------------------------------------------------------------------------------------------------------------------------------------
             # ### need to convert Strand-Camera mkv files to constant frame rate videos
+
+            # test_fps=$(ffprobe -v quiet -print_format json -show_streams "${file}" | grep avg_frame_rate)
+            # if [[ ${test_fps} != *"0/0"* ]]; then
+            #     echo "vfr";
+            # else
+            #     if [[ ${test_fps} != *"/1"* ]]; then
+            #         echo "cfr";
+            #     fi
+            # fi
+
+
+
             # if [[ ${video_type} == "mkv" ]]; then
             #     my_bitrate=4M
             #     n_cores=nproc --all
