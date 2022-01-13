@@ -32,6 +32,7 @@ if nmale == 1,
         for i = 1:nflies,
             td.trk.data(i,:,36) = 'male';
         end
+    end
 elseif nfemale == 1,
     if filetype == 'trx',
         for i = 1:nflies,
@@ -42,6 +43,7 @@ elseif nfemale == 1,
         for i = 1:nflies,
             td.trk.data(i,:,36) = 'female';
         end
+    end
 else
     area = nan(1,nflies);
     for i = 1:nflies,
