@@ -62,15 +62,26 @@ extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FAL
     my_track_data <- extract_track_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "-track.mat"))
     cat(paste0("    Now extracting feat data\n"))
     my_feat_data <- extract_feat_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "-feat.mat"))
-    cat(paste0("    Now extracting jaaba data\n"))
-    my_jaaba_data <- extract_jaaba_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "_JAABA/"))
-
+    
+    # test if there are any jaaba scores files to extract
+    jaaba_path <- paste0(tracking_dir_path, vid_name, "/", vid_name, "_JAABA/")
+    jaaba_scores_exist <- !purrr::is_empty(list.files(jaaba_path) %>% stringr::str_subset("scores_"))
+    if (jaaba_scores_exist) {
+        cat(paste0("    Now extracting jaaba data\n"))
+        my_jaaba_data <- extract_jaaba_data(jaaba_path)
+    }
+    
     cat(paste0("    Now merging all data\n"))
-    my_data <-dplyr::bind_rows(my_track_data,
-                               dplyr::bind_rows(my_feat_data,my_jaaba_data)) %>%
+    my_data <-dplyr::bind_rows(my_track_data,my_feat_data) 
+    if (jaaba_scores_exist) {
+        my_data <- dplyr::bind_rows(my_data,my_jaaba_data)
+    }
+    my_data <- my_data %>% 
         dplyr::mutate(Video_name = vid_name,
-               Arena = dplyr::if_else((Fly_Id %% flies_per_arena) == 0, Fly_Id/flies_per_arena, ceiling(Fly_Id/flies_per_arena))
-               ) %>%
+                      Arena = dplyr::if_else((Fly_Id %% flies_per_arena) == 0, 
+                                             Fly_Id/flies_per_arena, 
+                                             ceiling(Fly_Id/flies_per_arena))
+                      ) %>%
         dplyr::group_by(Video_name, Fly_Id, Frame)
     if (save_data) {
         cat(paste0("    Now saving csv\n"))

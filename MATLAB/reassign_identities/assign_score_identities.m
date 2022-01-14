@@ -36,9 +36,11 @@ function assign_score_identities(scoresdir,idsfile)
     cd (scoresdir);
 
     scoresfiles=dir('scores*.mat');
-    scoresfilenames=arrayfun(@(f) f.name,scoresfiles,'UniformOutput',false);
-    outputfilenames=cellfun(@(f) strrep(f,'.mat','_id_corrected.mat'),scoresfilenames,'UniformOutput',false);
-    cellfun(@(scoresfilename,outputfilename) id_correct_scorefile(scoresfilename,outputfilename,ids),scoresfilenames,outputfilenames);
+    if ~isempty(scoresfiles)
+        scoresfilenames=arrayfun(@(f) f.name,scoresfiles,'UniformOutput',false);
+        outputfilenames=cellfun(@(f) strrep(f,'.mat','_id_corrected.mat'),scoresfilenames,'UniformOutput',false);
+        cellfun(@(scoresfilename,outputfilename) id_correct_scorefile(scoresfilename,outputfilename,ids),scoresfilenames,outputfilenames);
+    end
     cd ('perframe');
 
     matfiles=dir('*.mat');
