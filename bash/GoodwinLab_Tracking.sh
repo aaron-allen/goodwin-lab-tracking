@@ -70,8 +70,17 @@ if [ -s ${csv_file} ]; then
 
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}Tracked"
+	if [[ ! -d ${InputDirectory} ]]; then
+		mkdir -p "${InputDirectory}/"
+	fi
 	mkdir -p "${OutputDirectory}/_tracking_logs"
 
+	if [[ ! -f "${InputDirectory}/../video_list.csv" ]]; then
+		touch "${InputDirectory}/../video_list.csv"
+	fi
+	if [[ ! -f "${InputDirectory}/../videos_in_ToBeTracked.txt" ]]; then
+		touch "${InputDirectory}/../videos_in_ToBeTracked.txt"
+	fi
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Setup freeze of videos that need to be tracked
@@ -119,6 +128,10 @@ if [ -s ${csv_file} ]; then
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
 	printf "\n\nFILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
+
+	printf "\n\n\n\n\n\n$(date)\n\n" >> "~/Documents/TrackingLogs/tracking_history.log"
+	cat "${csv_file}" >> "~/Documents/TrackingLogs/tracking_history.log"
+
 	while IFS=',' read -r user \
 							video_name \
 							video_type \
@@ -151,7 +164,7 @@ if [ -s ${csv_file} ]; then
 										  ${arena_shape} \
 										  ${assay_type} \
 										  ${optogenetics_light} >> \
-				"${OutputDirectory}/tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
+				"${OutputDirectory}/_tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
 				&
 		fi
 
@@ -199,7 +212,7 @@ if [ -s ${csv_file} ]; then
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
 		# Check to make sure no more than 2 *_video_tracking scripts are running.
-		while [ $(pgrep -fc "_video_tracking") -gt 0 ]
+		while [ $(pgrep -fc "_video_tracking") -gt 1 ]
 		do
 			sleep 10m
 		done

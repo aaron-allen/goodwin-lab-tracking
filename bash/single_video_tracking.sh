@@ -164,10 +164,10 @@ fi
 # were trained with.
 if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                    OutputDirectory='${OutputDirectory}'; \
-                                                    addpath(genpath('${CodeDirectory}')); \
-                                                    DeleteSingletonFlies"
+    # /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+    #                                                 OutputDirectory='${OutputDirectory}'; \
+    #                                                 addpath(genpath('${CodeDirectory}')); \
+    #                                                 DeleteSingletonFlies"
     printf "\n\n\n\tApplying classifiers ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
