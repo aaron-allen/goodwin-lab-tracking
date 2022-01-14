@@ -6,16 +6,15 @@
 % Description:
 % modified to accept either the track.mat file or the trx.mat file
 
-function td = FlyTrackerClassifySex_generic(matfile,varargin)
+function td = FlyTrackerClassifySex_generic(matfile,filetype,fracmale,dosave)
 
-[filetype,fracmale,dosave] = ...
-  myparse(varargin,...
-  'filetype','trx','fracmale',.5,'dosave',true);
+
+
 
 td = load(matfile);
-if filetype == 'trx',
+if strcmp(filetype, 'trx'),
     nflies = numel(td.trx);
-elseif filetype == 'track',
+elseif strcmp(filetype, 'track'),
     nflies = size(td.trk.data,1);
 end
 
@@ -23,50 +22,52 @@ nmale = round(fracmale*nflies);
 nfemale = nflies - nmale;
 
 if nmale == 1,
-    if filetype == 'trx',
+    if strcmp(filetype, 'trx'),
         for i = 1:nflies,
-            td.trx(i).sex = 'male';
+            td.trx(i).sex = 'M';
         end
-    elseif filetype == 'track',
-        td.trk.names{36} = ['sex']
+    elseif strcmp(filetype, 'track'),
+        td.trk.names{36} = ['sex'];
         for i = 1:nflies,
-            td.trk.data(i,:,36) = 'male';
+            td.trk.data(i,:,36) = 'M';
         end
     end
 elseif nfemale == 1,
-    if filetype == 'trx',
+    if strcmp(filetype, 'trx'),
         for i = 1:nflies,
-            td.trx(i).sex = 'female';
+            td.trx(i).sex = 'F';
         end
-    elseif filetype == 'track',
-        td.trk.names{36} = ['sex']
+    elseif strcmp(filetype, 'track'),
+        td.trk.names{36} = ['sex'];
         for i = 1:nflies,
-            td.trk.data(i,:,36) = 'female';
+            td.trk.data(i,:,36) = 'F';
         end
     end
 else
     area = nan(1,nflies);
     for i = 1:nflies,
-        if filetype == 'trx',
+        if strcmp(filetype, 'trx'),
             area(i) = nanmedian(td.trx(i).a.*td.trx(i).b);
-        elseif filetype == 'track',
+        elseif strcmp(filetype, 'track'),
             area(i) = nanmedian(td.trk.data(i,:,4).*td.trk.data(i,:,5));
         end
     end
     [~,order] = sort(area);
 
-    for i = 1:nmale,
-        if filetype == 'trx',
-            td.trx(order(i)).sex = 'male';
-        elseif filetype == 'track',
-            td.trk(order(i),:,36) = 'male';
+    if strcmp(filetype, 'trx'),
+        for i = 1:nmale,
+            td.trx(order(i)).sex = 'M';
         end
-    end
-    for i = nmale+1:nflies,
-        if filetype == 'trx',
-            td.trx(order(i)).sex = 'female';
-        elseif filetype == 'track',
-            td.trk(order(i),:,36) = 'female';
+        for i = nmale+1:nflies,
+            td.trx(order(i)).sex = 'F';
+        end
+    elseif strcmp(filetype, 'track'),
+        td.trk.names{36} = ['sex'];
+        for i = 1:nmale,
+            td.trk.data(order(i),:,36) = 'M';
+        end
+        for i = nmale+1:nflies,
+            td.trk.data(order(i),:,36) = 'F';
         end
     end
 end

@@ -159,7 +159,10 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     addpath(genpath('${CodeDirectory}')); \
                                                     DeleteSingletonFlies"
-    printf "\n\n\n\tApplying classifiers ...\n"
+    # printf "\n\n\n\tApplying classifiers ...\n"
+    # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
+        ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
+    # fi
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     addpath(genpath('${CodeDirectory}')); \
@@ -197,7 +200,7 @@ fi
 # Move the resulting tracking results to the Synology in each users folder
 printf "\n\n\nMoving tracking results to the Synology\n"
 mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
-cp -R "${OutputDirectory}/${video_name}" "/mnt/Synology/Tracked/${user}/${today}/"
+cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

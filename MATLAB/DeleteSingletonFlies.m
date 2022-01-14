@@ -95,7 +95,7 @@ if (1 < FliesPerChamber) && (FliesPerChamber < 2)
     disp('Deleting data from perframe files:');
     perframeDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/perframe/*.mat']);
     for P = 1:length(perframeDataFiles)
-        copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/' perframeDataFiles(P).name], ...
+        copyfile([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], ...
                  [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_pre_deletesingleton.mat']);
         load(perframeDataFiles(P).name);
         disp(['    ' perframeDataFiles(P).name]);

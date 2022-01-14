@@ -25,7 +25,7 @@
 
 
 printf "$(date)\n"
-today=$(date +%Y%m%d)
+today=$(date +%Y%m%d-%H%M%S)
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
 CodeDirectory=$( dirname "$PWD" )
