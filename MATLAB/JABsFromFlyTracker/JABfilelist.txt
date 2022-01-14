@@ -1,7 +1,7 @@
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Approaching.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Contact.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Copulation.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Encircling.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Turning.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/WingGesture.jab
-/home/goodwintracking/Documents/GitHub/goodwin-lab-tracking/JABsFromFlyTracker/Facing.jab
+../MATLAB/JABsFromFlyTracker/Approaching.jab
+../MATLAB/JABsFromFlyTracker/Contact.jab
+../MATLAB/JABsFromFlyTracker/Copulation.jab
+../MATLAB/JABsFromFlyTracker/Encircling.jab
+../MATLAB/JABsFromFlyTracker/Turning.jab
+../MATLAB/JABsFromFlyTracker/WingGesture.jab
+../MATLAB/JABsFromFlyTracker/Facing.jab
