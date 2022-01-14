@@ -43,111 +43,98 @@ diary([OutputDirectory '/' FileName '/Logs/DeleteSingleFly_logfile.log'])
 diary on
 
 disp(datetime('now'));
-% for p = 1:numel(dirs)
-%     if ~dirs(p).isdir
-%       continue;
-%     end
-%     DIRname = dirs(p).name;
-%     if ismember(DIRname,{'.','..'})
-%       continue;
-%     end
-%     cd (DIRname);
-%     TrackDir =(pwd);
 
-    % load files
-    TrackFile = dir('*track.mat');
-    disp(['Loading ' TrackFile.name]);
-    load(TrackFile.name);
-    cd ([DIRname '_JAABA']);
-    disp('Loading trx.mat')
-    load('trx.mat');
+TrackFile = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '-track.mat']);
+disp(['Loading ' TrackFile.name]);
+load([TrackFile.folder '/' TrackFile.name]);
 
-    % Determining the average number of flies per chamber
-    disp('Counting flies per chamber')
-    TotalFlies = 0;
-    for F = 1:size(trk.flies_in_chamber,2)
-        TotalFlies = TotalFlies + size(trk.flies_in_chamber{F},2);
-    end
-    FliesPerChamber = TotalFlies/size(trk.flies_in_chamber,2);
-    fprintf('Average number of flies per chamber is %f.\n',FliesPerChamber);
+disp('Loading trx.mat')
+load([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat']);
 
-    if (1 < FliesPerChamber) && (FliesPerChamber < 2)
-        disp('The number of flies differs between chambers');
-        copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
-                 [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_1_predictsex.mat']);
+% Determining the average number of flies per chamber
+disp('Counting flies per chamber')
+TotalFlies = 0;
+for F = 1:size(trk.flies_in_chamber,2)
+    TotalFlies = TotalFlies + size(trk.flies_in_chamber{F},2);
+end
+FliesPerChamber = TotalFlies/size(trk.flies_in_chamber,2);
+fprintf('Average number of flies per chamber is %f.\n',FliesPerChamber);
 
-        % Create a logical array of the location of the singleton flies
-        disp('Creating logical array of the location of the singleton flies');
-        LM = [];
-        for N = 1:size(trk.flies_in_chamber,2)
-            if size(trk.flies_in_chamber{N},2) == 1
-                LM = [LM, 1];
-            else
-                LM = [LM, 0, 0];
-            end
-        end
-        LM = boolean(LM);
+if (1 < FliesPerChamber) && (FliesPerChamber < 2)
+    disp('The number of flies differs between chambers');
+    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_2_pre_deletesingleton.mat']);
 
-        % deleting single fly trx data
-        disp('Deleting row(s) in trx file');
-        for N = 1:size(trk.flies_in_chamber,2)
-            if size(trk.flies_in_chamber{N},2) == 1
-                trx([trx.id]==trk.flies_in_chamber{N}) = [];
-            end
-        end
-        disp('Re-numbering Ids in trx file');
-        for I = 1:length(trx)
-            trx(I).id = I;
-        end
-        save('trx.mat', 'trx', 'timestamps')
-
-        % deleting single fly perframe data
-        disp('Deleting data from perframe files:');
-        cd perframe
-        mkdir BackupPerframe
-        perframeDataFiles = dir('*.mat');
-        for P = 1:length(perframeDataFiles)
-            copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/' perframeDataFiles(P).name], ...
-                     [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_pre_deletesingleton.mat']);
-            load(perframeDataFiles(P).name);
-            disp(['    ' perframeDataFiles(P).name]);
-            data(:,LM)=[];
-            save(perframeDataFiles(P).name, 'data', 'units');
-        end
-
-        % renumbering flies_in_chambers and deleting single fly trk data
-        cd (TrackDir);
-        disp('Renumbering flies_in_chambers in trk file');
-        copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '-track.mat'], ...
-                 [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_2_pre_deletesingleton.mat']);
-        trk.flies_in_chamber = [];
-        for A = 1:(size(trx,2)/2)
-            trk.flies_in_chamber{A} = [2.*A-1,2.*A];
-        end
-        disp('Deleting row(s) from track file');
-        trk.data(LM,:,:) = [];
-        save(TrackFile.name, 'trk');
-
-        % deleting single fly feat data
-        disp('Deleting row(s) from feat file');
-        copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '-feat.mat'], ...
-                 [OutputDirectory '/' FileName '/Backups/' FileName '-feat--backup_2_pre_deletesingleton.mat']);
-        FeatFile = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '-feat.mat']);
-        load(FeatFile.name);
-        feat.data(LM,:,:) = [];
-        save(FeatFile.name, 'feat');
-
-    else
-        if (FliesPerChamber == 2)
-            disp('There are 2 flies per chamber.')
+    % Create a logical array of the location of the singleton flies
+    disp('Creating logical array of the location of the singleton flies');
+    LM = [];
+    for N = 1:size(trk.flies_in_chamber,2)
+        if size(trk.flies_in_chamber{N},2) == 1
+            LM = [LM, 1];
         else
-            if (FliesPerChamber == 1)
-                disp('There is 1 fly per chamber.')
-            end
+            LM = [LM, 0, 0];
         end
     end
-    cd (CurrDir)
-% end
+    LM = boolean(LM);
+
+    % deleting single fly trx data
+    disp('Deleting row(s) in trx file');
+    for N = 1:size(trk.flies_in_chamber,2)
+        if size(trk.flies_in_chamber{N},2) == 1
+            trx([trx.id]==trk.flies_in_chamber{N}) = [];
+        end
+    end
+    disp('Re-numbering Ids in trx file');
+    for I = 1:length(trx)
+        trx(I).id = I;
+    end
+    save([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+        'trx', 'timestamps')
+
+    % deleting single fly perframe data
+    disp('Deleting data from perframe files:');
+    perframeDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/perframe/*.mat']);
+    for P = 1:length(perframeDataFiles)
+        copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/' perframeDataFiles(P).name], ...
+                 [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_pre_deletesingleton.mat']);
+        load(perframeDataFiles(P).name);
+        disp(['    ' perframeDataFiles(P).name]);
+        data(:,LM)=[];
+        save([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], 'data', 'units');
+    end
+
+    % renumbering flies_in_chambers and deleting single fly trk data
+    disp('Renumbering flies_in_chambers in trk file');
+    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '-track.mat'], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '-track--backup_2_pre_deletesingleton.mat']);
+    trk.flies_in_chamber = [];
+    for A = 1:(size(trx,2)/2)
+        trk.flies_in_chamber{A} = [2.*A-1,2.*A];
+    end
+    disp('Deleting row(s) from track file');
+    trk.data(LM,:,:) = [];
+    save([TrackFile.folder '/' TrackFile.name], 'trk');
+
+    % deleting single fly feat data
+    disp('Deleting row(s) from feat file');
+    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '-feat.mat'], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '-feat--backup_2_pre_deletesingleton.mat']);
+    FeatFile = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '-feat.mat']);
+    load([FeatFile.folder '/' FeatFile.name]);
+    feat.data(LM,:,:) = [];
+    save([FeatFile.folder '/' FeatFile.name], 'feat');
+
+else
+    if (FliesPerChamber == 2)
+        disp('There are 2 flies per chamber.')
+    else
+        if (FliesPerChamber == 1)
+            disp('There is 1 fly per chamber.')
+        end
+    end
+end
+
+
 disp('ALL DONE!')
 diary off
 exit

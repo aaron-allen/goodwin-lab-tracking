@@ -39,9 +39,9 @@
 
 
 
-library(data.table)
-library(tidyverse)
-
+library("data.table")
+library("tidyverse")
+library("zoo")
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]

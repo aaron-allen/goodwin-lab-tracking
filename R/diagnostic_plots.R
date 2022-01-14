@@ -44,7 +44,8 @@ diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
     library("data.table")
     library("tidyverse")
     library("cowplot")
-
+    library("zoo")
+    
     # Values of +/-2pi are due to the fly's angle crossing the "zero" line and
     # don't represent 'true' large changes in angle. So I've reset anything
     # larger than 5 to 0, making the plot more informative to find the times
@@ -59,7 +60,7 @@ diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
     # mean over a 200 frame window.
     input_data_table <- input_data_table %>%
         group_by(Arena, Fly_Id) %>%
-        mutate(smoothed_vel = rollmean(x = vel, k = 200, fill = c(0,0,0), align = c("center")))
+        mutate(smoothed_vel = zoo::rollmean(x = vel, k = 200, fill = c(0,0,0), align = c("center")))
 
 
     if (is.numeric(slim_by)) {

@@ -200,7 +200,7 @@ extract_jaaba_data <- function(dir_path,raw = FALSE) {
     # if there are no files named '*_id_corrected.mat' then load the non-id_corrected files
     if (purrr::is_empty(jaaba_scores_files)) {
         id_corrected <- FALSE
-        jaaba_scores_files <- list.files() %>% stringr::str_subset("scores_") %>% stringr::str_subset(".mat")
+        jaaba_scores_files <- list.files(dir_path) %>% stringr::str_subset("scores_") %>% stringr::str_subset(".mat")
     }
     for (ii in seq_along(jaaba_scores_files)) {
         if (ii == 1) {
