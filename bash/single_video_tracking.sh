@@ -81,9 +81,9 @@ cp "${InputDirectory}/${video_name}" "${OutputDirectory}/${FileName}/"
 
 # Before doing anything else, let's set up the directory structure in bash and not in the individual
 # other scripts.
-mkdir "${OutputDirectory}/${FileName}/1_Results"
-mkdir "${OutputDirectory}/${FileName}/2_Logs"
-mkdir -p "${OutputDirectory}/${FileName}/3_Backups/${FileName}_JAABA/perframe/"
+mkdir "${OutputDirectory}/${FileName}/Results"
+mkdir "${OutputDirectory}/${FileName}/Logs"
+mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -113,17 +113,7 @@ best_calib_file=$(ls ../MATLAB/parent_calib_files/ | grep "${video_type}" \
 if [ -z "${best_calib_file}" ]; then
     printf "\n\n\n"
     printf "No matching calib file.\n"
-    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
-	# CALIBRATION
-	### Do we need this bit with Kristin Bransons 'force_calib' option for the tracker. We may be able to supply template
-	### calibration files and then just force re-calibration to adjust the masks etc (need to test if this works). Also
-	### need to compare Annika's other changes to the 'calibrator.m' to see what else we may need to patch.
-
-	# printf Now calibrating: "$A"
-	# /usr/local/bin/matlab  -r "FileName=${FileName}; OutputDirectory=${OutputDirectory}; video_type=${video_type}; run_calibrator_non_interactive_xflies"
-	# # do we still need to have a copy of this file? could we just rename it, instead of copying it?
-	# cp -r  $WorkingDirectory/$today/"${FileName}"/*_calibration.mat  $WorkingDirectory/$today/"${FileName}"/calibration.mat
-    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    exit 1
 else
     printf "\n\n\n"
     printf "There is a matching calib file.\n"
@@ -164,10 +154,10 @@ fi
 # were trained with.
 if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "\n\n\n\tDetecting singleton flies ...\n"# Before attempting to run ApplyClassifiers, check for any rogue singletons
-    # /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-    #                                                 OutputDirectory='${OutputDirectory}'; \
-    #                                                 addpath(genpath('${CodeDirectory}')); \
-    #                                                 DeleteSingletonFlies"
+    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                                    OutputDirectory='${OutputDirectory}'; \
+                                                    addpath(genpath('${CodeDirectory}')); \
+                                                    DeleteSingletonFlies"
     printf "\n\n\n\tApplying classifiers ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \

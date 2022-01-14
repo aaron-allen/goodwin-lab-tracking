@@ -32,6 +32,7 @@ CodeDirectory=$( dirname "$PWD" )
 ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStations"
 WorkingDirectory="/mnt/LocalData/Tracking"
 ArchiveDirectory="/mnt/Synology/Archive/mkv"
+LogDirectory="/home/goodwintracking/Documents/TrackingLogs/tracking_history.log"
 
 # printf "The Code Directory is: $CodeDirectory\n"
 # printf "This is the input directory: $ToBeTrackedDirectory\n"
@@ -129,8 +130,8 @@ if [ -s ${csv_file} ]; then
 	printf "\n\nFILE TRANSFER AND TRACKING\n"
 	csv_file="${InputDirectory}/../video_list.csv"
 
-	printf "\n\n\n\n\n\n$(date)\n\n" >> "~/Documents/TrackingLogs/tracking_history.log"
-	cat "${csv_file}" >> "~/Documents/TrackingLogs/tracking_history.log"
+	printf "\n\n\n\n\n\n$(date)\n\n" >> "${LogDirectory}"
+	cat "${csv_file}" >> "${LogDirectory}"
 
 	while IFS=',' read -r user \
 							video_name \
