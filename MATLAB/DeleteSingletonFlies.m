@@ -97,7 +97,7 @@ if (1 < FliesPerChamber) && (FliesPerChamber < 2)
     for P = 1:length(perframeDataFiles)
         copyfile([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], ...
                  [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_2_pre_deletesingleton.mat']);
-        load(perframeDataFiles(P).name);
+        load([perframeDataFiles(P).folder '/' perframeDataFiles(P).name]);
         disp(['    ' perframeDataFiles(P).name]);
         data(:,LM)=[];
         save([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], 'data', 'units');

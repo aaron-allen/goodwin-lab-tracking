@@ -45,7 +45,12 @@ library("zoo")
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
-FliesPerArena <- commandArgs(trailingOnly=T)[3]
+FliesPerArena <- commandArgs(trailingOnly=T)[4]
+
+message(paste0("OutputDirectory = ",OutputDirectory))
+message(paste0("FileName = ",FileName))
+message(paste0("FliesPerArena = ",FliesPerArena))
+
 
 
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log"))
@@ -75,3 +80,5 @@ tryCatch({
     writeLines(paste0("at index/step ", i, " occurred following error ", as.character(e) ), LogFile)
     }
 )
+
+sessionInfo()

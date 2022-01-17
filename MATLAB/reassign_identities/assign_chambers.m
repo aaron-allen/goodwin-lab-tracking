@@ -21,7 +21,7 @@ function assign_chambers(inputdir)
     startdir=pwd;
     cd (inputdir);
     % calibfile=strcat(inputdir,'-calibration.mat');
-    calibfile='calibration.mat';
+    calibfile='../calibration.mat';
     JAABAfolder=strcat(inputdir,'_JAABA');
     trxfile=fullfile(JAABAfolder,'trx.mat');
     trxfile_new=strrep(trxfile,'.mat','_id_corrected.mat');

@@ -70,7 +70,7 @@ if [ -s ${csv_file} ]; then
 
 
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
-	OutputDirectory="$WorkingDirectory/${today}Tracked"
+	OutputDirectory="$WorkingDirectory/${today}-Tracked"
 	if [[ ! -d ${InputDirectory} ]]; then
 		mkdir -p "${InputDirectory}/"
 	fi
@@ -218,6 +218,14 @@ if [ -s ${csv_file} ]; then
 			sleep 10m
 		done
 	done < ${csv_file}
+
+
+	# Add wait for all scripts to finish
+	while [ $(pgrep -fc "_video_tracking") -gt 0 ]
+	do
+		sleep 10m
+	done
+
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup

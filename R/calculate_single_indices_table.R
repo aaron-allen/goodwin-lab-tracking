@@ -167,6 +167,12 @@ calculate_single_indices_table <- function(input,
                 denominator = length(Frame)/frame_rate
         ) %>%
         select(-Fly_Id)
+    
+    # Predict sex of flies using there size and the user supplied proportion of males
+    # join predicted sex tibble with indicies tibble 
+    # Should the predict sex part be it's own function? probably ...
+    
+    
     if (save_data) {
         message("    Saving Indices Table")
         SaveName <- paste0(save_path, unique(raw_data$Video_name),'_Indices.csv')
@@ -175,4 +181,21 @@ calculate_single_indices_table <- function(input,
     if (return_obj) {
         return(indices)
     }
+}
+
+
+
+predict_sex <- function(tracking_data,
+                        skip_first_frames = 250,
+                        remove_copulation = TRUE,
+                        proportion_male = 0.5) {
+    
+    # Predict sex of flies using there size and the user supplied proportion of males
+    
+    # skip the first n (?) frames when calculating the area
+    # skip the copulation frames when calculating the area
+    # rank the sizes
+    # compute a tibble with fly_id and predicted_sex
+    
+    
 }

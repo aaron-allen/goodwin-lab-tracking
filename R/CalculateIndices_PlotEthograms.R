@@ -58,6 +58,10 @@ library("cowplot")
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
 
+message(paste0("OutputDirectory = ",OutputDirectory))
+message(paste0("FileName = ",FileName))
+
+
 
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.log"))
 tryCatch({
@@ -106,3 +110,7 @@ tryCatch({
         writeLines(paste0("at index/step ", i, " occurred following error ", as.character(e) ), LogFile)
         }
 )
+
+
+
+sessionInfo()

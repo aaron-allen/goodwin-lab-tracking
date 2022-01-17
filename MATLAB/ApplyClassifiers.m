@@ -19,8 +19,8 @@ end
 
 % this is not as clean as above, but might clean up later.
 addpath(genpath('../../JAABA/perframe'));
-JABFiles = '../MATLAB/JABsFromFlyTracker/JABfilelist.txt';
-wingJAB = '../MATLAB/JABsFromFlyTracker/WingGesture.jab';
+JABFiles = [CodeDirectory '/MATLAB/JABsFromFlyTracker/JABfilelist.txt'];
+wingJAB = [CodeDirectory '/MATLAB/JABsFromFlyTracker/WingGesture.jab'];
 
 
 % The variable "OutputDirectory" and "FileName" are passed to the script when running from bash

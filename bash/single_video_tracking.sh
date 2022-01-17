@@ -165,6 +165,7 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     # fi
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
+                                                    CodeDirectory='${CodeDirectory}'; \
                                                     addpath(genpath('${CodeDirectory}')); \
                                                     ApplyClassifiers"
 fi
