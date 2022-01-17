@@ -36,19 +36,33 @@ disp('Moving JAABA files to backup directory ...');
 movefile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
          [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_3_pre_reassign_identities.mat']);
 movefile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx_id_corrected.mat'], ...
-         [OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trxmat']);
+         [OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat']);
 perframeDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/perframe/*.mat']);
 for P = 1:length(perframeDataFiles)
     if endsWith(perframeDataFiles(P).name, 'id_corrected.mat')
         continue;
     end
-    movefile([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], ...
-             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_3_pre_reassign_identities.mat']);
+ movefile([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], ...
+          [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/perframe/' perframeDataFiles(P).name(1:end-4) '--backup_3_pre_reassign_identities.mat']);
 end
 perframeDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/perframe/*id_corrected.mat']);
 for P = 1:length(perframeDataFiles)
     movefile([perframeDataFiles(P).folder '/' perframeDataFiles(P).name], ...
-             [perframeDataFiles(P).folder '/' perframeDataFiles(P).name(1:end-17) '.mat']);
+          [perframeDataFiles(P).folder '/' perframeDataFiles(P).name(1:end-17) '.mat']);
+end
+
+scoresDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/scores_*.mat']);
+for P = 1:length(scoresDataFiles)
+    if endsWith(scoresDataFiles(P).name, 'id_corrected.mat')
+        continue;
+    end
+    movefile([scoresDataFiles(P).folder '/' scoresDataFiles(P).name], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/' scoresDataFiles(P).name(1:end-4) '--backup_3_pre_reassign_identities.mat']);
+end
+scoresDataFiles = dir([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/perframe/*id_corrected.mat']);
+for P = 1:length(scoresDataFiles)
+    movefile([scoresDataFiles(P).folder '/' scoresDataFiles(P).name], ...
+             [scoresDataFiles(P).folder '/' scoresDataFiles(P).name(1:end-17) '.mat']);
 end
 
 

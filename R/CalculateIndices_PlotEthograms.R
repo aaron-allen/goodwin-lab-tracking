@@ -64,7 +64,7 @@ message(paste0("FileName = ",FileName))
 
 
 LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.log"))
-tryCatch({
+# tryCatch({
 
     input_dir <- paste0(OutputDirectory,"/",FileName,"/Results/")
     my_data_file <- list.files(paste0(OutputDirectory,"/",FileName,"/Results/")) %>% str_subset("ALLDATA_R.csv.gz")
@@ -105,11 +105,11 @@ tryCatch({
 
     #############################################
 
-    },
-    error=function(e) {
-        writeLines(paste0("at index/step ", i, " occurred following error ", as.character(e) ), LogFile)
-        }
-)
+#     },
+#     error=function(e) {
+#         writeLines(paste0("at index/step ", i, " occurred following error ", as.character(e) ), LogFile)
+#         }
+# )
 
 
 
