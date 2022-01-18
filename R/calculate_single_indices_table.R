@@ -85,6 +85,8 @@ calculate_single_indices_table <- function(input,
                                         max_court = FALSE,
                                         max_court_dur = 600,
                                         frame_rate = 25,
+                                        predict_sex = FALSE,
+                                        prop_male = 0.5,
                                         return_obj = FALSE,
                                         save_data = TRUE,
                                         save_path = NULL){
@@ -171,6 +173,14 @@ calculate_single_indices_table <- function(input,
     # Predict sex of flies using there size and the user supplied proportion of males
     # join predicted sex tibble with indicies tibble 
     # Should the predict sex part be it's own function? probably ...
+    if (predict_sex) {
+        predicted_sex <- predict_sex_by_size(tracking_data = input, 
+                                             proportion_male = prop_male,
+                                             frame_rate = frame_rate) %>% 
+            select(Arena, FlyId, pred_sex)
+        indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "Arena", "FlyId" = "FlyId") )
+    }
+    
     
     
     if (save_data) {
@@ -185,10 +195,15 @@ calculate_single_indices_table <- function(input,
 
 
 
-predict_sex <- function(tracking_data,
-                        skip_first_frames = 250,
-                        remove_copulation = TRUE,
-                        proportion_male = 0.5) {
+
+    
+predict_sex_by_size <- function(tracking_data,
+                                skip_first_frames = 250,
+                                remove_copulation = TRUE,
+                                proportion_male = 0.5,
+                                min_dist = 2,
+                                dist_wind = 50,
+                                frame_rate = 25) {
     
     # Predict sex of flies using there size and the user supplied proportion of males
     
@@ -197,5 +212,67 @@ predict_sex <- function(tracking_data,
     # rank the sizes
     # compute a tibble with fly_id and predicted_sex
     
+    # Returns a tibble of fly ids and predicted sex. Includes the following columns:
+    #   "FileName": the name of the video file
+    #   "ArenaNumber": ... arena number ...
+    #   "FlyId": the id of the fly
+    #   "min_frame": first frame for which area was considered
+    #   "max_frame": last frame for which area was considered
+    #   "avg_area": the mean area from the first to last frame considered
+    #   "pred_sex": predicted sex
     
+    n_males <- proportion_male * n_flies
+    n_females <- n_flies - n_males
+    
+    predicted_sex <- tracking_data %>%
+        select(Video_name,
+               Arena,
+               Fly_Id,
+               Frame,
+               major_axis_len,
+               minor_axis_len,
+               dist_to_other) %>%
+        drop_na() %>%
+        group_by(Fly_Id) %>%
+        mutate(
+            smoothed_distiance = rollmean(dist_to_other, dist_wind*frame_rate, fill = NA, align = c("center")),
+            is_close = if_else(smoothed_distiance < min_dist, 1, 0)
+        ) %>% 
+        do(
+            if(skip_first_frames > 0)
+                slice(., skip_first_frames:n())
+        ) %>%
+        do(
+            if(remove_copulation)
+                slice(., 1:if_else(sum(is_close, na.rm = TRUE)==0, n(), which.max(is_close)))
+        ) %>%
+        mutate(
+            fly_area = pi * major_axis_len * minor_axis_len
+        ) %>% 
+        summarise(FileName = unique(Video_name),
+                  ArenaNumber = unique(Arena),
+                  FlyId = unique(Fly_Id),
+                  min_frame = min(Frame),
+                  max_frame = max(Frame),
+                  avg_area = mean(fly_area) 
+        )  %>%
+        select(-Fly_Id) %>%
+        mutate(pred_sex = "?")
+    
+    if (proportion_male == 0) {
+        predicted_sex <- predicted_sex %>% mutate(pred_sex = "F")
+    }
+    if (proportion_male == 1) {
+        predicted_sex <- predicted_sex %>% mutate(pred_sex = "M")
+    }
+    if (proportion_male > 0 & proportion_male < 1) {
+        predicted_sex <- predicted_sex %>% 
+            group_by(ArenaNumber) %>%
+            mutate(pred_sex = cut(avg_area,
+                                  c(0, quantile(avg_area, proportion_male), max(avg_area)),
+                                  c('M', 'F')
+            )
+            )
+    }
+    return(predicted_sex)
 }

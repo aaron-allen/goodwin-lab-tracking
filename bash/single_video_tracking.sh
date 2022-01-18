@@ -25,12 +25,19 @@
 
 
 
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 
 
 printf "$(date)\n"
 printf "Start tracking video ...\n\n\n\n"
 
-
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Inherit/import/accept variables:
@@ -43,13 +50,14 @@ OutputDirectory="${6}"
 user="${7}"
 video_name="${8}"
 video_type="${9}"
-track_start="${10}"
-flies_per_arena="${11}"
-sex_ratio="${12}"
-number_of_arenas="${13}"
-arena_shape="${14}"
-assay_type="${15}"
-optogenetics_light="${16}"
+fps="${10}"
+track_start="${11}"
+flies_per_arena="${12}"
+sex_ratio="${13}"
+number_of_arenas="${14}"
+arena_shape="${15}"
+assay_type="${16}"
+optogenetics_light="${17}"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 printf "\n\n\n"
@@ -71,6 +79,10 @@ printf "assay type is : ${assay_type}\n"
 printf "opto light is : ${optogenetics_light}\n"
 printf "\n\n\n"
 
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 
 
 FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
@@ -94,6 +106,10 @@ mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
 # identity_assignment_errors.log
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -121,6 +137,11 @@ else
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
+
 
 
 printf "\n\n\n"
@@ -128,6 +149,10 @@ printf "\n\n\n"
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 printf "\n\n\nNow tracking: ${video_name} ...\n"
 /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                 OutputDirectory='${OutputDirectory}'; \
@@ -142,7 +167,11 @@ printf "\n\n\nNow tracking: ${video_name} ...\n"
 # Only run the optogenetic light detector if the video is an optogenetics experiment
 test_file="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ ${optogenetics_light} == "true" ]] && [[ -f "${test_file}" ]]; then
-    printf "\n\n\n\tDetecting optogenetic light ...\n"
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n\n"
+    printf "\n\n\nDetecting optogenetic light ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     video_type='${video_type}'; \
@@ -153,13 +182,22 @@ fi
 # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
 # were trained with.
 if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
-    printf "\n\n\n\tDetecting singleton flies ...\n"
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n\n"
+    printf "\n\n\nDetecting singleton flies ...\n"
     # Before attempting to run ApplyClassifiers, check for any rogue singletons
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     addpath(genpath('${CodeDirectory}')); \
                                                     DeleteSingletonFlies"
-    # printf "\n\n\n\tApplying classifiers ...\n"
+
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n\n"
+    printf "\n\n\nApplying classifiers ...\n"
     # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
         ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
     # fi
@@ -173,7 +211,11 @@ fi
 if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ -f "${test_file}" ]]; then
     # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
     # are in arena 2, etc...
-    printf "\n\n\n\tRe-assigning identities ...\n"
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n\n"
+    printf "\n\n\nRe-assigning identities ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
                                                     addpath(genpath('${CodeDirectory}')); \
@@ -182,27 +224,44 @@ fi
 
 
 # if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ -f "${test_file}" ]]; then
-    printf "\n\n\n\tExtracting tracking data and plotting diagnotic plots ...\n"
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
     /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
 # fi
 
 
 
 # Only calculate indices if there are 2 flies per arena
-test_file=$(ls "${OutputDirectory}/${FileName}/Results/${FileName}_ALLDATA_R.csv.gz")
+test_file="${OutputDirectory}/${FileName}/Results/${FileName}_ALLDATA_R.csv.gz"
 if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
-    printf "\n\n\n\tCalculating indices and plotting ethograms ...\n"
-    /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}"
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "\n\n\nCalculating indices and plotting ethograms ...\n"
+    /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}"
 fi
 
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Move the resulting tracking results to the Synology in each users folder
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 printf "\n\n\nMoving tracking results to the Synology\n"
 mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
 cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+printf "\n\n\n\n\n\n\n\n"
+printf "####################################################\n"
+printf "####################################################\n"
+printf "####################################################\n\n"
 
 
 printf "\n\n\nDone tracking video.\n"

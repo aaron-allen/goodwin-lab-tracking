@@ -94,6 +94,7 @@ if [ -s ${csv_file} ]; then
 	while IFS=',' read -r user \
 							video_name \
 							video_type \
+							fps \
 							tracking_start_time_in_seconds \
 							flies_per_arena \
 							sex_ratio \
@@ -136,6 +137,7 @@ if [ -s ${csv_file} ]; then
 	while IFS=',' read -r user \
 							video_name \
 							video_type \
+							fps \
 							tracking_start_time_in_seconds \
 							flies_per_arena \
 							sex_ratio \
@@ -158,6 +160,7 @@ if [ -s ${csv_file} ]; then
 										  ${user} \
 										  ${video_name} \
 										  ${video_type} \
+										  ${fps} \
 										  ${tracking_start_time_in_seconds} \
 										  ${flies_per_arena} \
 										  ${sex_ratio} \

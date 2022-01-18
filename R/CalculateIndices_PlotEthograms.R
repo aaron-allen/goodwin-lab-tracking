@@ -57,9 +57,12 @@ library("cowplot")
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
+FPS <- as.numeric(commandArgs(trailingOnly=T)[4])
+PropMale <- as.numeric(commandArgs(trailingOnly=T)[5])
 
 message(paste0("OutputDirectory = ",OutputDirectory))
 message(paste0("FileName = ",FileName))
+message(paste0("FliesPerArena = ",FliesPerArena))
 
 
 
@@ -81,10 +84,13 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.
     source("../R/calculate_single_indices_table.R")
     message(paste0("Calculating indicies..."))
     calculate_single_indices_table(input = raw_data_spread,
-                                court_init = TRUE,
-                                max_court = TRUE,
-                                save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
-                                )
+                                    court_init = TRUE,
+                                    max_court = TRUE,
+                                    predict_sex = TRUE,
+                                    frame_rate = FPS,
+                                    prop_male = PropMale,
+                                    save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
+                                    )
 
     # Ethogram Plots of JAABA Classifiers
     #############################################
