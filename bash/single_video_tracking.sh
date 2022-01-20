@@ -70,6 +70,7 @@ printf "output dir is : ${OutputDirectory}\n"
 printf "user is : ${user}\n"
 printf "video name is  : ${video_name}\n"
 printf "video type is : ${video_type}\n"
+printf "fps is : ${fps}\n"
 printf "start time is  : ${track_start}\n"
 printf "n flies is : ${flies_per_arena}\n"
 printf "sex ratio is : ${sex_ratio}\n"
@@ -98,14 +99,6 @@ mkdir "${OutputDirectory}/${FileName}/Logs"
 mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
 
 
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-### log file paths that need to be modified in scripts:
-
-# optogenetic_light_detection_errors.log
-# calibration_errors.log
-# identity_assignment_errors.log
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 printf "\n\n\n\n\n\n\n\n"
 printf "####################################################\n"
 printf "####################################################\n"
@@ -115,11 +108,6 @@ printf "####################################################\n\n"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # add some code logic to sort out the optimal "template" calibration files
 # based on the imported variables.
-#   "${video_type}"
-#   "${arena_shape}"
-#   "${flies_per_arena}"
-#   "${number_of_arenas}"
-#   "${assay_type}"
 best_calib_file=$(ls ../MATLAB/parent_calib_files/ | grep "${video_type}" \
     | grep "${flies_per_arena}fly" \
     | grep "${number_of_arenas}arena" \
@@ -136,15 +124,6 @@ else
     printf "\tThe best match is: ${best_calib_file}\n\n"
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
-
-
-
-printf "\n\n\n"
 
 
 

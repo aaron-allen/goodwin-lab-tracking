@@ -105,10 +105,10 @@ if [ -s ${csv_file} ]; then
 							station; do
 	    printf "\n\nVideo Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
-	      printf '\tMoving video to NowTracking\n'
-	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
+			printf '\tMoving video to NowTracking\n'
+			mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
 	    fi
-	done < ${csv_file}
+	done < "${csv_file}"
 
 	# any video that's not in the to be tracked settings file will be moved to the non-tracked directory
 	printf "\n\n"
@@ -116,11 +116,11 @@ if [ -s ${csv_file} ]; then
 	while IFS=',' read -r video_name; do
 	    #printf "Video Name\t:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
-	      printf "Video Name:\t ${video_name}\n"
-	      printf '\tMoving video to NonTrackedVideos\n'
-	      mv "${ToBeTrackedDirectory}/videos/${video_name}" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
+			printf "Video Name:\t ${video_name}\n"
+			printf '\tMoving video to NonTrackedVideos\n'
+			mv "${ToBeTrackedDirectory}/videos/${video_name}" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
 	    fi
-	done < ${csv_file}
+	done < "${csv_file}"
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -151,23 +151,23 @@ if [ -s ${csv_file} ]; then
 
 		if [[ ${assay_type} == "courtship" ]]; then
 			# run single_video_tracking.sh
-			bash single_video_tracking.sh ${today} \
-										  ${CodeDirectory} \
-										  ${ToBeTrackedDirectory} \
-										  ${WorkingDirectory} \
-										  ${InputDirectory} \
-										  ${OutputDirectory} \
-										  ${user} \
-										  ${video_name} \
-										  ${video_type} \
-										  ${fps} \
-										  ${tracking_start_time_in_seconds} \
-										  ${flies_per_arena} \
-										  ${sex_ratio} \
-										  ${number_of_arenas} \
-										  ${arena_shape} \
-										  ${assay_type} \
-										  ${optogenetics_light} >> \
+			bash single_video_tracking.sh "${today}" \
+										  "${CodeDirectory}" \
+										  "${ToBeTrackedDirectory}" \
+										  "${WorkingDirectory}" \
+										  "${InputDirectory}" \
+										  "${OutputDirectory}" \
+										  "${user}" \
+										  "${video_name}" \
+										  "${video_type}" \
+										  "${fps}" \
+										  "${tracking_start_time_in_seconds}" \
+										  "${flies_per_arena}" \
+										  "${sex_ratio}" \
+										  "${number_of_arenas}" \
+										  "${arena_shape}" \
+										  "${assay_type}" \
+										  "${optogenetics_light}" >> \
 				"${OutputDirectory}/_tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
 				&
 		fi
@@ -220,12 +220,13 @@ if [ -s ${csv_file} ]; then
 		do
 			sleep 10m
 		done
-	done < ${csv_file}
+	done < "${csv_file}"
 
 
 	# Add wait for all scripts to finish
 	while [ $(pgrep -fc "_video_tracking") -gt 0 ]
 	do
+		printf 'Waiting for tracking to finish ...\n'
 		sleep 10m
 	done
 
