@@ -62,7 +62,8 @@ PropMale <- as.numeric(commandArgs(trailingOnly=T)[5])
 
 message(paste0("OutputDirectory = ",OutputDirectory))
 message(paste0("FileName = ",FileName))
-message(paste0("FliesPerArena = ",FliesPerArena))
+message(paste0("FPS = ",FPS))
+message(paste0("PropMale = ",PropMale))
 
 
 
