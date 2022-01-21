@@ -99,7 +99,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = maxNumCompThreads;/options.num_cores   = 10;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = maxNumCompThreads;/options.num_cores    = 10;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -151,7 +151,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = 10;/options.num_cores   = 8;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 10;/options.num_cores    = 8;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -206,7 +206,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = 8;/options.num_cores   = 6;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 8;/options.num_cores    = 6;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -261,7 +261,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = 6;/options.num_cores   = 4;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 6;/options.num_cores    = 4;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -316,7 +316,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = 4;/options.num_cores   = 2;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 4;/options.num_cores    = 2;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -371,7 +371,7 @@ do
 done
 
 
-sed -i 's/options.num_cores   = 2;/options.num_cores   = 1;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 2;/options.num_cores    = 1;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
 
@@ -480,7 +480,7 @@ do
 done
 
 # reset AutoTracking
-sed -i 's/options.num_cores   = 2;/options.num_cores    = maxNumCompThreads;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
+sed -i 's/options.num_cores    = 2;/options.num_cores    = maxNumCompThreads;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 sed -i 's/options.num_chunks   = 1;/options.num_chunks   = options.num_cores*2;/g' /home/aaron/Documents/GitHub/goodwin-lab-tracking/MATLAB/AutoTracking.m
 
 
