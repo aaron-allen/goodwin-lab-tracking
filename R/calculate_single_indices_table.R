@@ -169,20 +169,20 @@ calculate_single_indices_table <- function(input,
                 denominator = length(Frame)/frame_rate
         ) %>%
         select(-Fly_Id)
-    
+
     # Predict sex of flies using there size and the user supplied proportion of males
-    # join predicted sex tibble with indicies tibble 
+    # join predicted sex tibble with indicies tibble
     # Should the predict sex part be it's own function? probably ...
     if (predict_sex) {
-        predicted_sex <- predict_sex_by_size(tracking_data = input, 
+        predicted_sex <- predict_sex_by_size(tracking_data = input,
                                              proportion_male = prop_male,
-                                             frame_rate = frame_rate) %>% 
+                                             frame_rate = frame_rate) %>%
             select(Arena, FlyId, pred_sex)
         indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "Arena", "FlyId" = "FlyId") )
     }
-    
-    
-    
+
+
+
     if (save_data) {
         message("    Saving Indices Table")
         SaveName <- paste0(save_path, unique(raw_data$Video_name),'_Indices.csv')
@@ -196,7 +196,7 @@ calculate_single_indices_table <- function(input,
 
 
 
-    
+
 predict_sex_by_size <- function(tracking_data,
                                 skip_first_frames = 250,
                                 remove_copulation = TRUE,
@@ -204,14 +204,14 @@ predict_sex_by_size <- function(tracking_data,
                                 min_dist = 2,
                                 dist_wind = 50,
                                 frame_rate = 25) {
-    
+
     # Predict sex of flies using there size and the user supplied proportion of males
-    
+
     # skip the first n (?) frames when calculating the area
     # skip the copulation frames when calculating the area
     # rank the sizes
     # compute a tibble with fly_id and predicted_sex
-    
+
     # Returns a tibble of fly ids and predicted sex. Includes the following columns:
     #   "FileName": the name of the video file
     #   "ArenaNumber": ... arena number ...
@@ -220,7 +220,8 @@ predict_sex_by_size <- function(tracking_data,
     #   "max_frame": last frame for which area was considered
     #   "avg_area": the mean area from the first to last frame considered
     #   "pred_sex": predicted sex
-    
+
+    n_flies <- length(unique(tracking_data$Fly_Id))
     n_males <- proportion_male * n_flies
     n_females <- n_flies - n_males
     
@@ -237,7 +238,7 @@ predict_sex_by_size <- function(tracking_data,
         mutate(
             smoothed_distiance = rollmean(dist_to_other, dist_wind*frame_rate, fill = NA, align = c("center")),
             is_close = if_else(smoothed_distiance < min_dist, 1, 0)
-        ) %>% 
+        ) %>%
         do(
             if(skip_first_frames > 0)
                 slice(., skip_first_frames:n())
@@ -248,17 +249,17 @@ predict_sex_by_size <- function(tracking_data,
         ) %>%
         mutate(
             fly_area = pi * major_axis_len * minor_axis_len
-        ) %>% 
+        ) %>%
         summarise(FileName = unique(Video_name),
                   ArenaNumber = unique(Arena),
                   FlyId = unique(Fly_Id),
                   min_frame = min(Frame),
                   max_frame = max(Frame),
-                  avg_area = mean(fly_area) 
+                  avg_area = mean(fly_area)
         )  %>%
         select(-Fly_Id) %>%
         mutate(pred_sex = "?")
-    
+
     if (proportion_male == 0) {
         predicted_sex <- predicted_sex %>% mutate(pred_sex = "F")
     }
@@ -266,7 +267,7 @@ predict_sex_by_size <- function(tracking_data,
         predicted_sex <- predicted_sex %>% mutate(pred_sex = "M")
     }
     if (proportion_male > 0 & proportion_male < 1) {
-        predicted_sex <- predicted_sex %>% 
+        predicted_sex <- predicted_sex %>%
             group_by(ArenaNumber) %>%
             mutate(pred_sex = cut(avg_area,
                                   c(0, quantile(avg_area, proportion_male), max(avg_area)),
