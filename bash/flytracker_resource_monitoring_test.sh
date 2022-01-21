@@ -19,7 +19,7 @@ function system_usage_logger {
     do
         timestamp=$(date +%s)
         curr_cpu=$(top -bn 2 -d 0.01 | grep '^%Cpu' | tail -n 1 | awk '{print $2+$4+$6}')
-        curr_load=$(uptime | awk '{print $12}') #| cut -d "," -f 1
+        curr_load=$(uptime | awk '{print $12}') | cut -d "," -f 1
         curr_ram=$(free -m | grep '^Mem:' | awk '{ print $3 }')
         printf "${timestamp}\t${curr_cpu}\t${curr_load}\t${curr_ram}\n" >> "${curr_log_file}"
         sleep 1m
