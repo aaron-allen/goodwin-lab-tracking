@@ -50,7 +50,7 @@ options.save_xls     = false;
 options.save_seg     = false;
 
 
-options.startframe   = track_start;
+options.startframe   = track_start*FPS;
 options.fr_samp      = 100;
 options.arena_r_mm   = 10;
 options.n_flies      = flies_per_arena;

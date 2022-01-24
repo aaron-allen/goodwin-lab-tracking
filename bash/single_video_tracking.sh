@@ -137,6 +137,7 @@ printf "\n\n\nNow tracking: ${video_name} ...\n"
                                                 OutputDirectory='${OutputDirectory}'; \
                                                 video_type='${video_type}'; \
                                                 track_start=${track_start}; \
+                                                FPS=${fps} \
                                                 best_calib_file='${best_calib_file}'; \
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
