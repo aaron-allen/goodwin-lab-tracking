@@ -174,7 +174,7 @@ calculate_single_indices_table <- function(input,
     # join predicted sex tibble with indicies tibble
     # Should the predict sex part be it's own function? probably ...
     if (predict_sex) {
-        predicted_sex <- predict_sex_by_size(tracking_data = input,
+        predicted_sex <- predict_sex_by_size(tracking_data = raw_data,
                                              proportion_male = prop_male,
                                              frame_rate = frame_rate) %>%
             select(Arena, FlyId, pred_sex)
@@ -224,7 +224,7 @@ predict_sex_by_size <- function(tracking_data,
     n_flies <- length(unique(tracking_data$Fly_Id))
     n_males <- proportion_male * n_flies
     n_females <- n_flies - n_males
-    
+
     predicted_sex <- tracking_data %>%
         select(Video_name,
                Arena,
