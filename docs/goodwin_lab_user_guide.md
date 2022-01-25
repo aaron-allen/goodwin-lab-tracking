@@ -219,9 +219,9 @@ By default flies need to "initiate courtship" before we will calculate an index.
 
 An example of the arena numbering can be seen below for one of our 20 arena chambers.
 
-![Arena Numbering](docs/video_still--arena_numbering.png)
+![Arena Numbering](docs/images/video_still--arena_numbering.png)
 
 
 An example of the fly numbering can be seen below for one of our 20 arena chambers.
 
-![Fly Numbering](docs/video_still--fly_numbering.png)
+![Fly Numbering](docs/images/video_still--fly_numbering.png)
