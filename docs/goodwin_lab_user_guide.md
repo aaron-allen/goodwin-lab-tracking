@@ -14,10 +14,10 @@
         - [FileZilla:](#filezilla)
         - [Map a network drive:](#map-a-network-drive)
     - [Navigating your results:](#navigating-your-results)
-        - [Results/my_video_1_ALLDATA_R.csv.gz:](#resultsmy_video_1_alldata_rcsvgz)
-        - [Results/my_video_1_Diagnostic_Plots_R.pdf:](#resultsmy_video_1_diagnostic_plots_rpdf)
-        - [Results/my_video_1_Ethogram.pdf:](#resultsmy_video_1_ethogrampdf)
-        - [Results/my_video_1_Indices.csv:](#resultsmy_video_1_indicescsv)
+        - [Results/example_video_1_ALLDATA_R.csv.gz:](#resultsexample_video_1_alldata_rcsvgz)
+        - [Results/example_video_1_Diagnostic_Plots_R.pdf:](#resultsexample_video_1_diagnostic_plots_rpdf)
+        - [Results/example_video_1_Ethogram.pdf:](#resultsexample_video_1_ethogrampdf)
+        - [Results/example_video_1_Indices.csv:](#resultsexample_video_1_indicescsv)
         - [Other files:](#other-files)
         - [Arena and Fly Numbering:](#arena-and-fly-numbering)
 <!-- TOC END -->
@@ -164,31 +164,34 @@ If any of the links are either not working or maybe not the most up to date, fee
 Once the tracking results are ready, they will be transferred to the `VideosUpload` Synology in a new folder, named for the date that the tracking started, inside your existing folder. Inside this folder (e.g. `Tracted/Aaron/20220125-110453/`) there will be a folder for each video that was tracked for you this week.
 
 The directory structure is as follows for each video:
-- my_video_1/
-    - Backups/...
-    - Logs/...
-    - Results/
-        - my_video_1_ALLDATA_R.csv.gz
-        - my_video_1_Diagnostic_Plots_R.pdf
-        - my_video_1_Ethogram.pdf
-        - my_video_1_Indices.csv
-    - my_video_1/
-        - my_video_1_JAABA/...
-        - ids.mat
-        - my_video_1-bg.mat
-        - my_video_1-feat.mat
-        - my_video_1-params.mat
-        - my_video_1-track.mat
-    - my_video_1.mp4
-    - calibration.mat
+```
+    - example_video_1/
+        - Backups/...
+        - Logs/...
+        - Results/
+            - example_video_1_ALLDATA_R.csv.gz
+            - example_video_1_Diagnostic_Plots_R.pdf
+            - example_video_1_Ethogram.pdf
+            - example_video_1_Indices.csv
+        - example_video_1/
+            - example_video_1_JAABA/...
+            - ids.mat
+            - example_video_1-bg.mat
+            - example_video_1-feat.mat
+            - example_video_1-params.mat
+            - example_video_1-track.mat
+        - example_video_1.mp4
+        - calibration.mat
+```
+
 
 For the most part, you will likely want to focus on the files in the `Results/` folder. This folder contains summary plots and summary statistics of the tracking data. The description of the files within are as follows:
 
 
 
-### Results/my_video_1_ALLDATA_R.csv.gz:
+### Results/example_video_1_ALLDATA_R.csv.gz:
 
-A compressed csv file containing all the data extracted from the `my_video_1-track.mat` file, the `my_video_1-feat.mat` file, and data from the `my_video_1/my_video_1_JAABA/scores_*.mat` files, if they exist. This file is used to load the data into R to make the `Results/my_video_1_Diagnostic_Plots_R.pdf` file, the `Results/my_video_1_Ethogram.pdf`, and the `Results/my_video_1_Indices.csv`. This file can be loaded into any other software you like. But beware, it is large - for tracking of 40 flies for 15 minutes at 25 frames per second, this file is ~5GB when uncompressed. The columns of this table is as follows:
+A compressed csv file containing all the data extracted from the `example_video_1-track.mat` file, the `example_video_1-feat.mat` file, and data from the `example_video_1/example_video_1_JAABA/scores_*.mat` files, if they exist. This file is used to load the data into R to make the `Results/example_video_1_Diagnostic_Plots_R.pdf` file, the `Results/example_video_1_Ethogram.pdf`, and the `Results/example_video_1_Indices.csv`. This file can be loaded into any other software you like. But beware, it is large - for tracking of 40 flies for 15 minutes at 25 frames per second, this file is ~5GB when uncompressed. The columns of this table is as follows:
 - `Frame`: The frame number.
 - `Fly_Id`: The Id of the fly.
 - `Feature`: The name of the measured feature.
@@ -198,7 +201,7 @@ A compressed csv file containing all the data extracted from the `my_video_1-tra
 
 
 
-### Results/my_video_1_Diagnostic_Plots_R.pdf:
+### Results/example_video_1_Diagnostic_Plots_R.pdf:
 
 A series of A4 pdf plots showing some of the raw tracking data. This can be used to quickly visually inspect how well the tracking performed. Contains 2 pages per arena that contained flies.
 
@@ -206,7 +209,7 @@ An example of the "Area" diagnostic plot for fly Id 1 and 2 in arena 1.
 ![Fly Area](/docs/images/diagnostic_plots--area.png)
 
 
-### Results/my_video_1_Ethogram.pdf:
+### Results/example_video_1_Ethogram.pdf:
 
 A series of A4 pdf plots showing the results of the JAABA annotated behaviours for each fly. This file is only generated for courtship assays with 2 flies per arena. There is 1 page per arena with one plot for each fly.
 
@@ -216,22 +219,22 @@ An example of the ethogram plot for a fly can be seen below. This shows the JAAB
 
 
 
-### Results/my_video_1_Indices.csv:
+### Results/example_video_1_Indices.csv:
 
 A csv file containing the computed courtship indices derived from the JAABA annotated behaviour scores. The columns of this table is as follows:
 - `FileName`: The name of your video.
-- `ArenaNumber`: The arena number, numbered from left to right and top to bottom.
-- `FlyId`: The Id of the fly.
-- `CI`: Courtship index (excluding the facing behaviour).
-- `CIwF`: Courtship index (including the facing behaviour).
-- `approaching`: Approaching index.
-- `contact`: Contact index.
-- `circling`: Circling index.
-- `facing`: Facing index.
-- `turning`: Turning index.
-- `wing`: Wing index.
+- `ArenaNumber`: The arena number, numbered from left to right and top to bottom. See below.
+- `FlyId`: The Id of the fly. See below.
+- `CI`: Courtship index (excluding the facing behaviour). Courtship index is the percentage of time the focal fly exhibit any courtship (JAABA) behaviour (excluding the facing behaviour).
+- `CIwF`: Courtship index (including the facing behaviour). Courtship index is the percentage of time the focal fly exhibit any courtship (JAABA) behaviour.
+- `approaching`: Approaching index. The percentage of time that the focal fly was approaching the other fly.
+- `contact`: Contact index. The percentage of time that the leg, proboscis, or head of the focal fly contacted any part the other fly.
+- `circling`: Circling index. The percentage of time that the focal fly walked sideways while facing and being close to the other fly.
+- `facing`: Facing index. The percentage of time that the focal flies head was oriented toward the other fly, while not being on the opposite side of the chamber.
+- `turning`: Turning index. The percentage of time that the focal fly turned their body to orient toward the other fly while not moving forward.
+- `wing`: Wing index. The percentage of time that the focal fly extended a wing beyond their body.
 - `denominator`: The duration of the time window (in seconds) for which these indices were calculated.
-- `predicted_sex`: The predicted sex of the flies, as determined by the user supplied proportion of male flies per arena and the relative sizes of the flies per arena.
+- `predicted_sex`: The predicted sex of the flies, as determined by the user supplied proportion of male flies per arena and the relative sizes of the flies per arena. When calculating the fly area we skip the first 10 seconds and ignore all frames after copulation initiation (the predicted sex in the `example_video_1-track.mat` and `example_video_1_JAABA/trx.mat` files, uses the area for the duration of tracking).  
 
 By default flies need to "initiate courtship" before we will calculate an index. Flies need to perform any of the courtship-like behaviours for at least 3 seconds of a 6 second window (the facing behaviour is not used to assess courtship initiation). These indices are then from the courtship initiation until either 1. the flies copulate, 2. 10 minutes has passed since courtship initiation, or 3. we've reached the end of the tracking data, which ever occurs first.
 
@@ -241,20 +244,20 @@ By default flies need to "initiate courtship" before we will calculate an index.
 
 - `Backups/...`: We make multiple changes to the generated tracking files. Before we make any of our changes, we copy the file that will be modified to this directory.
 - `Logs/...`: This folder contains multiple log files and error files that can be useful while diagnosing tracking error.
-- `my_video_1/my_video_1_JAABA/...`: This folder contains all of the files needed for performing the JAABA analysis, as well as the `scores_*.mat` results files.
-- `my_video_1/ids.mat`: This file is generated while re-assigning identities.
-- `my_video_1/my_video_1-bg.mat`: This is the background model used during tracking.
-- `my_video_1/my_video_1-feat.mat`: "[F]eatures derived from tracking data (e.g. velocity, distance to wall)"
-- `my_video_1/my_video_1-params.mat`: A log of the parameters used while tracking.
-- `my_video_1/my_video_1-track.mat`: "[R]aw tracking data (e.g. position, orientation, left wing angle)"
+- `example_video_1/example_video_1_JAABA/...`: This folder contains all of the files needed for performing the JAABA analysis, as well as the `scores_*.mat` results files.
+- `example_video_1/ids.mat`: This file is generated while re-assigning identities.
+- `example_video_1/example_video_1-bg.mat`: This is the background model used during tracking.
+- `example_video_1/example_video_1-feat.mat`: "[F]eatures derived from tracking data (e.g. velocity, distance to wall)"
+- `example_video_1/example_video_1-params.mat`: A log of the parameters used while tracking.
+- `example_video_1/example_video_1-track.mat`: "[R]aw tracking data (e.g. position, orientation, left wing angle)"
 
 ### Arena and Fly Numbering:
 
-An example of the arena numbering can be seen below for one of our 20 arena chambers.
+When we run `reassign_identities`, the arenas are re-numbered from left to right, and then top to bottom. The arenas are numbered in this fashion whether there are flies in the arena or not. An example of the arena numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
 
 ![Arena Numbering](/docs/images/video_still--arena_numbering.png)
 
 
-An example of the fly numbering can be seen below for one of our 20 arena chambers.
+When we run `reassign_identities`, the fly Ids are re-numbered such that the flies in arena 1 are 1 to `flies_per_arena`. The fly Ids in arena 2 are re-numbered `flies_per_arena + 1` to `2 x flies_per_arena`, and so on. The fly Ids are numbered in this fashion whether there are flies in the arena or not. An example of the fly numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
 
 ![Fly Numbering](/docs/images/video_still--fly_numbering.png)
