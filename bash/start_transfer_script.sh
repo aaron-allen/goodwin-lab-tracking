@@ -40,12 +40,36 @@ while [[ ! -f "${full_path}/${settings_file}" ]]; do
     read -p 'Settings File: ' settings_file
 done
 
+target_col=$(awk -F ',' '{print NF}' ../example_settings_file.txt | sort -nu | tail -n 1)
+min_col=$(awk -F ',' '{print NF}' "${settings_file}" | sort -nu | head -n 1)
+max_col=$(awk -F ',' '{print NF}' "${settings_file}" | sort -nu | tail -n 1)
+
+if [[ ${min_col} != ${max_col} ]]; then
+    printf "\nWARNING! your settings file has a different number of columns across the rows.\n\n"
+    printf "\t1. Double check that there are no commas in your video names.\n"
+    printf "\t2. Make sure there isn't a empty line at the START of the file.\n"
+    printf "\t3. Make sure there isn't a empty line at the END of the file.\n"
+    printf "\nDouble check the above is correct, then close this window and start again ...\n\n"
+    sleep infinity
+fi
+
+if [[ ${target_col} != ${max_col} ]]; then
+    printf "\n\nWARNING! your settings file has a different number of columns then expected.\n"
+    printf "Open the user guide on GitHub and check that you are not missing anything.\n\n"
+    printf "\t(Ctrl-Click the link below ...)\n"
+    printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n"
+    printf "Double check the above is correct, then close this window and start again ...\n\n"
+    sleep infinity
+fi
+
+
 # I don't think we need this if statement with the above while statement, but oh well... I'll leave it for now.
-if [[ -d "${full_path}" ]]; then
+if [[ -d "${full_path}" ]] && [[ ${min_col} == ${max_col} ]] && [[ ${target_col} == ${max_col} ]]; then
     printf "\nWe will now start transfering your videos ...\n\n"
     bash transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | tee -a "/mnt/local_data/videos/_logs/transfer_logs/${today}_${user_name}_transfer.log"
 else
     printf "\nStill can't find the directory ...\n"
+    printf "\t(or there is something wrong with your settings file ... )\n"
     printf "Probably best to find Aaron or Annika ...\n\n"
     sleep infinity
 fi
