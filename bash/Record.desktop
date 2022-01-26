@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Terminal=true
+Exec=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/launch_strand_cam.sh
+Name=Record
+Icon=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/icons/record.svg
+
+
+# For personal use , ~/.local/share/applications
+# For all users, /usr/local/share/applications/ (or /usr/share/applications/ depending upon your system).
+# put this in unity panel by dragging it from files manager

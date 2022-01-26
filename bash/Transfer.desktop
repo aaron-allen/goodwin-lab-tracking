@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Terminal=true
+Exec=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/start_transfer_script.sh
+Name=Transfer
+Icon=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/icons/transfer.svg
+
+
+# For personal use , ~/.local/share/applications
+# For all users, /usr/local/share/applications/ (or /usr/share/applications/ depending upon your system).
+# put this in unity panel by dragging it from files manager
