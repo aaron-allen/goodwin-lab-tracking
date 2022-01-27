@@ -1,10 +1,13 @@
-<!-- TOC START min:1 max:3 link:true asterisk:false update:true -->
+<!-- TOC START min:1 max:4 link:true asterisk:false update:true -->
 - [Usage:](#usage)
     - [Caution:](#caution)
 - [Recording Station:](#recording-station)
     - [Preparing the setup:](#preparing-the-setup)
         - [Double Check Camera Settings:](#double-check-camera-settings)
-        - [Backlight Intensity:](#backlight-intensity)
+            - [Connecting to the Camera](#connecting-to-the-camera)
+            - [Courtship Profile](#courtship-profile)
+            - [Oviposition Profile](#oviposition-profile)
+        - [Framing and Backlight Intensity:](#framing-and-backlight-intensity)
     - [Starting a video recording:](#starting-a-video-recording)
         - [Using Strand Camera](#using-strand-camera)
     - [Video Transfer:](#video-transfer)
@@ -47,16 +50,50 @@ When loading your flies into the chambers please follow these instructions:
 
 Please ensure that you have reserved your time slot for either Station's A, B, or C on the Goodwin Lab behaviour room Google calendar. You should reserve the station even if you are not using the computer - if you are occupying the space, then no one else is able to use it.
 
+If you are planning on running an optogenetics experiment, please book Station B. For thermogenetics experiments, book Station C.
+
 ## Preparing the setup:
 
 First, login with the `Recoding` user name.
 
 ### Double Check Camera Settings:
 
-It is important to double check the camera settings before you start recording. Different assay require different configurations.
+#### Connecting to the Camera
+
+It is important to double check the camera settings before you start recording. Different assay require different configurations. To check and change the camera settings, open Basler's Pylon Viewer software.
+<!-- add image of Pylon in dock with arrow -->
+First you will need to "start" the software connection to the Camera.
+<!-- add image of where to click -->
+Then adjust the streaming whatchits up by a tick ...
+<!-- add image of adjusting the streaming whatchits -->
+
+#### Courtship Profile
+
+For standard courtship assay experiments load `user_profile_1`
+<!-- add image for user prodile 1 -->
+Once loaded double check that the settings are correct ...
+- fps
+- x and y pixels
+- etc
+
+#### Oviposition Profile
+
+For oviposition assay experiments load `user_profile_2`.
+<!-- add image for user prodile 1 -->
+Once loaded double check that the settings are correct ...
+- fps
+- x and y pixels
+- etc
 
 
-### Backlight Intensity:
+
+
+
+### Framing and Backlight Intensity:
+
+
+
+Now you can start a stream to check for framing of the video.
 
 It is important that the light intensity is set appropriately in order to get accurate tracking results. The intensity knob on the Falcon light source should be turned to its maximum. Then the aperture of the camera should be adjusted such that the brightest part of the video registers less than 255 (and typically more than 240) and the darkest part of the video registers more than 0 (and typically less than 15). Adjusting the aperture in this way prevents clipping (either the brightest spot stuck on 255 or the darkest spot stuck on 0) and ensures that we will be recording all the data that we can, without washing anything out. We adjust this by the aperture of the camera, and not by the intensity knob of the backlight to ensure maximum [depth of field](https://en.wikipedia.org/wiki/Depth_of_field). If the depth of field is too shallow and someone has inappropriately adjusted the camera such that its sensor is not parallel to the arenas, then not all flies will be in focus and tracking errors may occur.
 

@@ -27,6 +27,7 @@ read -p 'Settings File: ' settings_file
 
 full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
 
+# Double check that the user supplied settings file exists and is where it should be
 while [[ ! -f "${full_path}/${settings_file}" ]]; do
     printf "\n\n\n\n\n\n"
     printf "\e[1;31mERROR! - Can't find the video path or settings file.\e[0m\n"
@@ -40,38 +41,57 @@ while [[ ! -f "${full_path}/${settings_file}" ]]; do
     read -p 'Settings File: ' settings_file
 done
 
+# Count the number of columns in the example_settings_file and the min and max columns in the user supplied file
 target_col=$(awk -F ',' '{print NF}' ../example_settings_file.txt | sort -nu | tail -n 1)
 min_col=$(awk -F ',' '{print NF}' "${settings_file}" | sort -nu | head -n 1)
 max_col=$(awk -F ',' '{print NF}' "${settings_file}" | sort -nu | tail -n 1)
 
+# Double check that the number of columns is constant in the user supplied settings file
 if [[ ${min_col} != ${max_col} ]]; then
     printf "\nWARNING! your settings file has a different number of columns across the rows.\n\n"
     printf "\t1. Double check that there are no commas in your video names.\n"
     printf "\t2. Make sure there isn't a empty line at the START of the file.\n"
     printf "\t3. Make sure there isn't a empty line at the END of the file.\n"
     printf "\nDouble check the above is correct, then close this window and start again ...\n\n"
-    sleep infinity
+    # sleep infinity
+    return
 fi
 
+# Double check that the maximum number of columns in the settings file matches the example_settings_file
 if [[ ${target_col} != ${max_col} ]]; then
-    printf "\n\nWARNING! your settings file has a different number of columns then expected.\n"
+    printf "\n\nWARNING! Your settings file has a different number of columns then expected.\n"
     printf "Open the user guide on GitHub and check that you are not missing anything.\n\n"
     printf "\t(Ctrl-Click the link below ...)\n"
     printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n"
     printf "Double check the above is correct, then close this window and start again ...\n\n"
-    sleep infinity
+    # sleep infinity
+    return
 fi
+
+# Double check that every video name in the supplied setting file can be found in the supplied directory
+while IFS=',' read -r user video_name video_type otherstuff; do
+    if [[ ! -f "${full_path}/${video_name}" ]]; then
+        printf '\n\nWARNING! At least one of the video names in your settings file does not exist.\n'
+        printf "\t1. Make sure your spelling is correct. The video names are case-sensitive.\n"
+        printf "\t2. Then close this window and start again ...\n\n"
+        # sleep infinity
+        return
+    fi
+done < "${full_path}/${settings_file}"
+
 
 
 # I don't think we need this if statement with the above while statement, but oh well... I'll leave it for now.
 if [[ -d "${full_path}" ]] && [[ ${min_col} == ${max_col} ]] && [[ ${target_col} == ${max_col} ]]; then
     printf "\nWe will now start transfering your videos ...\n\n"
-    bash transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | tee -a "/mnt/local_data/videos/_logs/transfer_logs/${today}_${user_name}_transfer.log"
+    bash transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | \
+        tee -a "/mnt/local_data/videos/_logs/transfer_logs/${today}_${user_name}_transfer.log"
 else
     printf "\nStill can't find the directory ...\n"
     printf "\t(or there is something wrong with your settings file ... )\n"
     printf "Probably best to find Aaron or Annika ...\n\n"
-    sleep infinity
+    # sleep infinity
+    return
 fi
 
 exit

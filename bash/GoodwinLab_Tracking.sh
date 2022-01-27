@@ -57,7 +57,8 @@ if [ -s ${csv_file} ]; then
 	printf "Killing all Geneious processes...\n"
 	# Geneious doesn't show up as Geneious in top/pgrep/etc, it shows up as java, but killing anything java seems a bit poor form...
 	# So we'll feed the pid into a ps call with a more detailed output and grep for Geneious.
-	pgrep java | while read -r java_pid ; do
+	pgrep java | \
+	while read -r java_pid ; do
     	printf "\tChecking if java pid = ${java_pid} is a Geneious instance.\n"
 		if ps -Flww -p ${java_pid} | grep -q "Geneious"; then
 		    printf "\tIt is! Kill it!\n"
