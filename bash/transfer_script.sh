@@ -23,6 +23,9 @@ printf "Settings file = ${settings_file}\n\n\n"
 user_dir="/mnt/local_data/videos/${user_name}"
 full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
 
+tobetracked_vid_dir="/mnt/Synology/ToBeTracked/VideosFromStaions/videos"
+tobetracked_list_file="/mnt/Synology/ToBeTracked/VideosFromStaions/list_of_videos.csv"
+
 
 
 # Define the transfer function
@@ -45,10 +48,6 @@ function transfer_function(video in_dir to_dir) {
 
 
 
-
-
-
-
 # Check if the supplied local user directory exists
 if [[ -d "${full_path}" ]]; then
     # first, copy a version to the archive directory
@@ -57,14 +56,17 @@ if [[ -d "${full_path}" ]]; then
         [[ -f "/mnt/Synology/GoodwinGroup/mount_test.txt" ]]; then
         printf "Remote Synologys are moutned. We will now start copying the videos...\n\n"
         for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
-            transfer_function ${file} ${full_path} "/mnt/Synology/Archive/FromStations/${user_name}/${vid_dir}"
-            transfer_function ${file} ${full_path} "/mnt/Synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
+            if [[ ! -f "${full_path}/${file}" ]]; then
+                printf "\tCan't find the video "${file}", so skipping it...\n"
+                continue
+            fi
+            transfer_function "${file}" "${full_path}" "/mnt/Synology/Archive/FromStations/${user_name}/${vid_dir}"
+            transfer_function "${file}" "${full_path}" "/mnt/Synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
         done
     else
         printf "The Synology is not mounted.\n...\n\t... go find Aaron ...\n\n"
         sleep infinity
     fi
-
 
     # third and last, transfer videos in settings files to ToBeTracked directory
     if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
@@ -74,7 +76,7 @@ if [[ -d "${full_path}" ]]; then
     							video_name \
     							video_type \
     							fps \
-    							tracking_start_time_in_seconds \
+    							start_time \
     							flies_per_arena \
     							sex_ratio \
     							number_of_arenas \
@@ -83,52 +85,46 @@ if [[ -d "${full_path}" ]]; then
     							optogenetics_light \
     							station;
         do
-            if [[ "${video_type}" == "mkv" ]]; then
-                # # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-                # ### need to convert Strand-Camera mkv files to constant frame rate videos
-
-                # test_fps=$(ffprobe -v quiet -print_format json -show_streams "${file}" | grep avg_frame_rate)
-                # if [[ ${test_fps} != *"0/0"* ]]; then
-                #     echo "vfr";
-                # else
-                #     if [[ ${test_fps} != *"/1"* ]]; then
-                #         echo "cfr";
-                #     fi
-                # fi
-
-
-
-                # if [[ ${video_type} == "mkv" ]]; then
-                #     my_bitrate=4M
-                #     n_cores=nproc --all
-                #     ffmpeg \
-                #         -hide_banner \
-                #         -i "${OutputDirectory}/${FileName}/"${video_name}" \
-                #         -filter:v fps=25 \
-                #         -c:v libx264 \
-                #         #-x264-params "nal-hrd=cbr" \
-                #         #-b:v ${my_bitrate} \
-                #         #-minrate ${my_bitrate} \
-                #         #-maxrate ${my_bitrate} \
-                #         #-bufsize ${my_bitrate} \
-                #         -crf 18 \
-                #         -preset fast \
-                #         -threads ${n_cores} \
-                #         -y \
-                #         "${OutputDirectory}/${FileName}/"${video_name}"
-                # fi
-                # # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-                ### rename video in settings file
-                ## use sed ...
-                # sed -i 's/old/new/g' "${full_path}/${settings_file}"
-                ## or print new line to new file
-                # printf ...
+            # Check if file has extension
+            if [[ "${video_name}" != *.* ]]; then
+                if [[ "${video_type}" == *.* ]]; then
+                    video_type="${video_type:1}"
+                fi
+                if [[ "${video_type}" == *.* ]]; then
+                    video_name="${video_name}.${video_type}"
+                fi
             fi
-            transfer_function ${video_name} ${full_path} "/mnt/Synology/ToBeTracked/VideosFromStaions/videos"
-        done < "${full_path}/${settings_file}"
 
-        cat "${full_path}/${settings_file}" >> "/mnt/Synology/ToBeTracked/VideosFromStaions/video_list.csv"
+            if [[ "${video_type}" == "mkv" ]]; then
+                # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+                ### need to convert Strand-Camera mkv files to constant frame rate videos
+                if [[ ${video_type} == "mkv" ]]; then
+                    ffmpeg \
+                        -hide_banner \
+                        -hwaccel cuda \
+                        -hwaccel_output_format cuda \
+                        -i "${full_path}/${video_name}" \
+                        -ss "${start_time}" \
+                        -t 900.000 \
+                        -filter:v fps=25 \
+                        -c:v h264_nvenc \
+                        -crf 18 \
+                        -preset fast \
+                        -y \
+                        "${full_path}/${video_name: -4}.mp4"
+                fi
+                # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+                if [[ ! -d "${tobetracked_vid_dir}" ]]; then
+                    mkdir -p "${tobetracked_vid_dir}"
+                fi
+                transfer_function "${video_name: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
+                if [[ ! -f "${tobetracked_list_file}" ]]; then
+                    touch "${tobetracked_list_file}"
+                fi
+                printf "${user},${video_name: -4}.mp4,${video_type},${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+                    >> "${tobetracked_list_file}"
+            fi
+        done < "${full_path}/${settings_file}"
     else
         printf "The Synology is not mounted.\n...\n\t... go find Aaron ...\n\n"
         sleep infinity
