@@ -11,9 +11,9 @@
 # This script does the following;
 #		1. Checks to see if there are any videos in 'ToBeTracked' to be tracked.
 #		2. Kills any CPU or RAM hungry applications that may have been left running.
-#		3. Takes a 'snap shot' of the videos that need to be tracked in the 'video_list.csv' file,
+#		3. Takes a 'snap shot' of the videos that need to be tracked in the 'list_of_videos.csv' file,
 #          and moves them to the 'NowTracking' directory on the Synology.
-#		4. Read through the 'video_list.csv' file and start a sub-process tracking the
+#		4. Read through the 'list_of_videos.csv' file and start a sub-process tracking the
 #          video. At this momonet it is just 'single_video_tracking.sh' for 'courtship' style videos.
 #		5. Once the tracking is done, moves the 'NowTracking' directory to archive.
 #
@@ -29,6 +29,8 @@ today=$(date +%Y%m%d-%H%M%S)
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
 CodeDirectory=$( dirname "$PWD" )
+cd "${CodeDirectory}/bash"
+
 ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStations"
 WorkingDirectory="/mnt/LocalData/Tracking"
 ArchiveDirectory="/mnt/Synology/Archive/mkv"
@@ -41,7 +43,7 @@ LogDirectory="/home/goodwintracking/Documents/TrackingLogs/tracking_history.log"
 
 
 # Check to see if there are any videos to be tracked
-csv_file="${ToBeTrackedDirectory}/video_list.csv"
+csv_file="${ToBeTrackedDirectory}/list_of_videos.csv"
 if [ -s ${csv_file} ]; then
 	printf "There are videos to be tracked\n"
 
@@ -77,8 +79,8 @@ if [ -s ${csv_file} ]; then
 	fi
 	mkdir -p "${OutputDirectory}/_tracking_logs"
 
-	if [[ ! -f "${InputDirectory}/../video_list.csv" ]]; then
-		touch "${InputDirectory}/../video_list.csv"
+	if [[ ! -f "${InputDirectory}/../list_of_videos.csv" ]]; then
+		touch "${InputDirectory}/../list_of_videos.csv"
 	fi
 	if [[ ! -f "${InputDirectory}/../videos_in_ToBeTracked.txt" ]]; then
 		touch "${InputDirectory}/../videos_in_ToBeTracked.txt"
@@ -86,24 +88,16 @@ if [ -s ${csv_file} ]; then
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Setup freeze of videos that need to be tracked
-	mv "${ToBeTrackedDirectory}/video_list.csv" "${InputDirectory}/../video_list.csv"
+	mv "${ToBeTrackedDirectory}/list_of_videos.csv" "${InputDirectory}/../list_of_videos.csv"
 	ls "${ToBeTrackedDirectory}/videos/" > "${InputDirectory}/../videos_in_ToBeTracked.txt"
-	printf "" > "${ToBeTrackedDirectory}/video_list.csv"
+	printf "" > "${ToBeTrackedDirectory}/list_of_videos.csv"
 
 
-	csv_file="${InputDirectory}/../video_list.csv"
-	while IFS=',' read -r user \
-							video_name \
-							video_type \
-							fps \
-							tracking_start_time_in_seconds \
-							flies_per_arena \
-							sex_ratio \
-							number_of_arenas \
-							arena_shape \
-							assay_type \
-							optogenetics_light \
-							station; do
+	csv_file="${InputDirectory}/../list_of_videos.csv"
+	while IFS=',' read -r user video_name video_type fps start_time flies_per_arena \
+							sex_ratio number_of_arenas arena_shape assay_type \
+							optogenetics_light station;
+	do
 	    printf "\n\nVideo Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
 			printf '\tMoving video to NowTracking\n'
@@ -130,7 +124,7 @@ if [ -s ${csv_file} ]; then
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Track all video files with FlyTracker, and apply classifiers with JAABA
 	printf "\n\nFILE TRANSFER AND TRACKING\n"
-	csv_file="${InputDirectory}/../video_list.csv"
+	csv_file="${InputDirectory}/../list_of_videos.csv"
 
 	printf "\n\n\n\n\n\n$(date)\n\n" >> "${LogDirectory}"
 	cat "${csv_file}" >> "${LogDirectory}"
@@ -139,7 +133,7 @@ if [ -s ${csv_file} ]; then
 							video_name \
 							video_type \
 							fps \
-							tracking_start_time_in_seconds \
+							start_time \
 							flies_per_arena \
 							sex_ratio \
 							number_of_arenas \
@@ -162,7 +156,7 @@ if [ -s ${csv_file} ]; then
 										  "${video_name}" \
 										  "${video_type}" \
 										  "${fps}" \
-										  "${tracking_start_time_in_seconds}" \
+										  "${start_time}" \
 										  "${flies_per_arena}" \
 										  "${sex_ratio}" \
 										  "${number_of_arenas}" \
@@ -187,7 +181,7 @@ if [ -s ${csv_file} ]; then
 		# 						   ${user} \
 		# 						   ${video_name} \
 		# 						   ${video_type} \
-		# 						   ${tracking_start_time_in_seconds} \
+		# 						   ${start_time} \
 		# 						   ${flies_per_arena} \
 		# 						   ${sex_ratio} \
 		# 						   ${number_of_arenas} \
@@ -207,7 +201,7 @@ if [ -s ${csv_file} ]; then
 		# 						   ${user} \
 		# 						   ${video_name} \
 		# 						   ${video_type} \
-		# 						   ${tracking_start_time_in_seconds} \
+		# 						   ${start_time} \
 		# 						   ${flies_per_arena} \
 		# 						   ${sex_ratio} \
 		# 						   ${number_of_arenas} \
@@ -222,7 +216,6 @@ if [ -s ${csv_file} ]; then
 			sleep 10m
 		done
 	done < "${csv_file}"
-
 
 	# Add wait for all scripts to finish
 	while [ $(pgrep -fc "_video_tracking") -gt 0 ]
