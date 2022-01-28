@@ -7,6 +7,9 @@ function [avimg, sigma, vinfo] = makeavimg(videoname, numframes)
     %this is slow, but intended to save memory compared to loading the whole
     %video
     for id = 0:(frames - 1)
+        if mod(id,1000) == 0,
+            disp([ '        frame = ' num2str(id) ]);
+        end
         [im, idnew] = video_read_frame(vinfo, id);
         avimg = avimg + im;
         imsquare = im .* im;
