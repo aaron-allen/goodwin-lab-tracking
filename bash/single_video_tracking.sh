@@ -58,6 +58,10 @@ number_of_arenas="${14}"
 arena_shape="${15}"
 assay_type="${16}"
 optogenetics_light="${17}"
+
+
+tracking_duration=15    # in minutes
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 printf "\n\n\n"
@@ -79,6 +83,7 @@ printf "arena shape is : ${arena_shape}\n"
 printf "assay type is : ${assay_type}\n"
 printf "opto light is : ${optogenetics_light}\n"
 printf "\n\n\n"
+printf "tracking duration is : ${tracking_duration}\n"
 
 printf "\n\n\n\n\n\n\n\n"
 printf "####################################################\n"
@@ -138,6 +143,7 @@ printf "\n\n\nNow tracking: ${video_name} ...\n"
                                                 video_type='${video_type}'; \
                                                 track_start=${track_start}; \
                                                 FPS=${fps} \
+                                                tracking_duration=${tracking_duration}; \
                                                 best_calib_file='${best_calib_file}'; \
                                                 flies_per_arena=${flies_per_arena}; \
                                                 sex_ratio=${sex_ratio}; \
@@ -154,7 +160,9 @@ if [[ ${optogenetics_light} == "true" ]] && [[ -f "${test_file}" ]]; then
     printf "\n\n\nDetecting optogenetic light ...\n"
     /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                                     OutputDirectory='${OutputDirectory}'; \
-                                                    video_type='${video_type}'; \
+                                                    videoname='${video_name}'; \
+                                                    FPS=${fps} \
+                                                    tracking_duration=${tracking_duration}; \
                                                     addpath(genpath('${CodeDirectory}')); \
                                                     script_detect_optogenetic_light"
 fi

@@ -16,9 +16,9 @@ cd ([OutputDirectory '/' FileName]);
 
 
 
-videoname = strcat(FileName,'.',video_type);
+numframes = tracking_duration*60*FPS;
 disp(['Now detecting optogenetic light for: ' FileName]);
-error_handling_wrapper([OutputDirectory '/' FileName '/Logs/optogenetic_light_detection_errors.log'],'ison',videoname,22500);
+error_handling_wrapper([OutputDirectory '/' FileName '/Logs/optogenetic_light_detection_errors.log'],'ison',videoname,numframes);
 
 
 exit
