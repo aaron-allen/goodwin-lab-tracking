@@ -26,6 +26,8 @@ full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
 tobetracked_vid_dir="/mnt/Synology/ToBeTracked/VideosFromStaions/videos"
 tobetracked_list_file="/mnt/Synology/ToBeTracked/VideosFromStaions/list_of_videos.csv"
 
+tracking_duration=15    # in minutes
+ff_t_stop=$(( ${tracking_duration} * 60 ))   # convert to seconds for ffmpeg
 
 
 # Define the transfer function
@@ -85,7 +87,7 @@ if [[ -d "${full_path}" ]]; then
     							optogenetics_light \
     							station;
         do
-            # Check if file has extension
+            # Check if file has extension and that video type doesn't have a period
             if [[ "${video_name}" != *.* ]]; then
                 if [[ "${video_type}" == *.* ]]; then
                     video_type="${video_type:1}"
@@ -103,13 +105,16 @@ if [[ -d "${full_path}" ]]; then
                         -hide_banner \
                         -hwaccel cuda \
                         -hwaccel_output_format cuda \
+                        -extra_hw_frames 4 \
+                        -ss "${start_time}.000" \
                         -i "${full_path}/${video_name}" \
-                        -ss "${start_time}" \
-                        -t 900.000 \
-                        -filter:v fps=25 \
+                        -t "${ff_t_stop}.000" \
+                        -filter:v fps="${fps}" \
                         -c:v h264_nvenc \
-                        -crf 18 \
-                        -preset fast \
+                        -tune ull \
+                        -rc cbr \
+                        -preset p7 \
+                        -multipass 1 \
                         -y \
                         "${full_path}/${video_name: -4}.mp4"
                 fi
