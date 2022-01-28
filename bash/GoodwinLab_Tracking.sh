@@ -92,28 +92,13 @@ if [ -s ${csv_file} ]; then
 	ls "${ToBeTrackedDirectory}/videos/" > "${InputDirectory}/../videos_in_ToBeTracked.txt"
 	printf "" > "${ToBeTrackedDirectory}/list_of_videos.csv"
 
-
 	csv_file="${InputDirectory}/../list_of_videos.csv"
-	while IFS=',' read -r user video_name video_type fps start_time flies_per_arena \
-							sex_ratio number_of_arenas arena_shape assay_type \
-							optogenetics_light station;
+	while IFS=',' read -r user video_name other_stuff;
 	do
 	    printf "\n\nVideo Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
 			printf '\tMoving video to NowTracking\n'
 			mv "${ToBeTrackedDirectory}/videos/${video_name}" "${InputDirectory}"
-	    fi
-	done < "${csv_file}"
-
-	# any video that's not in the to be tracked settings file will be moved to the non-tracked directory
-	printf "\n\n"
-	csv_file="${InputDirectory}/../videos_in_ToBeTracked.txt"
-	while IFS=',' read -r video_name; do
-	    #printf "Video Name\t:\t ${video_name}\n"
-	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
-			printf "Video Name:\t ${video_name}\n"
-			printf '\tMoving video to NonTrackedVideos\n'
-			mv "${ToBeTrackedDirectory}/videos/${video_name}" "${ToBeTrackedDirectory}/../NonTrackedVideos/videos/"
 	    fi
 	done < "${csv_file}"
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -173,40 +158,14 @@ if [ -s ${csv_file} ]; then
 		if [[ ${assay_type} == "oviposition" ]]; then
 			# run Ctrax_tracking.sh
 			printf "\n\n ... haven't coded this yet ... \n"
-		# 	bash ctrax_video_tracking.sh ${today} \
-		# 						   ${CodeDirectory} \
-		# 						   ${ToBeTrackedDirectory} \
-		# 						   ${WorkingDirectory} \
-		# 						   ${InputDirectory} \
-		# 						   ${user} \
-		# 						   ${video_name} \
-		# 						   ${video_type} \
-		# 						   ${start_time} \
-		# 						   ${flies_per_arena} \
-		# 						   ${sex_ratio} \
-		# 						   ${number_of_arenas} \
-		# 						   ${arena_shape} \
-		# 						   ${assay_type} &
+		# 	bash ctrax_video_tracking.sh ... &
 		fi
 
 		# add some code for DLC?
 		if [[ ${assay_type} == "DLC" ]]; then
 			# run Ctrax_tracking.sh
 			printf "\n\n ... haven't coded this yet ... \n"
-		# 	bash DLC_video_tracking.sh ${today} \
-		# 						   ${CodeDirectory} \
-		# 						   ${ToBeTrackedDirectory} \
-		# 						   ${WorkingDirectory} \
-		# 						   ${InputDirectory} \
-		# 						   ${user} \
-		# 						   ${video_name} \
-		# 						   ${video_type} \
-		# 						   ${start_time} \
-		# 						   ${flies_per_arena} \
-		# 						   ${sex_ratio} \
-		# 						   ${number_of_arenas} \
-		# 						   ${arena_shape} \
-		# 						   ${assay_type} &
+		# 	bash DLC_video_tracking.sh ... &
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
