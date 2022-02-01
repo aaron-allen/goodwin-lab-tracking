@@ -1,4 +1,5 @@
 <!-- TOC START min:1 max:4 link:true asterisk:false update:true -->
+<a name="top"></a>
 - [Usage:](#usage)
     - [Caution:](#caution)
 - [Recording Station:](#recording-station)
@@ -30,6 +31,7 @@
 
 
 # Usage:
+<a name="usage"></a>
 
 This _"user guide"_ is intended to aid the members of the Gooodwin Lab to use this _"pipeline"_ as it is currently deployed. It is not intended as general user guide for any other end user who wishes to use any of this code. But do feel free to use any of this code if you'd like, or if it may be useful to you. We'd only ask that you cite ["Nojima, Rings, et al., 2021"](https://www.sciencedirect.com/science/article/pii/S0960982220318996?via%3Dihub).
 
@@ -38,6 +40,12 @@ The _"pipeline"_ can accommodate our usual 20 arena chambers. You can also adjus
 Here we show an example still from one of our 20 arena chambers.
 ![Example Video Still](/docs/images/video_still--20arena_example.png)
 
+[Back to top](#top)
+
+[Back to Usage](#usage)
+
+[Next: Recording station](#rec)
+
 ## Caution:
 
 When loading your flies into the chambers please follow these instructions:
@@ -45,16 +53,38 @@ When loading your flies into the chambers please follow these instructions:
 - Ensure at least 5 arenas contain flies. The Caltech Flytracker can run into issues if too many of the arenas are empty in a multi-arena video.
 - If you are not using all 20 arenas, place your flies in the top arenas. FlyTracker will not work if the top 10 arenas (as seen in the video) of the 20 arenas are empty.
 
+[Back to top](#top)
+
+[Back to Usage](#usage)
+
+[Next: Recording station](#rec)
 
 # Recording Station:
+<a name="rec"></a>
 
 Please ensure that you have reserved your time slot for either Station's A, B, or C on the Goodwin Lab behaviour room Google calendar. You should reserve the station even if you are not using the computer - if you are occupying the space, then no one else is able to use it.
 
 If you are planning on running an optogenetics experiment, please book Station B. For thermogenetics experiments, book Station C.
 
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
+
 ## Preparing the setup:
 
 First, login with the `Recoding` user name.
+
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 ### Double Check Camera Settings:
 
@@ -67,6 +97,14 @@ First you will need to "start" the software connection to the Camera.
 Then adjust the streaming whatchits up by a tick ...
 <!-- add image of adjusting the streaming whatchits -->
 
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
+
 #### Courtship Profile
 
 For standard courtship assay experiments load `user_profile_1`
@@ -75,6 +113,14 @@ Once loaded double check that the settings are correct ...
 - fps
 - x and y pixels
 - etc
+
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 #### Oviposition Profile
 
@@ -88,6 +134,13 @@ Once loaded double check that the settings are correct ...
 
 
 
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 ### Framing and Backlight Intensity:
 
@@ -99,12 +152,27 @@ It is important that the light intensity is set appropriately in order to get ac
 
 ![Backlight Intensity](/docs/images/video_still--backlight_intensity.png)
 
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 ## Starting a video recording:
 
 To start a recording session double click the `launch_strand_cam.sh` shell script on the desktop. After launching, you will be prompted to enter your user name. This is the same as it appears in the `videos` directory. This script will automatically generate a new folder named with todays date (`<YYYMMDD>`) in your videos folder. For example, if I (Aaron) ran this script on January 25th 2022, it would create the following folder: `/mnt/local_data/videos/Aaron/20220125/`. Once this folder is created, Strand-Camera will launch. You will then be able to record videos from this web interface. By default the videos will be named `movie<YYYMMDD_hhmmss>.<ext>`.
 
 Once the you are finished recording, you may change the names of these videos if you'd like, but do make sure that the names of the videos match the names in you settings file (see below). And please **do not** use commas in your file names.
+
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 ### Using Strand Camera
 
@@ -113,6 +181,14 @@ We will now be using Strand Camera software to record our behaviour videos. More
 For now, we will be recording `.mkv` video files. We may in the future sort how to deal with videos recorded directly to `.ufmf`, but are not for now - currently Caltech FlyTracker does not support reading of Straw Lab `.ufmf` videos.
 
 To close Strand Camera ... - add info
+
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 ## Video Transfer:
 
@@ -138,15 +214,30 @@ An example line for a settings file:
 
 The settings file should only have a line for each video. Do not have an empty line at the start, and do not have an empty line at the end.
 
+[Back to top](#top)
+
+[Back to Recording Station](#rec)
+
+[Previous: Usage](#usage)
+
+[Next: Tracking](#tracking)
 
 # Tracking:
-
+<a name="tracking"></a>
 The tracking  _"pipline"_ is scheduled to run every Friday evening to process all videos accumulated through the week. In a low volume week, your results will be available by Monday morning. In a busy week, they may not be ready until the following Wednesday or Thursday of the following week after tracking has started. So, if you record a video on a Monday your results will be ready in 7-10 days, and if you record on a Friday morning your results will be ready in 3-6 days (again, depending on the number of videos that need to be tracked that week).
 
 During this stage, you (the end user) do not need to do anything except wait. Thank you for your patience.
 
+[Back to top](#top)
+
+[Back to Tracking](#tracking)
+
+[Previous: Recording Station](#rec)
+
+[Next: Tracking Results](#results)
 
 # Tracking Results:
+<a name="results"></a>
 
 ## Where are my results?
 
@@ -157,6 +248,12 @@ To access your data you either need to be attached to a wired internet connectio
 You can access your data multiple ways. The preferred methods would be to use either [FileZilla](https://filezilla-project.org/) or map a network drive (see below). All methods will require for you to have a user name and password for the Synology's. If you currently don't have any login information (or forget your information), please see Aaron or Annika to sort this out for you.
 
 It should also be noted that these Synology's are not centrally managed, University of Oxford, network drives. These are just a couple of file server computers sitting in the CNCB.
+
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 
 ### FileZilla:
@@ -171,6 +268,12 @@ When making a connection for the first time you will be prompted with ...
 
 
 There is extension documentation available online for how to use FileZilla; if you have any further questions, please look there first.
+
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Map a network drive:
 
@@ -195,6 +298,11 @@ Windows - here are a few links that may help:
 
 If any of the links are either not working or maybe not the most up to date, feel free to use this handy [tool](https://www.google.co.uk/).
 
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ## Navigating your results:
 
@@ -224,7 +332,11 @@ The directory structure is as follows for each video:
 
 For the most part, you will likely want to focus on the files in the `Results/` folder. This folder contains summary plots and summary statistics of the tracking data. The description of the files within are as follows:
 
+[Back to top](#top)
 
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Results/example_video_1_ALLDATA_R.csv.gz:
 
@@ -236,7 +348,11 @@ A compressed csv file containing all the data extracted from the `example_video_
 - `Value`: The value of the measured feature.
 - `Data_Source`: Where the data was extracted from - either "track.mat", "feat.mat", or "jaaba".
 
+[Back to top](#top)
 
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Diagnostic_Plots_R.pdf:
 
@@ -245,6 +361,11 @@ A series of A4 pdf plots showing some of the raw tracking data. This can be used
 An example of the "Area" diagnostic plot for fly Id 1 and 2 in arena 1.
 ![Fly Area](/docs/images/diagnostic_plots--area.png)
 
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Ethogram.pdf:
 
@@ -254,7 +375,11 @@ An example of the ethogram plot for a fly can be seen below. This shows the JAAB
 
 ![Ethogram](/docs/images/ethogram--example.png)
 
+[Back to top](#top)
 
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Indices.csv:
 
@@ -275,6 +400,11 @@ A csv file containing the computed courtship indices derived from the JAABA anno
 
 By default flies need to "initiate courtship" before we will calculate an index. Flies need to perform any of the courtship-like behaviours for at least 3 seconds of a 6 second window (the facing behaviour is not used to assess courtship initiation). These indices are then from the courtship initiation until either 1. the flies copulate, 2. 10 minutes has passed since courtship initiation, or 3. we've reached the end of the tracking data, which ever occurs first.
 
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
 
 ### Other files:
 
@@ -288,6 +418,12 @@ By default flies need to "initiate courtship" before we will calculate an index.
 - `example_video_1/example_video_1-params.mat`: A log of the parameters used while tracking.
 - `example_video_1/example_video_1-track.mat`: "[R]aw tracking data (e.g. position, orientation, left wing angle)"
 
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
+
 ### Arena and Fly Numbering:
 
 When we run `reassign_identities`, the arenas are re-numbered from left to right, and then top to bottom. The arenas are numbered in this fashion whether there are flies in the arena or not. An example of the arena numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
@@ -298,3 +434,9 @@ When we run `reassign_identities`, the arenas are re-numbered from left to right
 When we run `reassign_identities`, the fly Ids are re-numbered such that the flies in arena 1 are 1 to `flies_per_arena`. The fly Ids in arena 2 are re-numbered `flies_per_arena + 1` to `2 x flies_per_arena`, and so on. The fly Ids are numbered in this fashion whether there are flies in the arena or not. An example of the fly numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
 
 ![Fly Numbering](/docs/images/video_still--fly_numbering.png)
+
+[Back to top](#top)
+
+[Back to Tracking Results](#results)
+
+[Previous: Tracking](#tracking)
