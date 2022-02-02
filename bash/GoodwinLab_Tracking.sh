@@ -17,7 +17,7 @@
 #          video. At this momonet it is just 'single_video_tracking.sh' for 'courtship' style videos.
 #		5. Once the tracking is done, moves the 'NowTracking' directory to archive.
 #
-#
+# Before running, double check that both MATLAB and Rscript are in your path.
 #
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ if [ -s ${csv_file} ]; then
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
 		# Check to make sure no more than 2 *_video_tracking scripts are running.
-		while [ $(pgrep -fc "_video_tracking") -gt 1 ]
+		while [ $(pgrep -fc "_video_tracking") -gt 9 ]
 		do
 			sleep 10m
 		done

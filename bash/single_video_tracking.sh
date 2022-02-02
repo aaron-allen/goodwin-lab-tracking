@@ -138,17 +138,17 @@ printf "####################################################\n"
 printf "####################################################\n"
 printf "####################################################\n\n"
 printf "\n\n\nNow tracking: ${video_name} ...\n"
-/usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                OutputDirectory='${OutputDirectory}'; \
-                                                video_type='${video_type}'; \
-                                                track_start=${track_start}; \
-                                                FPS=${fps} \
-                                                tracking_duration=${tracking_duration}; \
-                                                best_calib_file='${best_calib_file}'; \
-                                                flies_per_arena=${flies_per_arena}; \
-                                                sex_ratio=${sex_ratio}; \
-                                                addpath(genpath('${CodeDirectory}')); \
-                                                AutoTracking"
+matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                OutputDirectory='${OutputDirectory}'; \
+                                video_type='${video_type}'; \
+                                track_start=${track_start}; \
+                                FPS=${fps} \
+                                tracking_duration=${tracking_duration}; \
+                                best_calib_file='${best_calib_file}'; \
+                                flies_per_arena=${flies_per_arena}; \
+                                sex_ratio=${sex_ratio}; \
+                                addpath(genpath('${CodeDirectory}')); \
+                                AutoTracking"
 
 # Only run the optogenetic light detector if the video is an optogenetics experiment
 test_file="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
@@ -158,13 +158,13 @@ if [[ ${optogenetics_light} == "true" ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n"
     printf "####################################################\n\n"
     printf "\n\n\nDetecting optogenetic light ...\n"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                    OutputDirectory='${OutputDirectory}'; \
-                                                    videoname='${video_name}'; \
-                                                    FPS=${fps} \
-                                                    tracking_duration=${tracking_duration}; \
-                                                    addpath(genpath('${CodeDirectory}')); \
-                                                    script_detect_optogenetic_light"
+    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                    OutputDirectory='${OutputDirectory}'; \
+                                    videoname='${video_name}'; \
+                                    FPS=${fps} \
+                                    tracking_duration=${tracking_duration}; \
+                                    addpath(genpath('${CodeDirectory}')); \
+                                    script_detect_optogenetic_light"
 fi
 
 # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
@@ -176,10 +176,10 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n\n"
     printf "\n\n\nDetecting singleton flies ...\n"
     # Before attempting to run ApplyClassifiers, check for any rogue singletons
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                    OutputDirectory='${OutputDirectory}'; \
-                                                    addpath(genpath('${CodeDirectory}')); \
-                                                    DeleteSingletonFlies"
+    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                    OutputDirectory='${OutputDirectory}'; \
+                                    addpath(genpath('${CodeDirectory}')); \
+                                    DeleteSingletonFlies"
 
     printf "\n\n\n\n\n\n\n\n"
     printf "####################################################\n"
@@ -189,11 +189,11 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
         ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
     # fi
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                    OutputDirectory='${OutputDirectory}'; \
-                                                    CodeDirectory='${CodeDirectory}'; \
-                                                    addpath(genpath('${CodeDirectory}')); \
-                                                    ApplyClassifiers"
+    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                    OutputDirectory='${OutputDirectory}'; \
+                                    CodeDirectory='${CodeDirectory}'; \
+                                    addpath(genpath('${CodeDirectory}')); \
+                                    ApplyClassifiers"
 fi
 
 if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ -f "${test_file}" ]]; then
@@ -204,10 +204,10 @@ if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ -f "${
     printf "####################################################\n"
     printf "####################################################\n\n"
     printf "\n\n\nRe-assigning identities ...\n"
-    /usr/local/bin/matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
-                                                    OutputDirectory='${OutputDirectory}'; \
-                                                    addpath(genpath('${CodeDirectory}')); \
-                                                    script_reassign_identities"
+    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+                                    OutputDirectory='${OutputDirectory}'; \
+                                    addpath(genpath('${CodeDirectory}')); \
+                                    script_reassign_identities"
 fi
 
 
@@ -217,7 +217,7 @@ fi
     printf "####################################################\n"
     printf "####################################################\n"
     printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
-    /usr/bin/Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+    Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
 # fi
 
 
@@ -230,7 +230,7 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n"
     printf "####################################################\n"
     printf "\n\n\nCalculating indices and plotting ethograms ...\n"
-    /usr/bin/Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}"
+    Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}"
 fi
 
 
