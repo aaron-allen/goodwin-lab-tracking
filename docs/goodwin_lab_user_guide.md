@@ -164,7 +164,7 @@ It is important that the light intensity is set appropriately in order to get ac
 
 To start a recording session double click the `launch_strand_cam.sh` shell script on the desktop. After launching, you will be prompted to enter your user name. This is the same as it appears in the `videos` directory. This script will automatically generate a new folder named with todays date (`<YYYMMDD>`) in your videos folder. For example, if I (Aaron) ran this script on January 25th 2022, it would create the following folder: `/mnt/local_data/videos/Aaron/20220125/`. Once this folder is created, Strand-Camera will launch. You will then be able to record videos from this web interface. By default the videos will be named `movie<YYYMMDD_hhmmss>.<ext>`.
 
-Once the you are finished recording, you may change the names of these videos if you'd like, but do make sure that the names of the videos match the names in you settings file (see below). And please **do not** use commas in your file names.
+Once you are finished recording, you may change the names of these videos if you'd like, but do make sure that the names of the videos match the names in you settings file (see below). And please **do not** use commas or spaces in your file names.
 
 [Back to top](#top)
 
@@ -205,7 +205,7 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 - `number_of_arenas`: How many full arenas are visible in the video (default for courtship is 20, but may also be 1 or 5).
 - `arena_shape`: Either "circle" or "rectangle".
 - `assay_type`: This will be "courtship" for the most part, but potentially "oviposition" or "phototaxis" as we add support for other behaviours.
-- `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and should attempt detection of it.
+- `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and tracking should attempt detection of it.
 - `recording_station`: Which station was used. Either A, B, or C. This is only for documentation purposes and to keep track of any issues.
 
 An example line for a settings file:
@@ -224,7 +224,7 @@ The settings file should only have a line for each video. Do not have an empty l
 
 # Tracking:
 <a name="tracking"></a>
-The tracking  _"pipline"_ is scheduled to run every Friday evening to process all videos accumulated through the week. In a low volume week, your results will be available by Monday morning. In a busy week, they may not be ready until the following Wednesday or Thursday of the following week after tracking has started. So, if you record a video on a Monday your results will be ready in 7-10 days, and if you record on a Friday morning your results will be ready in 3-6 days (again, depending on the number of videos that need to be tracked that week).
+The tracking  _"pipline"_ is scheduled to run every Friday evening to process all videos accumulated through the week. In a low volume week, your results will be available by Monday morning. In a busy week, they may not be ready until Wednesday or Thursday of the following week after tracking has started. So, if you record a video on a Monday your results will be ready in 7-10 days, and if you record on a Friday morning your results will be ready in 3-6 days (again, depending on the number of videos that need to be tracked that week).
 
 During this stage, you (the end user) do not need to do anything except wait. Thank you for your patience.
 
@@ -243,11 +243,11 @@ During this stage, you (the end user) do not need to do anything except wait. Th
 
 Your tracking results will automatically be transferred to the `Tracked` volume on our `VideosUpload` Synology.
 
-To access your data you either need to be attached to a wired internet connection in the CNCB, or connected via the [MSD VPN](https://www.medsci.ox.ac.uk/divisional-services/support-services-1/information-technology/document-and-file-storage/vpn). You will need to use the MSD VPN if you are at home, but will also have to use it if you are connected to eduroam while in the CNCB. Due to addition security required for the MSD, eduroam connections do not have access to the local network in the CNCB.
+To access your data you either need to be attached to a wired internet connection in the CNCB, or connected via the [MSD VPN](https://www.medsci.ox.ac.uk/divisional-services/support-services-1/information-technology/document-and-file-storage/vpn). You will need to use the MSD VPN if you are at home, but will also have to use it if you are connected to eduroam while in the CNCB. Due to additional security required for the MSD, eduroam connections do not have access to the local network in the CNCB.
 
-You can access your data multiple ways. The preferred methods would be to use either [FileZilla](https://filezilla-project.org/) or map a network drive (see below). All methods will require for you to have a user name and password for the Synology's. If you currently don't have any login information (or forget your information), please see Aaron or Annika to sort this out for you.
+You can access your data multiple ways. The preferred methods would be to use either [FileZilla](https://filezilla-project.org/) or map a network drive (see below). All methods will require for you to have a user name and password for the Synologys. If you currently don't have any login information (or forget your information), please see Aaron or Annika to sort this out for you.
 
-It should also be noted that these Synology's are not centrally managed, University of Oxford, network drives. These are just a couple of file server computers sitting in the CNCB.
+It should also be noted that these Synologys are not centrally managed, University of Oxford, network drives. These are just a couple of file server computers sitting in the CNCB.
 
 [Back to top](#top)
 
@@ -267,7 +267,7 @@ It should also be noted that these Synology's are not centrally managed, Univers
 When making a connection for the first time you will be prompted with ...
 
 
-There is extension documentation available online for how to use FileZilla; if you have any further questions, please look there first.
+There is extensive documentation available online for how to use FileZilla; if you have any further questions, please look there first.
 
 [Back to top](#top)
 
