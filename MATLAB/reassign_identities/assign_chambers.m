@@ -62,7 +62,7 @@ chambers = arrayfun(@(f) assign_one(f, maxy_chambers, miny_chambers, maxx_chambe
 startpos = left_right_assign(chambers, firstx, numchambers);
 
 
-id_new = assign_identity(chambers, calib.n_flies);
+id_new = assign_identity(chambers, calib.n_flies, numchambers);
 id_new_c = num2cell(id_new);
 [trx(:).id] = deal(id_new_c{:});
 fields = {'meanx', 'meany'};
@@ -88,14 +88,15 @@ for i = 1:numchamb
 end
 end
 
-function id_new = assign_identity(chambers, nflies)
+function id_new = assign_identity(chambers, nflies, nchambers)
 id_new = zeros(1,numel(chambers));
-nchambers = ceil(numel(chambers)/nflies);
+occupied_chambers = unique(chambers);
+
 nums = [1:nflies*nchambers];
 individuals = transpose(reshape(nums,[nflies,nchambers]));
-for i = 1:nchambers
+for i = 1:numel(occupied_chambers)
    
-        id_new(find(chambers == i)) = individuals(i,:);
+        id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i),:);
     
 end
 end
