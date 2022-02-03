@@ -196,7 +196,7 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
                                     ApplyClassifiers"
 fi
 
-if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]] && [[ -f "${test_file}" ]]; then
+if [[ ${number_of_arenas} > 1 ]] && [[ -f "${test_file}" ]]; then
     # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
     # are in arena 2, etc...
     printf "\n\n\n\n\n\n\n\n"
