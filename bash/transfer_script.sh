@@ -20,27 +20,30 @@ printf "Username = ${user_name}\n"
 printf "Recording directory = ${vid_dir}\n"
 printf "Settings file = ${settings_file}\n\n\n"
 
-user_dir="/mnt/local_data/videos/${user_name}"
-full_path="/mnt/local_data/videos/${user_name}/${vid_dir}"
+user_dir="/mnt/data/videos/${user_name}"
+full_path="/mnt/data/videos/${user_name}/${vid_dir}"
 
-tobetracked_vid_dir="/mnt/Synology/ToBeTracked/VideosFromStaions/videos"
-tobetracked_list_file="/mnt/Synology/ToBeTracked/VideosFromStaions/list_of_videos.csv"
+tobetracked_vid_dir="/mnt/synology/ToBeTracked/VideosFromStations/videos"
+tobetracked_list_file="/mnt/synology/ToBeTracked/VideosFromStations/list_of_videos.csv"
 
 tracking_duration=15    # in minutes
 ff_t_stop=$(( ${tracking_duration} * 60 ))   # convert to seconds for ffmpeg
 
 
 # Define the transfer function
-function transfer_function(video in_dir to_dir) {
+function transfer_function () {
+    video="${1}"
+    in_dir="${2}"
+    to_dir="${3}"
     mkdir -p "${to_dir}/"
     printf "\tCopying ${video} ...\n"
     cp "${in_dir}/${video}" "${to_dir}/"
-    local_size=wc -c "${in_dir}/${video}" | awk '{print $1}'
-    remote_size=wc -c "${to_dir}/${video}" | awk '{print $1}'
+    local_size=$(wc -c "${in_dir}/${video}" | awk '{print $1}')
+    remote_size=$(wc -c "${to_dir}/${video}" | awk '{print $1}')
     printf "\tLocal file size = ${local_size}\n"
     printf "\tRemote file size = ${remote_size}\n"
     if [[ ${local_size} == ${remote_size} ]]; then
-        printf "\tLocal and remote file sizes are equal. Copying was succesfull.\n"
+        printf "\tLocal and remote file sizes are equal. Copying was successfull.\n"
     else
         printf "\tLocal and remote file sizes are NOT equal. Something has gone wrong ...\n"
     fi
@@ -54,18 +57,21 @@ function transfer_function(video in_dir to_dir) {
 if [[ -d "${full_path}" ]]; then
     # first, copy a version to the archive directory
     # second, copy a version to the users directory on GoodwinGroup
-    if [[ -f "/mnt/Synology/Archive/mount_test.txt" ]] && \
-        [[ -f "/mnt/Synology/GoodwinGroup/mount_test.txt" ]]; then
+    if [[ -f "/mnt/synology/Archive/mount_test.txt" ]] && \
+        [[ -f "/mnt/synology/GoodwinGroup/mount_test.txt" ]]; then
 
-        printf "Backup Synologys are moutned.\n"
+        printf "Backup Synologys are mounted.\n"
         printf "\tWe will now start copying the original videos ...\n\n"
-        for file in "$arg"/*.{avi,mp4,mkv,fmf,ufmf} ; do
-            if [[ ! -f "${full_path}/${file}" ]]; then
+        shopt -s nullglob  # expands 'empty' match of '*.avi' to null so we don't try anything with a non-existant literal '*.avi' file
+        for full_path_file in "${full_path}"/*.{avi,mp4,mkv,fmf,ufmf} ; do
+            file=$(basename "${full_path_file}")
+            printf "${file}\n"
+            if [[ ! -f "${full_path_file}" ]]; then
                 printf "\tCan't find the video "${file}", so skipping it ...\n"
                 continue
             fi
-            transfer_function "${file}" "${full_path}" "/mnt/Synology/Archive/FromStations/${user_name}/${vid_dir}"
-            transfer_function "${file}" "${full_path}" "/mnt/Synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
+            transfer_function "${file}" "${full_path}" "/mnt/synology/Archive/FromStations/${user_name}/${vid_dir}"
+            transfer_function "${file}" "${full_path}" "/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
         done
     else
         printf "The Synology is not mounted.\n...\n\t... go find Aaron ...\n\n"
@@ -73,8 +79,8 @@ if [[ -d "${full_path}" ]]; then
     fi
 
     # third and last, transfer videos in settings files to ToBeTracked directory
-    if [[ -f "/mnt/synology/tobetracked/mount_test.txt" ]]; then
-        printf "ToBeTracked Synology is moutned.\n"
+    if [[ -f "/mnt/synology/ToBeTracked/mount_test.txt" ]]; then
+        printf "ToBeTracked Synology is mounted.\n"
         printf "\tWe will now start transcoding and copying the videos in settings file ...\n\n"
 
         while IFS=',' read -r user \
@@ -102,9 +108,11 @@ if [[ -d "${full_path}" ]]; then
             if [[ "${video_type}" == "mkv" ]]; then
                 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
                 ### need to convert Strand-Camera mkv files to constant frame rate videos
+                printf "\n\n\nffmpeg starting\n\n"
                 ffmpeg \
                     -hide_banner \
-                    -hwaccel cuda \
+                    -hwaccel cuvid \
+                    -c:v h264_cuvid \
                     -hwaccel_output_format cuda \
                     -extra_hw_frames 4 \
                     -ss "${start_time}.000" \
@@ -117,7 +125,8 @@ if [[ -d "${full_path}" ]]; then
                     -preset p7 \
                     -multipass 1 \
                     -y \
-                    "${full_path}/${video_name: -4}.mp4"
+                    "${full_path}/${video_name:: -4}.mp4"
+                printf "\n\nffmpeg done\n\n\n"
                 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                 # Check that destination directory and video list file exits
@@ -129,8 +138,8 @@ if [[ -d "${full_path}" ]]; then
                 fi
 
                 # Transfer video and append info to list file
-                transfer_function "${video_name: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
-                printf "${user},${video_name: -4}.mp4,${video_type},${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+                transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
+                printf "${user},${video_name:: -4}.mp4,${video_type},${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
                     >> "${tobetracked_list_file}"
             fi
         done < "${full_path}/${settings_file}"
