@@ -1,10 +1,9 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
 Type=Application
 Terminal=true
-Exec=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/launch_strand_cam.sh
+Exec=/home/aaron/Documents/GitHub/goodwin-lab-tracking/bash/launch_strand_cam.sh
 Name=Record
-Icon=/home/Recording/Documents/GitHub/goodwin-lab-tracking/bash/icons/record.svg
+Icon=/home/aaron/Documents/GitHub/goodwin-lab-tracking/bash/icons/record_bg.svg
 
 
 # For personal use , ~/.local/share/applications

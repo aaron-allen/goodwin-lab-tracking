@@ -40,6 +40,7 @@ while [[ ! -f "${full_path}/${settings_file}" ]]; do
     read -p 'Username: ' user_name
     read -p 'Your recording folder: ' vid_dir
     read -p 'Settings File: ' settings_file
+    full_path="/mnt/data/videos/${user_name}/${vid_dir}"
 done
 
 # Count the number of columns in the example_settings_file and the min and max columns in the user supplied file
@@ -55,7 +56,7 @@ if [[ ${min_col} != ${max_col} ]]; then
     printf "\t3. Make sure there isn't a empty line at the END of the file.\n"
     printf "\nDouble check the above is correct, then close this window and start again ...\n\n"
     sleep infinity
-    # return
+    return
 fi
 
 # Double check that the maximum number of columns in the settings file matches the example_settings_file
@@ -66,17 +67,18 @@ if [[ ${target_col} != ${max_col} ]]; then
     printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n"
     printf "Double check the above is correct, then close this window and start again ...\n\n"
     sleep infinity
-    # return
+    return
 fi
 
 # Double check that every video name in the supplied setting file can be found in the supplied directory
 while IFS=',' read -r user video_name video_type otherstuff; do
     if [[ ! -f "${full_path}/${video_name}" ]]; then
         printf '\n\nWARNING! At least one of the video names in your settings file does not exist.\n'
+        printf "${video_name} is wrong, but others might be as well ...\n"
         printf "\t1. Make sure your spelling is correct. The video names are case-sensitive.\n"
         printf "\t2. Then close this window and start again ...\n\n"
         sleep infinity
-        # return
+        return
     fi
 done < "${full_path}/${settings_file}"
 
@@ -92,7 +94,7 @@ else
     printf "\t(or there is something wrong with your settings file ... )\n"
     printf "Probably best to find Aaron or Annika ...\n\n"
     sleep infinity
-    # return
+    return
 fi
 
 exit

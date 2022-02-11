@@ -65,12 +65,14 @@ if [[ -d "${full_path}" ]]; then
         shopt -s nullglob  # expands 'empty' match of '*.avi' to null so we don't try anything with a non-existant literal '*.avi' file
         for full_path_file in "${full_path}"/*.{avi,mp4,mkv,fmf,ufmf} ; do
             file=$(basename "${full_path_file}")
-            printf "${file}\n"
             if [[ ! -f "${full_path_file}" ]]; then
                 printf "\tCan't find the video "${file}", so skipping it ...\n"
                 continue
             fi
+            printf "Copying ${file} to ...\n"
+            printf "  Archive:\n"
             transfer_function "${file}" "${full_path}" "/mnt/synology/Archive/FromStations/${user_name}/${vid_dir}"
+            printf "  GoodwinGroup:\n"
             transfer_function "${file}" "${full_path}" "/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
         done
     else
@@ -96,6 +98,8 @@ if [[ -d "${full_path}" ]]; then
     							optogenetics_light \
     							station;
         do
+            printf "video is : ${video_name}\n"
+            printf "video type is : ${video_type}\n"
             # Check if video type has a period
             if [[ "${video_type}" == *.* ]]; then
                 video_type="${video_type:1}"
@@ -105,12 +109,16 @@ if [[ -d "${full_path}" ]]; then
                 video_name="${video_name}.${video_type}"
             fi
 
+            printf "video is now : ${video_name}\n"
+            printf "video type is now : ${video_type}\n"
             if [[ "${video_type}" == "mkv" ]]; then
                 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
                 ### need to convert Strand-Camera mkv files to constant frame rate videos
-                printf "\n\n\nffmpeg starting\n\n"
+                printf "\n\n\n################################################\n"
+                printf "ffmpeg starting\n\n"
                 ffmpeg \
                     -hide_banner \
+                    -nostdin \
                     -hwaccel cuvid \
                     -c:v h264_cuvid \
                     -hwaccel_output_format cuda \
@@ -126,7 +134,8 @@ if [[ -d "${full_path}" ]]; then
                     -multipass 1 \
                     -y \
                     "${full_path}/${video_name:: -4}.mp4"
-                printf "\n\nffmpeg done\n\n\n"
+                printf "\n\nffmpeg done\n"
+                printf "################################################\n\n\n"
                 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                 # Check that destination directory and video list file exits
@@ -138,9 +147,12 @@ if [[ -d "${full_path}" ]]; then
                 fi
 
                 # Transfer video and append info to list file
+                printf "Copying ${video_name:: -4}.mp4 to ...\n"
+                printf "  ToBeTracked:\n"
                 transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
                 printf "${user},${video_name:: -4}.mp4,${video_type},${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
                     >> "${tobetracked_list_file}"
+                rm "${full_path}/${video_name:: -4}.mp4"
             fi
         done < "${full_path}/${settings_file}"
     else
