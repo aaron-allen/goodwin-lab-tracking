@@ -1,17 +1,29 @@
+# **Goodwin Lab User Guide**
+
+
+# Table of contents:
+
 <!-- TOC START min:1 max:4 link:true asterisk:false update:true -->
-<a name="top"></a>
+- [**Goodwin Lab User Guide**](#goodwin-lab-user-guide)
+- [Table of contents:](#table-of-contents)
 - [Usage:](#usage)
     - [Caution:](#caution)
 - [Recording Station:](#recording-station)
     - [Preparing the setup:](#preparing-the-setup)
         - [Double Check Camera Settings:](#double-check-camera-settings)
             - [Connecting to the Camera](#connecting-to-the-camera)
-            - [Courtship Profile](#courtship-profile)
-            - [Oviposition Profile](#oviposition-profile)
+            - [Select _"User Set"_](#select-_user-set_)
+        - [Starting a Live Preview](#starting-a-live-preview)
         - [Framing and Backlight Intensity:](#framing-and-backlight-intensity)
+            - [Framing](#framing)
+            - [Backlight Intensity:](#backlight-intensity)
     - [Starting a video recording:](#starting-a-video-recording)
-        - [Using Strand Camera](#using-strand-camera)
+        - [Launch Strand-Camera:](#launch-strand-camera)
+        - [Record a Video:](#record-a-video)
+        - [Done Recording:](#done-recording)
     - [Video Transfer:](#video-transfer)
+        - [Settings file description:](#settings-file-description)
+        - [Starting the Transfer:](#starting-the-transfer)
 - [Tracking:](#tracking)
 - [Tracking Results:](#tracking-results)
     - [Where are my results?](#where-are-my-results)
@@ -40,11 +52,10 @@ The _"pipeline"_ can accommodate our usual 20 arena chambers. You can also adjus
 Here we show an example still from one of our 20 arena chambers.
 ![Example Video Still](/docs/images/video_still--20arena_example.png)
 
-[Back to top](#top)
-
-[Back to Usage](#usage)
-
-[Next: Recording station](#rec)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Usage](#usage)
+- [Next: Recording station](#rec)
 
 ## Caution:
 
@@ -53,11 +64,11 @@ When loading your flies into the chambers please follow these instructions:
 - Ensure at least 5 arenas contain flies. The Caltech Flytracker can run into issues if too many of the arenas are empty in a multi-arena video.
 - If you are not using all 20 arenas, place your flies in the top arenas. FlyTracker will not work if the top 10 arenas (as seen in the video) of the 20 arenas are empty.
 
-[Back to top](#top)
 
-[Back to Usage](#usage)
-
-[Next: Recording station](#rec)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Usage](#usage)
+- [Next: Recording station](#rec)
 
 # Recording Station:
 <a name="rec"></a>
@@ -66,133 +77,198 @@ Please ensure that you have reserved your time slot for either Station's A, B, o
 
 If you are planning on running an optogenetics experiment, please book Station B. For thermogenetics experiments, book Station C.
 
-[Back to top](#top)
 
-[Back to Recording Station](#rec)
-
-[Previous: Usage](#usage)
-
-[Next: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
 
 ## Preparing the setup:
 
-First, login with the `Recoding` user name.
+First, login with the `Recoding` user name. Once you login, you will see the following:
 
-[Back to top](#top)
+![Desktop](/docs/images/desktop.png)
 
-[Back to Recording Station](#rec)
 
-[Previous: Usage](#usage)
-
-[Next: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
 
 ### Double Check Camera Settings:
 
+It is important to double check the camera settings before you start recording. Different assay require different configurations. To check and change the camera settings, open Basler's "Pylon Viewer" software.
+
+![Open_pylon](/docs/images/desktop_pylon_arrow.png)
+
+
 #### Connecting to the Camera
 
-It is important to double check the camera settings before you start recording. Different assay require different configurations. To check and change the camera settings, open Basler's Pylon Viewer software.
-<!-- add image of Pylon in dock with arrow -->
-First you will need to "start" the software connection to the Camera.
-<!-- add image of where to click -->
-Then adjust the streaming whatchits up by a tick ...
-<!-- add image of adjusting the streaming whatchits -->
+When Pylon first opens, you will not see anything from the camera, but you should see the camera listed in the upper left box labelled `Devices` under `USB`. Station-A will have the camera `Basler acA1920-155um` camera, and Station-B and Station-C will both have a `Basler acA2440-75um` camera.
 
-[Back to top](#top)
+![Pylon_open](/docs/images/pylon_open.png)
 
-[Back to Recording Station](#rec)
+First you will need to "start" the software connection to the Camera. Once you select the camera, the "toggle switch" just below the `File` menu item will change from grey to red.
 
-[Previous: Usage](#usage)
+![Select_camera](/docs/images/pylon_select_camera_arrow.png)
 
-[Next: Tracking](#tracking)
+To start the connection to the camera, click on the "toggle switch". It will change colour to green, and a tab with the same name of the camera will open in the right pane. It still won't display what the camera is seeing, as we haven't started a stream yet.
 
-#### Courtship Profile
+![Toggle_on](/docs/images/pylon_toggle_camera_on_arrow.png)
 
-For standard courtship assay experiments load `user_profile_1`
-<!-- add image for user prodile 1 -->
-Once loaded double check that the settings are correct ...
-- fps
-- x and y pixels
-- etc
+After selecting the camera, the lower left pane will also populate with information and settings for the camera.
 
-[Back to top](#top)
 
-[Back to Recording Station](#rec)
+#### Select _"User Set"_
 
-[Previous: Usage](#usage)
+_"User Set"s_ allow for pre-defined parameters for the camera such as number of x and y pixels, frames per second (fps), etc. Before we start a live stream from the camera we want to load a _"User Set"_. For standard courtship assay experiments load `User Set 1`. For oviposition assay experiments load `User Set 2`.
 
-[Next: Tracking](#tracking)
+To load a _"User Set"_, click on the  `User Set Control` option in the lower left panel. To choose an option, click on the dropdown menu next to `User Set Selector`.
 
-#### Oviposition Profile
+![user set params](/docs/images/pylon_user_set_arrows.png)
 
-For oviposition assay experiments load `user_profile_2`.
-<!-- add image for user prodile 1 -->
-Once loaded double check that the settings are correct ...
-- fps
-- x and y pixels
-- etc
+Select the appropriate _"User Set"_ from the dropdown menu. In this case we show selecting `User Set 1`.
 
+![user set select](/docs/images/pylon_user_set_dropdown.png)
+
+To load these settings click on the `Execute` button next to `User Set Load`.
+
+![user set select](/docs/images/pylon_user_set_load.png)
+
+At this point your parameters should be loaded. It is good to double check that the settings are correct. We will be able to see if the parameters are correct once we start a live stream from the camera.
+
+
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
 
 
 
-[Back to top](#top)
+### Starting a Live Preview
 
-[Back to Recording Station](#rec)
+**Warning** - there is a bug in Basler's Pylon software and you can not start a video stream immediately. Select the `Stream Parameters` Category in the lower left panel. You then need to increase the `Maximum Tr...` (Maximum Transfer Size) from a value of `262144` to anything higher by clicking on the up arrowhead. Here I show setting it to `262148`, but realistically it just needs to be anything other than the default when opening Pylon Viewer.
 
-[Previous: Usage](#usage)
+<!-- replace the stream params image so be able to see the full Maximum Transfer Size -->
+![Stream_params](/docs/images/pylon_stream_params_arrows.png)
 
-[Next: Tracking](#tracking)
+Once you have changed the `Maximum Transfer Size` you can start a live video stream by selecting the video camera icon at the top.
+
+![Start_stream](/docs/images/pylon_start_stream_arrow.png)
+
+After selecting the video camera icon, the live stream (preview) will start in the right pane. The camera setting information such as frames per second, x any y pixels, etc can be seen just below the stream. Courtship assays (`User Set 1`) should be `25 fps`, and oviposition assays (`User Set 2`) should be `2 fps`. Station-A camera should have a `1800 x 1200` pixels, and Station-B and Station-C should have `2400 x 1600` pixels.
+
+![Stream_started](/docs/images/pylon_stream_started.png)
+
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
+
 
 ### Framing and Backlight Intensity:
 
+#### Framing
+
+Now you can start a stream to check for framing of the video. The edges of all the arenas you want to be tracked need to be visible. Ensure that the framing does not cut off any of the arenas. Below we show an image where the arenas 10 and 20 are cropped on their right sides. Avoid this sort of issue.
+
+![Cropped arena](/docs/images/pylon_clipped_edge.png)
+
+#### Backlight Intensity:
+
+It is important that the light intensity is set appropriately in order to get accurate tracking results. The intensity knob on the Falcon light source should be turned to its maximum. Then the aperture of the camera should be adjusted such that the brightest part of the video registers less than 255 (and typically more than 240) and the darkest part of the video registers more than 0 (and typically less than 15).
+
+Here we show an image while hovering the cursor the left side of the arena 8 (2nd row from the top, 3rd arena from the left). The intensity value can be seen below the video frame labelled `Mono`.
+
+![Max light](/docs/images/pylon_backlight_255.png)
+
+For the lower bound of the light intensity, hovering the cursor over one of the bolt heads is usually the darkest.
+
+![Min light](/docs/images/pylon_backlight_0.png)
 
 
-Now you can start a stream to check for framing of the video.
+Adjusting the aperture in this way prevents clipping (either the brightest spot stuck on 255 or the darkest spot stuck on 0) and ensures that we will be recording all the data that we can, without washing anything out. We adjust this by the aperture of the camera, and not by the intensity knob of the backlight to ensure maximum [depth of field](https://en.wikipedia.org/wiki/Depth_of_field). If the depth of field is too shallow and someone has inappropriately adjusted the camera such that its sensor is not parallel to the arenas, then not all flies will be in focus and tracking errors may occur.
 
-It is important that the light intensity is set appropriately in order to get accurate tracking results. The intensity knob on the Falcon light source should be turned to its maximum. Then the aperture of the camera should be adjusted such that the brightest part of the video registers less than 255 (and typically more than 240) and the darkest part of the video registers more than 0 (and typically less than 15). Adjusting the aperture in this way prevents clipping (either the brightest spot stuck on 255 or the darkest spot stuck on 0) and ensures that we will be recording all the data that we can, without washing anything out. We adjust this by the aperture of the camera, and not by the intensity knob of the backlight to ensure maximum [depth of field](https://en.wikipedia.org/wiki/Depth_of_field). If the depth of field is too shallow and someone has inappropriately adjusted the camera such that its sensor is not parallel to the arenas, then not all flies will be in focus and tracking errors may occur.
 
-![Backlight Intensity](/docs/images/video_still--backlight_intensity.png)
 
-[Back to top](#top)
 
-[Back to Recording Station](#rec)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
 
-[Previous: Usage](#usage)
 
-[Next: Tracking](#tracking)
+
 
 ## Starting a video recording:
 
-To start a recording session double click the `launch_strand_cam.sh` shell script on the desktop. After launching, you will be prompted to enter your user name. This is the same as it appears in the `videos` directory. This script will automatically generate a new folder named with todays date (`<YYYMMDD>`) in your videos folder. For example, if I (Aaron) ran this script on January 25th 2022, it would create the following folder: `/mnt/local_data/videos/Aaron/20220125/`. Once this folder is created, Strand-Camera will launch. You will then be able to record videos from this web interface. By default the videos will be named `movie<YYYMMDD_hhmmss>.<ext>`.
+After you have finished setting up the camera and your framing etc, you must close "Pylon Viewer" before you launch "Strand-Camera". Only one program is "allowed" to be connected to the camera at one time.
+
+We will now be using "Strand-Camera" software to record our behaviour videos. More information about Strand-Camera software is available [here](https://strawlab.org/strand-cam/) from its developers.
+
+
+### Launch Strand-Camera:
+
+To start a recording session click the `Record` icon in the side bar (the one with a video camera and a fly).
+
+![launch_strand](/docs/images/launch_strand_camera.png)
+
+
+After launching, you will be prompted to enter your user name. This is the same as it appears in the `videos` directory. Type in your username (mind your capitalizations) and press `enter`.
+
+![strand_username](/docs/images/strand_cam_username.png)
+
+Once you have entered you username, the script will automatically generate a new folder named with todays date (`<YYY-MM-DD>`) in your videos folder. For example, if I (Aaron) ran this script on January 25th 2022, it would create the following folder: `/mnt/local_data/videos/Aaron/2022-01-25/`. Once this folder is created, Strand-Camera will launch.
+
+"Strand Camera" runs in a web browser and some of the configuration settings can be changed within this interface. At the top of the screen is a "Live view" of the camera.
+
+![strand_username](/docs/images/strand_cam_launched.png)
+
+### Record a Video:
+
+You will then be able to record videos from this web interface. For now, we are going to be recording videos in `mkv` containers. These options are in the second section, `MKV Recording Options`, below the `Live view` section.
+
+Before we start recording, we need to change a few of the default options in the `MKV Recording Options` section. Stand-Camera defaults to using the `VP8` codec and a bitrate of `1000`.
+
+![default_codec](/docs/images/strand_cam_codec_default.png)
+
+But we want to change this to the `H264` codec and a bitrate of `10000`.
+
+![set_codec](/docs/images/strand_cam_codec_set.png)
+
+To start the recording, click the red, circular, button next to `Record MKV file`. The videos will be named `movie<YYYMMDD_hhmmss>.<ext>`. To stop the recording click the red, square, button. Strand-Camera does not have a recording length option, so you will have to manually stop the recording of each video. You can record multiple videos back-to-back with from this interface and all the videos will be named for the start time of the recording.
 
 Once you are finished recording, you may change the names of these videos if you'd like, but do make sure that the names of the videos match the names in you settings file (see below). And please **do not** use commas or spaces in your file names.
 
-[Back to top](#top)
-
-[Back to Recording Station](#rec)
-
-[Previous: Usage](#usage)
-
-[Next: Tracking](#tracking)
-
-### Using Strand Camera
-
-We will now be using Strand Camera software to record our behaviour videos. More information about Strand Camera software is available [here](https://strawlab.org/strand-cam/) from its developers.
-
+<!--
 For now, we will be recording `.mkv` video files. We may in the future sort how to deal with videos recorded directly to `.ufmf`, but are not for now - currently Caltech FlyTracker does not support reading of Straw Lab `.ufmf` videos.
+-->
 
-To close Strand Camera ... - add info
+### Done Recording:
 
-[Back to top](#top)
+Once you have finished recording, you can simply close the web browser and the terminal window to stop the software running.
 
-[Back to Recording Station](#rec)
 
-[Previous: Usage](#usage)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
 
-[Next: Tracking](#tracking)
+
 
 ## Video Transfer:
 
-Settings file description:
+In order to track your videos, you need to generate a _"settings"_ file with a list of parameters our pipeline and the tracking software require. This is a plain text file that can be created and edited in the application "Text Editor".
+
+<!-- add screen shot of Text Editor -->
+
+### Settings file description:
 
 The settings file is a comma separated values plain text file (*.txt) where the user can specify multiple parameters to ensure their video gets tracked accordingly. These parameters need to be in this exact order and all should be present.
 - `user`: your first name, as it appears in the video recording directory.
@@ -210,31 +286,43 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 
 An example line for a settings file:
 
-`Aaron,my_test_video.mp4,mp4,25,13,2,0.5,20,circle,courtship,false,C`
+`Aaron,my_test_video.mkv,mkv,25,13,2,0.5,20,circle,courtship,false,c`
 
 The settings file should only have a line for each video. Do not have an empty line at the start, and do not have an empty line at the end.
 
-[Back to top](#top)
+### Starting the Transfer:
 
-[Back to Recording Station](#rec)
+<!-- get screen shots of transfer script -->
 
-[Previous: Usage](#usage)
 
-[Next: Tracking](#tracking)
+
+Please be kind to other users! **Do not** start your video transfer if someone else is scheduled to use the station right after you. Before starting the transfer, look in the Google calendar to see if anyone else has added a booking since you started your recordings.
+
+<!-- add details about how long the transfer takes -->
+
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Recording Station](#rec)
+- [Previous: Usage](#usage)
+- [Next: Tracking](#tracking)
+
+
+
+
 
 # Tracking:
 <a name="tracking"></a>
-The tracking  _"pipline"_ is scheduled to run every Friday evening to process all videos accumulated through the week. In a low volume week, your results will be available by Monday morning. In a busy week, they may not be ready until Wednesday or Thursday of the following week after tracking has started. So, if you record a video on a Monday your results will be ready in 7-10 days, and if you record on a Friday morning your results will be ready in 3-6 days (again, depending on the number of videos that need to be tracked that week).
+
+The tracking  _"pipline"_ is scheduled to run every Friday night to process all videos accumulated through the week. The _"pipline"_ takes ~14 hours to run 10 videos in parallel. So when the tracking finishes depends on how many videos, in total, were recorded that week. Typically the tracking should be finished by the following Monday morning (but may be ready by as early as Saturday morning).
 
 During this stage, you (the end user) do not need to do anything except wait. Thank you for your patience.
 
-[Back to top](#top)
+**_Navigation:_**
+- [Back to top](#top)
+- [Previous: Recording Station](#rec)
+- [Next: Tracking Results](#results)
 
-[Back to Tracking](#tracking)
 
-[Previous: Recording Station](#rec)
-
-[Next: Tracking Results](#results)
 
 # Tracking Results:
 <a name="results"></a>
@@ -249,11 +337,10 @@ You can access your data multiple ways. The preferred methods would be to use ei
 
 It should also be noted that these Synologys are not centrally managed, University of Oxford, network drives. These are just a couple of file server computers sitting in the CNCB.
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 
 ### FileZilla:
@@ -269,11 +356,10 @@ When making a connection for the first time you will be prompted with ...
 
 There is extensive documentation available online for how to use FileZilla; if you have any further questions, please look there first.
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Map a network drive:
 
@@ -298,11 +384,10 @@ Windows - here are a few links that may help:
 
 If any of the links are either not working or maybe not the most up to date, feel free to use this handy [tool](https://www.google.co.uk/).
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ## Navigating your results:
 
@@ -332,11 +417,10 @@ The directory structure is as follows for each video:
 
 For the most part, you will likely want to focus on the files in the `Results/` folder. This folder contains summary plots and summary statistics of the tracking data. The description of the files within are as follows:
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Results/example_video_1_ALLDATA_R.csv.gz:
 
@@ -348,11 +432,10 @@ A compressed csv file containing all the data extracted from the `example_video_
 - `Value`: The value of the measured feature.
 - `Data_Source`: Where the data was extracted from - either "track.mat", "feat.mat", or "jaaba".
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Diagnostic_Plots_R.pdf:
 
@@ -361,11 +444,10 @@ A series of A4 pdf plots showing some of the raw tracking data. This can be used
 An example of the "Area" diagnostic plot for fly Id 1 and 2 in arena 1.
 ![Fly Area](/docs/images/diagnostic_plots--area.png)
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Ethogram.pdf:
 
@@ -375,11 +457,10 @@ An example of the ethogram plot for a fly can be seen below. This shows the JAAB
 
 ![Ethogram](/docs/images/ethogram--example.png)
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Results/example_video_1_Indices.csv:
 
@@ -400,17 +481,16 @@ A csv file containing the computed courtship indices derived from the JAABA anno
 
 By default flies need to "initiate courtship" before we will calculate an index. Flies need to perform any of the courtship-like behaviours for at least 3 seconds of a 6 second window (the facing behaviour is not used to assess courtship initiation). These indices are then from the courtship initiation until either 1. the flies copulate, 2. 10 minutes has passed since courtship initiation, or 3. we've reached the end of the tracking data, which ever occurs first.
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Other files:
 
 
 - `Backups/...`: We make multiple changes to the generated tracking files. Before we make any of our changes, we copy the file that will be modified to this directory.
-- `Logs/...`: This folder contains multiple log files and error files that can be useful while diagnosing tracking error.
+- `Logs/...`: This folder contains multiple log files and error files that can be useful while diagnosing tracking errors.
 - `example_video_1/example_video_1_JAABA/...`: This folder contains all of the files needed for performing the JAABA analysis, as well as the `scores_*.mat` results files.
 - `example_video_1/ids.mat`: This file is generated while re-assigning identities.
 - `example_video_1/example_video_1-bg.mat`: This is the background model used during tracking.
@@ -418,11 +498,10 @@ By default flies need to "initiate courtship" before we will calculate an index.
 - `example_video_1/example_video_1-params.mat`: A log of the parameters used while tracking.
 - `example_video_1/example_video_1-track.mat`: "[R]aw tracking data (e.g. position, orientation, left wing angle)"
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
 
 ### Arena and Fly Numbering:
 
@@ -435,8 +514,7 @@ When we run `reassign_identities`, the fly Ids are re-numbered such that the fli
 
 ![Fly Numbering](/docs/images/video_still--fly_numbering.png)
 
-[Back to top](#top)
-
-[Back to Tracking Results](#results)
-
-[Previous: Tracking](#tracking)
+**_Navigation:_**
+- [Back to top](#top)
+- [Back to Tracking Results](#results)
+- [Previous: Tracking](#tracking)
