@@ -11,11 +11,14 @@
 - [Recording Station:](#recording-station)
     - [Preparing the setup:](#preparing-the-setup)
         - [Double Check Camera Settings:](#double-check-camera-settings)
-            - [Connecting to the Camera](#connecting-to-the-camera)
-            - [Select _"User Set"_](#select-_user-set_)
-        - [Starting a Live Preview](#starting-a-live-preview)
+            - [Connecting to the Camera:](#connecting-to-the-camera)
+            - [Load Camera Settings:](#load-camera-settings)
+        - [Turning on the Backlight:](#turning-on-the-backlight)
+            - [Station-A/C Backlight:](#station-ac-backlight)
+            - [Station-B Backlight:](#station-b-backlight)
+        - [Starting a Live Preview:](#starting-a-live-preview)
         - [Framing and Backlight Intensity:](#framing-and-backlight-intensity)
-            - [Framing](#framing)
+            - [Framing:](#framing)
             - [Backlight Intensity:](#backlight-intensity)
     - [Starting a video recording:](#starting-a-video-recording)
         - [Launch Strand-Camera:](#launch-strand-camera)
@@ -52,11 +55,6 @@ The _"pipeline"_ can accommodate our usual 20 arena chambers. You can also adjus
 Here we show an example still from one of our 20 arena chambers.
 ![Example Video Still](/docs/images/video_still--20arena_example.png)
 
-**_Navigation:_**
-- [Back to top](#top)
-- [Back to Usage](#usage)
-- [Next: Recording station](#rec)
-
 ## Caution:
 
 When loading your flies into the chambers please follow these instructions:
@@ -78,24 +76,12 @@ Please ensure that you have reserved your time slot for either Station's A, B, o
 If you are planning on running an optogenetics experiment, please book Station B. For thermogenetics experiments, book Station C.
 
 
-**_Navigation:_**
-- [Back to top](#top)
-- [Back to Recording Station](#rec)
-- [Previous: Usage](#usage)
-- [Next: Tracking](#tracking)
-
 ## Preparing the setup:
 
 First, login with the `Recoding` user name. Once you login, you will see the following:
 
 ![Desktop](/docs/images/desktop.png)
 
-
-**_Navigation:_**
-- [Back to top](#top)
-- [Back to Recording Station](#rec)
-- [Previous: Usage](#usage)
-- [Next: Tracking](#tracking)
 
 ### Double Check Camera Settings:
 
@@ -104,7 +90,7 @@ It is important to double check the camera settings before you start recording. 
 ![Open_pylon](/docs/images/desktop_pylon_arrow.png)
 
 
-#### Connecting to the Camera
+#### Connecting to the Camera:
 
 When Pylon first opens, you will not see anything from the camera, but you should see the camera listed in the upper left box labelled `Devices` under `USB`. Station-A will have the camera `Basler acA1920-155um` camera, and Station-B and Station-C will both have a `Basler acA2440-75um` camera.
 
@@ -121,7 +107,7 @@ To start the connection to the camera, click on the "toggle switch". It will cha
 After selecting the camera, the lower left pane will also populate with information and settings for the camera.
 
 
-#### Select _"User Set"_
+#### Load Camera Settings:
 
 _"User Set"s_ allow for pre-defined parameters for the camera such as number of x and y pixels, frames per second (fps), etc. Before we start a live stream from the camera we want to load a _"User Set"_. For standard courtship assay experiments load `User Set 1`. For oviposition assay experiments load `User Set 2`.
 
@@ -129,7 +115,7 @@ To load a _"User Set"_, click on the  `User Set Control` option in the lower lef
 
 ![user set params](/docs/images/pylon_user_set_arrows.png)
 
-Select the appropriate _"User Set"_ from the dropdown menu. In this case we show selecting `User Set 1`.
+Select the appropriate _"User Set"_ from the dropdown menu. In this case we show selecting `User Set 1` for standard courtship assays.
 
 ![user set select](/docs/images/pylon_user_set_dropdown.png)
 
@@ -146,9 +132,23 @@ At this point your parameters should be loaded. It is good to double check that 
 - [Previous: Usage](#usage)
 - [Next: Tracking](#tracking)
 
+### Turning on the Backlight:
 
+Before we start a live preview/stream from the camera, we will need to turn on the backlight. We use infrared (IR) backlights and a IR longpass filter on our cameras. This filter blocks out visible light and only allows IR light through. Station-A and Station-C have the same IR backlight setup, but Station-B is a bit different as the optogenetics light and IR backlight are built into the same unit.
 
-### Starting a Live Preview
+#### Station-A/C Backlight:
+
+Since we can not see the light emitted by the IR backlight, it is very easy forget to turn the IR backlight off. To avoid the issue of leaving the backlight on for prolonged, we use an outlet timer switch.
+
+![backlight_timer](/docs/images/backlight_timer.png)
+
+To turn the backlight on, hold down the green `START/STOP` button for a second (or two), until you hear a click and the green light will eluminate under the `15min` label. To increase the time click the `START/STOP` button. Each click will advance the time to the next doubling. It should be noted that these times are approximate. If you are going to record an hour long video, set the timer to `2h` to ensure it doesn't turn off before your video is done. To turn off the light when you are done, hold down the `START/STOP` button for a second, until it clicks off.
+
+#### Station-B Backlight:
+
+Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB. Details of usage are to follow...
+
+### Starting a Live Preview:
 
 **Warning** - there is a bug in Basler's Pylon software and you can not start a video stream immediately. Select the `Stream Parameters` Category in the lower left panel. You then need to increase the `Maximum Tr...` (Maximum Transfer Size) from a value of `262144` to anything higher by clicking on the up arrowhead. Here I show setting it to `262148`, but realistically it just needs to be anything other than the default when opening Pylon Viewer.
 
@@ -172,7 +172,7 @@ After selecting the video camera icon, the live stream (preview) will start in t
 
 ### Framing and Backlight Intensity:
 
-#### Framing
+#### Framing:
 
 Now you can start a stream to check for framing of the video. The edges of all the arenas you want to be tracked need to be visible. Ensure that the framing does not cut off any of the arenas. Below we show an image where the arenas 10 and 20 are cropped on their right sides. Avoid this sort of issue.
 
@@ -264,9 +264,16 @@ Once you have finished recording, you can simply close the web browser and the t
 
 ## Video Transfer:
 
-In order to track your videos, you need to generate a _"settings"_ file with a list of parameters our pipeline and the tracking software require. This is a plain text file that can be created and edited in the application "Text Editor".
+In order to track your videos, you need to generate a _"settings"_ file with a list of [parameters](#settings-file-description) our pipeline and the tracking software require. This is a plain text file that can be created and edited in the application "Text Editor". Open "Text Editor" and add the information for your videos.
 
-<!-- add screen shot of Text Editor -->
+![settings_file_make](/docs/images/settings_file_make.png)
+
+Once you have entered your information, you'll need to save this text file in the same folder as your videos. Click the save button, select the `data` folder in the side bar, and navigate to your video folder where you just recorded your videos. You can name this file how ever you'd like.
+
+![settings_file_save](/docs/images/settings_file_save.png)
+
+Alternatively, you can copy an existing settings file in from a previous recording session into your current video folder and edit it.
+
 
 ### Settings file description:
 
@@ -292,9 +299,11 @@ The settings file should only have a line for each video. Do not have an empty l
 
 ### Starting the Transfer:
 
-<!-- get screen shots of transfer script -->
+Once you have made/edited your settings file, you can start transferring your videos by clicking on the "Transfer" (green up arrow). This will start a script that will prompt you for information. It will first ask for your name, then recording folder, and finally the name of your settings file. If these values have been entered properly and there isn't any issues with your settings file, then the transfer will start automatically. This window will close once the transfer is complete. **Do not** close this window before it is done transferring. If there is any errors (typos etc), the script will prompt you with what it thinks is wrong. Double check what it suggests, close the window, and start again.
 
+![transfer_start](/docs/images/transfer_start.png)
 
+This transfer script copies your videos to 3 separate locations. First it copies all the videos in the directory (and not just the ones in the settings file) to the `GoodwinGroup` Synology. You can find the folder of the days videos in a folder called `BehaviourVideos` in your user folder (I realize this sentence isn't very clear ...). For example, if I `Aaron`, transferred videos that were recorded on `2022-02-11`, then I would find them in `GoodwinGroup/Aaron/BehaviourVideos/2022-02-11/...`. Secondly, the script copies all your videos in the specified folder to an archive directory, just in case needed. Lastly, the script transcodes, cuts, and transfers the videos specified in the settings file to the `ToBeTracked` Synology. This is where the automated scheduled _"pipeline"_ will look for videos once a week.
 
 Please be kind to other users! **Do not** start your video transfer if someone else is scheduled to use the station right after you. Before starting the transfer, look in the Google calendar to see if anyone else has added a booking since you started your recordings.
 
@@ -333,7 +342,7 @@ Your tracking results will automatically be transferred to the `Tracked` volume 
 
 To access your data you either need to be attached to a wired internet connection in the CNCB, or connected via the [MSD VPN](https://www.medsci.ox.ac.uk/divisional-services/support-services-1/information-technology/document-and-file-storage/vpn). You will need to use the MSD VPN if you are at home, but will also have to use it if you are connected to eduroam while in the CNCB. Due to additional security required for the MSD, eduroam connections do not have access to the local network in the CNCB.
 
-You can access your data multiple ways. The preferred methods would be to use either [FileZilla](https://filezilla-project.org/) or map a network drive (see below). All methods will require for you to have a user name and password for the Synologys. If you currently don't have any login information (or forget your information), please see Aaron or Annika to sort this out for you.
+You can access your data multiple ways. The preferred methods would be to use either [FileZilla](https://filezilla-project.org/) or map a network drive (see below). If you are more comfortable at the terminal feel free to use `ssh` and either `scp` or `rsync` to get your data. All methods will require for you to have a user name and password for the Synologys. If you currently don't have any login information (or forget your information), please see Aaron or Annika to sort this out for you. Your data can be accessed through Synology's web interface, but I do not recommend this as downloading your data this way is much slower then the others (not to mention one of the Synology's web interface refuses to connect when on the VPN).
 
 It should also be noted that these Synologys are not centrally managed, University of Oxford, network drives. These are just a couple of file server computers sitting in the CNCB.
 
@@ -351,10 +360,10 @@ It should also be noted that these Synologys are not centrally managed, Universi
 * `Password`: your password
 * `Port`: 22
 
-When making a connection for the first time you will be prompted with ...
+<!-- When making a connection for the first time you will be prompted with ... -->
 
 
-There is extensive documentation available online for how to use FileZilla; if you have any further questions, please look there first.
+There is extensive documentation available online for how to use FileZilla; if you have any further questions, please feel free to look around.
 
 **_Navigation:_**
 - [Back to top](#top)
@@ -375,10 +384,6 @@ Windows - here are a few links that may help:
 * [link1](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-10-29ce55d1-34e3-a7e2-4801-131475f9557d)
 * [link2](https://www.dummies.com/article/technology/information-technology/networking/general-networking/mapping-network-drives-164954)
 * [link3](https://www.howtogeek.com/762111/how-to-map-a-network-drive-on-windows-10/)
-
-
-
-
 
 
 
