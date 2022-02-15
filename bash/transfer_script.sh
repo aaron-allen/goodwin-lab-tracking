@@ -98,6 +98,14 @@ if [[ -d "${full_path}" ]]; then
     							optogenetics_light \
     							station;
         do
+            # Force variables to be lowercase
+            video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
+            arena_shape=$(printf "${arena_shape}" | tr '[:upper:]' '[:lower:]')
+            assay_type=$(printf "${assay_type}" | tr '[:upper:]' '[:lower:]')
+            optogenetics_light=$(printf "${optogenetics_light}" | tr '[:upper:]' '[:lower:]')
+            station=$(printf "${station}" | tr '[:upper:]' '[:lower:]')
+            
+
             printf "video is : ${video_name}\n"
             printf "video type is : ${video_type}\n"
             # Check if video type has a period

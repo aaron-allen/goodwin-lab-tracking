@@ -59,6 +59,12 @@ arena_shape="${15}"
 assay_type="${16}"
 optogenetics_light="${17}"
 
+# Force variables to be lowercase
+video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
+arena_shape=$(printf "${arena_shape}" | tr '[:upper:]' '[:lower:]')
+assay_type=$(printf "${assay_type}" | tr '[:upper:]' '[:lower:]')
+optogenetics_light=$(printf "${optogenetics_light}" | tr '[:upper:]' '[:lower:]')
+
 
 tracking_duration=15    # in minutes
 
@@ -230,7 +236,7 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n"
     printf "####################################################\n"
     printf "\n\n\nCalculating indices and plotting ethograms ...\n"
-    Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}"
+    Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}" "${optogenetics_light}"
 fi
 
 

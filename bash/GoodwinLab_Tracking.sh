@@ -125,7 +125,14 @@ if [ -s ${csv_file} ]; then
 							arena_shape \
 							assay_type \
 							optogenetics_light \
-							station; do
+							station;
+	do
+		# Force variables to be lowercase
+		video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
+		arena_shape=$(printf "${arena_shape}" | tr '[:upper:]' '[:lower:]')
+		assay_type=$(printf "${assay_type}" | tr '[:upper:]' '[:lower:]')
+		optogenetics_light=$(printf "${optogenetics_light}" | tr '[:upper:]' '[:lower:]')
+		station=$(printf "${station}" | tr '[:upper:]' '[:lower:]')
 
 		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
