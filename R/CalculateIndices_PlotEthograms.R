@@ -59,11 +59,15 @@ OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]
 FPS <- as.numeric(commandArgs(trailingOnly=T)[4])
 PropMale <- as.numeric(commandArgs(trailingOnly=T)[5])
+OptoLight <- as.logical(str_to_upper(commandArgs(trailingOnly=T)[6]))
+
+
 
 message(paste0("OutputDirectory = ",OutputDirectory))
 message(paste0("FileName = ",FileName))
 message(paste0("FPS = ",FPS))
 message(paste0("PropMale = ",PropMale))
+message(paste0("OptoLight = ",OptoLight))
 
 
 
@@ -92,6 +96,30 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.
                                     prop_male = PropMale,
                                     save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
                                     )
+
+    ## Run calculate_indices 2 more times if the optogenetic light was used. One file for
+    ## lights-on and one file for light-off.
+    # if ( OptoLight == "yes" ) {
+    #     calculate_single_indices_table(input = raw_data_spread,
+    #                                     court_init = TRUE,
+    #                                     max_court = TRUE,
+    #                                     predict_sex = TRUE,
+    #                                     frame_rate = FPS,
+    #                                     prop_male = PropMale,
+    #                                     opto_light = "on",
+    #                                     save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
+    #                                     )
+    #     calculate_single_indices_table(input = raw_data_spread,
+    #                                     court_init = TRUE,
+    #                                     max_court = TRUE,
+    #                                     predict_sex = TRUE,
+    #                                     frame_rate = FPS,
+    #                                     prop_male = PropMale,
+    #                                     opto_light = "off",
+    #                                     save_path = paste0(OutputDirectory,"/",FileName,"/Results/")
+    #                                     )
+    #
+    # }
 
     # Ethogram Plots of JAABA Classifiers
     #############################################

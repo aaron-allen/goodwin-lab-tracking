@@ -25,6 +25,12 @@
 ##   max_court: boolean, whether to impose a maximum length of time to over which to calculate the indices (defualt FALSE)
 ##   max_court_dur: integer, the maximum length of time in seconds over which to calculate the indices (defualt 600 seconds, only used it 'max_court' is set to TRUE)
 ##   frame_rate: integer, the number of frames per second of the video that was tracked (defualt 25 frames per second)
+
+
+##   opto_light: ...
+##   lights_on: ...
+
+
 ##   return_obj: boolean, whether or not to return the tibble of indices
 ##   save_data: boolean, whether or not to write data to disk
 ##   save_path: string, full or relative file path to write data to disk (only used if save_data == TRUE)
@@ -87,6 +93,8 @@ calculate_single_indices_table <- function(input,
                                         frame_rate = 25,
                                         predict_sex = FALSE,
                                         prop_male = 0.5,
+                                        opto_light = FALSE,
+                                        lights_on = FALSE,
                                         return_obj = FALSE,
                                         save_data = TRUE,
                                         save_path = NULL){
@@ -110,6 +118,11 @@ calculate_single_indices_table <- function(input,
         raw_data <- input
     }
 
+    # if ( opto_light ) {
+    #     # read in opto-lights matlab file and make a perframe arena, flyid, and lights-on tibble
+    # }
+
+
     message("    Calculating Indices")
     indices <- raw_data %>%
         select(Video_name,
@@ -126,16 +139,16 @@ calculate_single_indices_table <- function(input,
         drop_na() %>%
         group_by(Fly_Id) %>%
         mutate(
-        Multitasking = (Approaching + Encircling + Contact + Turning + WingGesture),
-        MultitaskingWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture),
-        Courtship = if_else(Multitasking>=1, 1, 0),
-        CourtshipWithFacing = if_else(MultitaskingWithFacing>=1, 1, 0),
-        MultitaskingWithCopulation = (Approaching + Encircling + Contact + Turning + WingGesture + Copulation),
-        MultitaskingWithCopulationWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture + Copulation),
-        CourtshipAndCopulation = if_else(MultitaskingWithCopulation>=1, 1, 0),
-        CourtshipAndCopulationWthFacing = ifelse(MultitaskingWithCopulationWithFacing>=1, 1, 0),
-        SmoothedCourtship = if_else((rollmean(Courtship, court_wind*frame_rate, fill = c(0,0,0), align = c("left")))>0.5, 1, 0),
-        SmoothedCopulation = if_else((rollmean(Copulation, cop_wind*frame_rate, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
+            Multitasking = (Approaching + Encircling + Contact + Turning + WingGesture),
+            MultitaskingWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture),
+            Courtship = if_else(Multitasking>=1, 1, 0),
+            CourtshipWithFacing = if_else(MultitaskingWithFacing>=1, 1, 0),
+            MultitaskingWithCopulation = (Approaching + Encircling + Contact + Turning + WingGesture + Copulation),
+            MultitaskingWithCopulationWithFacing = (Approaching + Encircling + Facing + Contact + Turning + WingGesture + Copulation),
+            CourtshipAndCopulation = if_else(MultitaskingWithCopulation>=1, 1, 0),
+            CourtshipAndCopulationWthFacing = ifelse(MultitaskingWithCopulationWithFacing>=1, 1, 0),
+            SmoothedCourtship = if_else((rollmean(Courtship, court_wind*frame_rate, fill = c(0,0,0), align = c("left")))>0.5, 1, 0),
+            SmoothedCopulation = if_else((rollmean(Copulation, cop_wind*frame_rate, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)
         ) %>%
         do(
         if(inc_cop)
@@ -155,6 +168,12 @@ calculate_single_indices_table <- function(input,
         else
           .
         ) %>%
+        # do(
+        # if(opto_light)
+        #   # filter
+        # else
+        #   .
+        # ) %>%
         summarise(FileName = unique(Video_name),
                 ArenaNumber = unique(Arena),
                 FlyId = unique(Fly_Id),
