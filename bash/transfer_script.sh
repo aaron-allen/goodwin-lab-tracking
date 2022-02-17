@@ -85,6 +85,11 @@ if [[ -d "${full_path}" ]]; then
         printf "ToBeTracked Synology is mounted.\n"
         printf "\tWe will now start transcoding and copying the videos in settings file ...\n\n"
 
+        ## Remove leading and tailing spaces around the commas
+        awk -F '[[:blank:]]*,[[:blank:]]*' -v OFS=, \
+                '{gsub(/^[[:blank:]]+|[[:blank:]]+$/, ""); $1=$1} 1' \
+                "${full_path}/${settings_file}" > "${full_path}/${settings_file}"
+
         while IFS=',' read -r user \
     							video_name \
     							video_type \
@@ -104,7 +109,7 @@ if [[ -d "${full_path}" ]]; then
             assay_type=$(printf "${assay_type}" | tr '[:upper:]' '[:lower:]')
             optogenetics_light=$(printf "${optogenetics_light}" | tr '[:upper:]' '[:lower:]')
             station=$(printf "${station}" | tr '[:upper:]' '[:lower:]')
-            
+
 
             printf "video is : ${video_name}\n"
             printf "video type is : ${video_type}\n"
