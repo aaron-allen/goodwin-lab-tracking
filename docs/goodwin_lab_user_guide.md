@@ -146,7 +146,53 @@ To turn the backlight on, hold down the green `START/STOP` button for a second (
 
 #### Station-B Backlight:
 
-Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB. Details of usage are to follow...
+Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB.
+
+#### Setting Station-B Backlight intensity:
+
+Station-B's backlight, as well as the optogenetic light, are controlled via this controller, which has to be plugged into the outlet timer switch.
+
+![backlight_contr](/docs/images/backlight_controler.jpg)
+
+To set its intensity, first select the channel by pressing the 'ch' button. The channel (1 or 2) is the first number displayed on the controller in front of the dot. Channel 1 corresponds to the optogenetic light and channel 2 corresponds to the IR backlight. 
+
+![backlight_channel](/docs/images/backlight_controler_channel.jpg)
+
+Then set the intensity using the up and down buttons. The intensity ranges from 0 to 255. It is displayed after the dot.
+
+![backlight_intensity](/docs/images/backlight_controler_intensity.jpg)
+
+If only the backlight is used and no optogentic stimulation is required, it is possible to use the constant-on-adapter instead of running the backlight from the matlab script. The constatnt-on-adapter has to be attached in place of the cable that is usually connected to the arduino. 
+
+![constant_on](/docs/images/constant_on_adapter.jpg)
+
+![cable_arduino](/docs/images/backlight_controler_cable.jpg)
+
+#### Running the optogenetic lights and backlight via MATLAB:
+
+Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB. Open the MATLAB script called 'optogenetic_gui.m' and run it by pressing the 'run' button in the 'Editor' tab.
+
+![matlab_script](/docs/images/matlab.png)
+
+This will bring up the GUI.
+
+![matlab_script](/docs/images/optogenetic_gui.png)
+
+Set all the numbers to the desired values. To start, you can press the 'set default values' button, which will set everything to default values. Afterwards, adjust the numbers to suit your experiment. Don't change the Advanced settings unless you have a good reason to do so.
+
+If you are using the backlight, select 'optogenetic backlight' from the 'colour of optogenetic light' dropdown menu.
+
+![dropdown](/docs/images/dropdown_menu.png)
+
+
+To switch on the backlight, press the 'on' button under IR backlight. To switch it off, press the 'off' button. If you are running both the backlight and the optogenetic light, switch on the IR light first before pressing the 'run' button.
+
+
+If you are performing an optogenetic experiment, place the IR indicator light on the RIGHT of your chamber as shown in the picture. The IR filter in front of the camera will not let the optogenetic light pass through, therefore you will not be able to see when the lights come on in the video. The indicator light comes on at the same time as the optogenetic light and is used to determine when the optogenetic light was on. If you place it on the right side of the chamber, between the top 10 and the bottom 10 chambers, it will automatically be detected by the tracking. Please be careful not to obstruct any of the chambers.
+
+![indicator](/docs/images/IR_indicator.jpg)
+
+To start the optogenetic lights, press the green 'run' button. They will automatically switch off after the end of your protocol. If you need to stop them before the end of the protocol, you can press the red 'stop' button. 
 
 ### Starting a Live Preview:
 
