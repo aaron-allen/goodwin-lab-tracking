@@ -14,8 +14,9 @@
             - [Connecting to the Camera:](#connecting-to-the-camera)
             - [Load Camera Settings:](#load-camera-settings)
         - [Turning on the Backlight:](#turning-on-the-backlight)
-            - [Station-A/C Backlight:](#station-ac-backlight)
-            - [Station-B Backlight:](#station-b-backlight)
+            - [Timer Switch:](#timer-switch)
+            - [Station-B's Backlight Intensity:](#station-bs-backlight-intensity)
+            - [Station-B's Backlight and Optogenetics GUI:](#station-bs-backlight-and-optogenetics-gui)
         - [Starting a Live Preview:](#starting-a-live-preview)
         - [Framing and Backlight Intensity:](#framing-and-backlight-intensity)
             - [Framing:](#framing)
@@ -136,25 +137,21 @@ At this point your parameters should be loaded. It is good to double check that 
 
 Before we start a live preview/stream from the camera, we will need to turn on the backlight. We use infrared (IR) backlights and a IR longpass filter on our cameras. This filter blocks out visible light and only allows IR light through. Station-A and Station-C have the same IR backlight setup, but Station-B is a bit different as the optogenetics light and IR backlight are built into the same unit.
 
-#### Station-A/C Backlight:
+#### Timer Switch:
 
 Since we can not see the light emitted by the IR backlight, it is very easy forget to turn the IR backlight off. To avoid the issue of leaving the backlight on for prolonged, we use an outlet timer switch.
 
 ![backlight_timer](/docs/images/backlight_timer.png)
 
-To turn the backlight on, hold down the green `START/STOP` button for a second (or two), until you hear a click and the green light will eluminate under the `15min` label. To increase the time click the `START/STOP` button. Each click will advance the time to the next doubling. It should be noted that these times are approximate. If you are going to record an hour long video, set the timer to `2h` to ensure it doesn't turn off before your video is done. To turn off the light when you are done, hold down the `START/STOP` button for a second, until it clicks off.
+To turn the backlight on, hold down the green `START/STOP` button for a second (or two), until you hear a click and the green light will eluminate under the `15min` label. To increase the time click the `START/STOP` button. Each click will advance the time to the next doubling. It should be noted that these times are approximate. If you are going to record an hour long video, set the timer to `2h` to ensure it doesn't turn off before your video is done.
 
-#### Station-B Backlight:
+#### Station-B's Backlight Intensity:
 
-Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB.
-
-#### Setting Station-B Backlight intensity:
-
-Station-B's backlight, as well as the optogenetic light, are controlled via this controller, which has to be plugged into the outlet timer switch.
+The light intensity for Station-B's backlight and the optogenetic light are controlled via this controller, which has to be plugged into the outlet timer switch.
 
 ![backlight_contr](/docs/images/backlight_controler.jpg)
 
-To set its intensity, first select the channel by pressing the 'ch' button. The channel (1 or 2) is the first number displayed on the controller in front of the dot. Channel 1 corresponds to the optogenetic light and channel 2 corresponds to the IR backlight. 
+To set its intensity, first select the channel by pressing the 'ch' button. The channel (1 or 2) is the first number displayed on the controller in front of the dot. Channel 1 corresponds to the optogenetic light and channel 2 corresponds to the IR backlight.
 
 ![backlight_channel](/docs/images/backlight_controler_channel.jpg)
 
@@ -162,15 +159,15 @@ Then set the intensity using the up and down buttons. The intensity ranges from 
 
 ![backlight_intensity](/docs/images/backlight_controler_intensity.jpg)
 
-If only the backlight is used and no optogentic stimulation is required, it is possible to use the constant-on-adapter instead of running the backlight from the matlab script. The constatnt-on-adapter has to be attached in place of the cable that is usually connected to the arduino. 
+If only the backlight is used and no optogentic stimulation is required, it is possible to use the constant-on-adapter instead of running the backlight from the matlab script. The constatnt-on-adapter has to be attached in place of the cable that is usually connected to the arduino.
 
 ![constant_on](/docs/images/constant_on_adapter.jpg)
 
 ![cable_arduino](/docs/images/backlight_controler_cable.jpg)
 
-#### Running the optogenetic lights and backlight via MATLAB:
+#### Station-B's Backlight and Optogenetics GUI:
 
-Station-B's backlight, as well as the optogenetic light, is controlled using MATLAB. Open the MATLAB script called 'optogenetic_gui.m' and run it by pressing the 'run' button in the 'Editor' tab.
+For Station-B, the _"on/off"_ state and timings of both the backlight and the optogenetic light are controlled using MATLAB. Open the MATLAB script called `optogenetic_gui.m` and run it by pressing the 'run' button in the 'Editor' tab.
 
 ![matlab_script](/docs/images/matlab.png)
 
@@ -192,7 +189,7 @@ If you are performing an optogenetic experiment, place the IR indicator light on
 
 ![indicator](/docs/images/IR_indicator.jpg)
 
-To start the optogenetic lights, press the green 'run' button. They will automatically switch off after the end of your protocol. If you need to stop them before the end of the protocol, you can press the red 'stop' button. 
+To start the optogenetic lights, press the green 'run' button. They will automatically switch off after the end of your protocol. If you need to stop them before the end of the protocol, you can press the red 'stop' button.
 
 ### Starting a Live Preview:
 
