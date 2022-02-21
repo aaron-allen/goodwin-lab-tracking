@@ -350,7 +350,9 @@ This transfer script copies your videos to 3 separate locations. First it copies
 
 Please be kind to other users! **Do not** start your video transfer if someone else is scheduled to use the station right after you. Before starting the transfer, look in the Google calendar to see if anyone else has added a booking since you started your recordings.
 
-<!-- add details about how long the transfer takes -->
+The file transfer will take around 5-10 minutes per hour of video. So if someone did start a transfer and you need to record a video, you shouldn't have to wait too long.
+
+
 
 **_Navigation:_**
 - [Back to top](#top)

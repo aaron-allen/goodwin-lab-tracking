@@ -88,7 +88,7 @@ if [[ -d "${full_path}" ]]; then
         ## Remove leading and tailing spaces around the commas
         awk -F '[[:blank:]]*,[[:blank:]]*' -v OFS=, \
                 '{gsub(/^[[:blank:]]+|[[:blank:]]+$/, ""); $1=$1} 1' \
-                "${full_path}/${settings_file}" > "${full_path}/${settings_file}"
+                "${full_path}/${settings_file}" > "${full_path}/${settings_file}.bak"
 
         while IFS=',' read -r user \
     							video_name \
@@ -167,7 +167,8 @@ if [[ -d "${full_path}" ]]; then
                     >> "${tobetracked_list_file}"
                 rm "${full_path}/${video_name:: -4}.mp4"
             fi
-        done < "${full_path}/${settings_file}"
+        done < "${full_path}/${settings_file}.bak"
+        rm "${full_path}/${settings_file}.bak"
     else
         printf "The Synology is not mounted.\n...\n\t... go find Aaron ...\n\n"
         sleep infinity

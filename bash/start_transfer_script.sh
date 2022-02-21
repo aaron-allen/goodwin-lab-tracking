@@ -13,6 +13,18 @@ printf "$(date)\n\n"
 today=$(date +%Y-%m-%d)
 code_path="/home/aaron/Documents/GitHub/goodwin-lab-tracking"
 
+
+# Check if Strand Camera scipt is running and don't transfer if it is.
+if [[ $(pgrep -fc "launch_strand_cam.sh") -gt 0 ]]; then
+    printf 'Recording software is still running ...\n'
+    printf 'Please wait until whomever has finished recording before transfering your videos.\n'
+    printf 'Close this window and try again later.\n'
+    sleep infinity
+    return
+fi
+
+
+
 printf "
 Good [morning/afternoon/eveing],
 This script will start transfering your videos to the Synology in order
@@ -64,8 +76,8 @@ if [[ ${target_col} != ${max_col} ]]; then
     printf "\n\nWARNING! Your settings file has a different number of columns then expected.\n"
     printf "Open the user guide on GitHub and check that you are not missing anything.\n\n"
     printf "\t(Ctrl-Click the link below ...)\n"
-    printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n"
-    printf "Double check the above is correct, then close this window and start again ...\n\n"
+    printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n\n"
+    printf "\tDouble check the above is correct, then close this window and start again ...\n\n"
     sleep infinity
     return
 fi

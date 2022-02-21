@@ -14,8 +14,24 @@
 printf "$(date)\n\n"
 today=$(date +%Y-%m-%d)
 
-read -p 'Username: ' user_name
 
+# Check if transfer scipt is running and don't record if it is.
+if [[ $(pgrep -fc "start_transfer_script.sh") -gt 0 ]]; then
+    printf 'Transfer software is still running ...\n'
+    printf 'Please wait until whomever has finished transfering before recording your videos.\n'
+    printf 'Close this window and try again later.\n'
+    sleep infinity
+    return
+fi
+
+
+
+printf "
+Good [morning/afternoon/eveing],
+This script will start the recording software. Please enter the following information...\n\n
+"
+
+read -p 'Username: ' user_name
 user_dir="/mnt/data/videos/${user_name}"
 
 
@@ -34,7 +50,7 @@ fi
 
 printf "Strand Camera will start shortly.\n"
 printf "\nDon't close this window until you are all finished recording ...\n"
-sleep 5s
+sleep 3s
 
 today_plus=$(date +%Y%m%d-%H%M%S)
 strand-cam-pylon >> \
