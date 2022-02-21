@@ -163,7 +163,7 @@ if [[ -d "${full_path}" ]]; then
                 printf "Copying ${video_name:: -4}.mp4 to ...\n"
                 printf "  ToBeTracked:\n"
                 transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
-                printf "${user},${video_name:: -4}.mp4,${video_type},${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+                printf "${user},${video_name:: -4}.mp4,mp4,${fps},${start_time},${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
                     >> "${tobetracked_list_file}"
                 rm "${full_path}/${video_name:: -4}.mp4"
             fi
