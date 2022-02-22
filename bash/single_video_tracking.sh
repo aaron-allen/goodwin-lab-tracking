@@ -248,9 +248,18 @@ printf "####################################################\n"
 printf "####################################################\n"
 printf "####################################################\n\n"
 printf "\n\n\nMoving tracking results to the Synology\n"
-mkdir -p "/mnt/Synology/Tracked/${user}/${today}"
-cp -R "${OutputDirectory}/${FileName}" "/mnt/Synology/Tracked/${user}/${today}/"
+current_machine=$(hostname)
+if [[ "${current_machine}" == "goodwintracking" ]]; then
+    remote_path="/mnt/Synology"
+elif [[ "${current_machine}" == "mentok" ]]; then
+    remote_path="/mnt/synology"
+fi
+mkdir -p "${remote_path}/Tracked/${user}/${today}"
+cp -R "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 printf "\n\n\n\n\n\n\n\n"
 printf "####################################################\n"

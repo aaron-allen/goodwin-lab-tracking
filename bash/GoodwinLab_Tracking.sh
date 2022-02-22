@@ -31,10 +31,31 @@ today=$(date +%Y%m%d-%H%M%S)
 CodeDirectory=$( dirname "$PWD" )
 cd "${CodeDirectory}/bash"
 
-ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStations"
-WorkingDirectory="/mnt/LocalData/Tracking"
-ArchiveDirectory="/mnt/Synology/Archive/mkv"
-LogDirectory="/home/goodwintracking/Documents/TrackingLogs/tracking_history.log"
+current_machine=$(hostname)
+if [[ "${current_machine}" == "goodwintracking" ]]; then
+	printf "\n\n\n######################\n"
+	printf "Running on the Tracker\n"
+	printf "######################\n\n\n"
+	ToBeTrackedDirectory="/mnt/Synology/ToBeTracked/VideosFromStations"
+	WorkingDirectory="/mnt/LocalData/Tracking"
+	ArchiveDirectory="/mnt/Synology/Archive/Tracked"
+	LogDirectory="/home/goodwintracking/Documents/TrackingLogs/tracking_history.log"
+elif [[ "${current_machine}" == "mentok" ]]; then
+	printf "\n\n\n##########################\n"
+	printf "Running on Aaron's Desktop\n"
+	printf "##########################\n\n\n"
+	ToBeTrackedDirectory="/mnt/synology/ToBeTracked/VideosFromStations"
+	WorkingDirectory="/mnt/scratch/Tracking"
+	ArchiveDirectory="/mnt/synology/Archive/Tracked"
+	LogDirectory="/mnt/scratch/Tracking/_logs/tracking_logs/${today}_tracking_history.log"
+	sys_use_log_file="/mnt/scratch/Tracking/_logs/system_usage/${today}_system_usage.log"
+else
+	printf "\n\n\n##########################\n"
+	printf "I don't know this computer ... \n"
+	printf "##########################\n\n\n"
+	exit 1
+fi
+
 
 # printf "The Code Directory is: $CodeDirectory\n"
 # printf "This is the input directory: $ToBeTrackedDirectory\n"
@@ -46,6 +67,24 @@ LogDirectory="/home/goodwintracking/Documents/TrackingLogs/tracking_history.log"
 csv_file="${ToBeTrackedDirectory}/list_of_videos.csv"
 if [ -s ${csv_file} ]; then
 	printf "There are videos to be tracked\n"
+
+	# System usage logger function
+	function system_usage_logger {
+	    printf "Timestamp\tCPU_percent\tLoad_average_15min\tRAM_MB\n" >> "${sys_use_log_file}"
+	    while [ $(pgrep -fc "_video_tracking") -gt 0 ]
+	    do
+	        timestamp=$(date +%s)
+	        curr_cpu=$(top -bn 2 -d 0.01 | grep '^%Cpu' | tail -n 1 | awk '{print $2+$4+$6}')
+	        curr_load=$(uptime | awk '{print $12}' | cut -d "," -f 1)
+	        curr_ram=$(free -m | grep '^Mem:' | awk '{ print $3 }')
+	        printf "${timestamp}\t${curr_cpu}\t${curr_load}\t${curr_ram}\n" >> "${sys_use_log_file}"
+	        sleep 1m
+	    done
+	}
+	# Start logging system usage
+	touch "${sys_use_log_file}"
+	system_usage_logger &
+
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# add bit to kill any processes that might interfer with tracking, like
@@ -71,7 +110,6 @@ if [ -s ${csv_file} ]; then
     done
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}-Tracked"
 	if [[ ! -d ${InputDirectory} ]]; then
@@ -82,14 +120,10 @@ if [ -s ${csv_file} ]; then
 	if [[ ! -f "${InputDirectory}/../list_of_videos.csv" ]]; then
 		touch "${InputDirectory}/../list_of_videos.csv"
 	fi
-	if [[ ! -f "${InputDirectory}/../videos_in_ToBeTracked.txt" ]]; then
-		touch "${InputDirectory}/../videos_in_ToBeTracked.txt"
-	fi
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Setup freeze of videos that need to be tracked
 	mv "${ToBeTrackedDirectory}/list_of_videos.csv" "${InputDirectory}/../list_of_videos.csv"
-	ls "${ToBeTrackedDirectory}/videos/" > "${InputDirectory}/../videos_in_ToBeTracked.txt"
 	printf "" > "${ToBeTrackedDirectory}/list_of_videos.csv"
 
 	csv_file="${InputDirectory}/../list_of_videos.csv"
@@ -113,6 +147,12 @@ if [ -s ${csv_file} ]; then
 
 	printf "\n\n\n\n\n\n$(date)\n\n" >> "${LogDirectory}"
 	cat "${csv_file}" >> "${LogDirectory}"
+
+	## Remove leading and tailing spaces around the commas
+	awk -F '[[:blank:]]*,[[:blank:]]*' -v OFS=, \
+			'{gsub(/^[[:blank:]]+|[[:blank:]]+$/, ""); $1=$1} 1' \
+			"${csv_file}" > "${csv_file}.bak"
+
 
 	while IFS=',' read -r user \
 							video_name \
@@ -176,12 +216,30 @@ if [ -s ${csv_file} ]; then
 		fi
 
 		sleep 5s    # 5 second lag to allow single_video_tracking to start
-		# Check to make sure no more than 2 *_video_tracking scripts are running.
-		while [ $(pgrep -fc "_video_tracking") -gt 9 ]
+
+		# Set a different cut off depending on which computer is running the pipeline
+		if [[ "${current_machine}" == "goodwintracking" ]]; then
+			num_parallel_less_one=1
+			printf "current machine is ${current_machine}\n"
+			printf "num_parallel_less_one = ${num_parallel_less_one}\n"
+		elif [[ "${current_machine}" == "mentok" ]]; then
+			num_parallel_less_one=9
+			printf "current machine is ${current_machine}\n"
+			echo "num_parallel_less_one = ${num_parallel_less_one}\n"
+		else
+			num_parallel_less_one=0
+			printf "don't know current machine\n"
+			printf "num_parallel_less_one = ${num_parallel_less_one}\n"
+		fi
+
+		# Check to make sure no more than 'num_parallel_less_one' *_video_tracking scripts are running.
+		while [[ $(pgrep -fc "_video_tracking") -gt "${num_parallel_less_one}" ]]
 		do
 			sleep 10m
 		done
-	done < "${csv_file}"
+	done < "${csv_file}.bak"
+    rm "${csv_file}.bak"
+
 
 	# Add wait for all scripts to finish
 	while [ $(pgrep -fc "_video_tracking") -gt 0 ]
@@ -190,6 +248,12 @@ if [ -s ${csv_file} ]; then
 		sleep 10m
 	done
 
+
+	# If running on my desktop, move the tracking results to the Tracker
+	if [[ "${current_machine}" == "mentok" ]]; then
+		ssh goodwintracking@goodwintracking.local "mkdir -p /mnt/LocalData/Tracking/${today}-Tracked"
+		scp -r "${OutputDirectory}/" "goodwintracking@goodwintracking.local:/mnt/LocalData/Tracking/${today}-Tracked/"
+	fi
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup
