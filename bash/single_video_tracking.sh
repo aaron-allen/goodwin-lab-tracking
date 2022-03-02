@@ -148,7 +148,7 @@ matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                 OutputDirectory='${OutputDirectory}'; \
                                 video_type='${video_type}'; \
                                 track_start=${track_start}; \
-                                FPS=${fps} \
+                                FPS=${fps}; \
                                 tracking_duration=${tracking_duration}; \
                                 best_calib_file='${best_calib_file}'; \
                                 flies_per_arena=${flies_per_arena}; \
@@ -255,7 +255,7 @@ elif [[ "${current_machine}" == "mentok" ]]; then
     remote_path="/mnt/synology"
 fi
 mkdir -p "${remote_path}/Tracked/${user}/${today}"
-cp -R "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${today}/"
+cp -Rav "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${today}/"
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

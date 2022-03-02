@@ -71,6 +71,7 @@ if [ -s ${csv_file} ]; then
 	# System usage logger function
 	function system_usage_logger {
 	    printf "Timestamp\tCPU_percent\tLoad_average_15min\tRAM_MB\n" >> "${sys_use_log_file}"
+		sleep 5m
 	    while [ $(pgrep -fc "_video_tracking") -gt 0 ]
 	    do
 	        timestamp=$(date +%s)
@@ -149,9 +150,10 @@ if [ -s ${csv_file} ]; then
 	cat "${csv_file}" >> "${LogDirectory}"
 
 	## Remove leading and tailing spaces around the commas
+	printf "" > "${csv_file}.bak"
 	awk -F '[[:blank:]]*,[[:blank:]]*' -v OFS=, \
 			'{gsub(/^[[:blank:]]+|[[:blank:]]+$/, ""); $1=$1} 1' \
-			"${csv_file}" > "${csv_file}.bak"
+			"${csv_file}" >> "${csv_file}.bak"
 
 
 	while IFS=',' read -r user \
@@ -215,21 +217,21 @@ if [ -s ${csv_file} ]; then
 		# 	bash DLC_video_tracking.sh ... &
 		fi
 
-		sleep 5s    # 5 second lag to allow single_video_tracking to start
+		sleep 2s    # 2 second lag to allow single_video_tracking to start
 
 		# Set a different cut off depending on which computer is running the pipeline
 		if [[ "${current_machine}" == "goodwintracking" ]]; then
+			#printf "current machine is ${current_machine}\n"
+			#printf "num_parallel_less_one = ${num_parallel_less_one}\n"
 			num_parallel_less_one=1
-			printf "current machine is ${current_machine}\n"
-			printf "num_parallel_less_one = ${num_parallel_less_one}\n"
 		elif [[ "${current_machine}" == "mentok" ]]; then
+			#printf "current machine is ${current_machine}\n"
+			#printf "num_parallel_less_one = ${num_parallel_less_one}\n"
 			num_parallel_less_one=9
-			printf "current machine is ${current_machine}\n"
-			echo "num_parallel_less_one = ${num_parallel_less_one}\n"
 		else
+			#printf "current machine is ${current_machine}\n"
+			#printf "num_parallel_less_one = ${num_parallel_less_one}\n"
 			num_parallel_less_one=0
-			printf "don't know current machine\n"
-			printf "num_parallel_less_one = ${num_parallel_less_one}\n"
 		fi
 
 		# Check to make sure no more than 'num_parallel_less_one' *_video_tracking scripts are running.
@@ -238,8 +240,7 @@ if [ -s ${csv_file} ]; then
 			sleep 10m
 		done
 	done < "${csv_file}.bak"
-    rm "${csv_file}.bak"
-
+	rm "${csv_file}.bak"
 
 	# Add wait for all scripts to finish
 	while [ $(pgrep -fc "_video_tracking") -gt 0 ]
@@ -247,6 +248,7 @@ if [ -s ${csv_file} ]; then
 		printf 'Waiting for tracking to finish ...\n'
 		sleep 10m
 	done
+
 
 
 	# If running on my desktop, move the tracking results to the Tracker
