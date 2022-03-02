@@ -284,7 +284,20 @@ But we want to change this to the `H264` codec and a bitrate of `10000`.
 
 ![set_codec](/docs/images/strand_cam_codec_set.png)
 
-To start the recording, click the red, circular, button next to `Record MKV file`. The videos will be named `movie<YYYMMDD_hhmmss>.<ext>`. To stop the recording click the red, square, button. Strand-Camera does not have a recording length option, so you will have to manually stop the recording of each video. You can record multiple videos back-to-back with from this interface and all the videos will be named for the start time of the recording.
+To start the recording, click the red, circular, button next to `Record MKV file`. Don't worry about the `%Y%m%d_%H%M%S.%f` bit next to the `Saving movie " ... "`, that's normal. The videos will be named appropriately; something like `movie20220215_105331.409348403.mkv`.
+
+![start_record](/docs/images/strand_cam_start_record.png)
+
+
+To stop the recording click the red, square, button. Strand-Camera does not have a recording length option, so you will have to manually stop the recording of each video.
+
+![stop_record](/docs/images/strand_cam_stop_record.png)
+
+
+
+
+
+You can record multiple videos back-to-back with from this interface and all the videos will be named for the start time of the recording.
 
 Once you are finished recording, you may change the names of these videos if you'd like, but do make sure that the names of the videos match the names in you settings file (see below). And please **do not** use commas or spaces in your file names.
 
