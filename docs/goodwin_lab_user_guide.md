@@ -328,7 +328,7 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 - `tracking_start_time_in_seconds`: The time (in seconds) that you want tracking to start for your video.
 - `flies_per_arena`: The number of flies per arena.
 - `sex_ratio`: The proportion of male flies per arena (one male and one female would be 0.5, two males and one female would be 0.67, all females would be 0, etc).
-- `number_of_arenas`: How many full arenas are visible in the video (default for courtship is 20, but may also be 1 or 5).
+- `number_of_arenas`: How many whole arenas are visible in the video (default for courtship is 20, but may also be 1 or 5). **NB:** not the number of arenas with flies in them.
 - `arena_shape`: Either "circle" or "rectangle".
 - `assay_type`: This will be "courtship" for the most part, but potentially "oviposition" or "phototaxis" as we add support for other behaviours.
 - `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and tracking should attempt detection of it.
@@ -527,7 +527,7 @@ A csv file containing the computed courtship indices derived from the JAABA anno
 - `turning`: Turning index. The percentage of time that the focal fly turned their body to orient toward the other fly while not moving forward.
 - `wing`: Wing index. The percentage of time that the focal fly extended a wing beyond their body.
 - `denominator`: The duration of the time window (in seconds) for which these indices were calculated.
-- `predicted_sex`: The predicted sex of the flies, as determined by the user supplied proportion of male flies per arena and the relative sizes of the flies per arena. When calculating the fly area we skip the first 10 seconds and ignore all frames after copulation initiation (the predicted sex in the `example_video_1-track.mat` and `example_video_1_JAABA/trx.mat` files, uses the area for the duration of tracking).  
+- `predicted_sex`: The predicted sex of the flies, as determined by the user supplied proportion of male flies per arena and the relative sizes of the flies per arena. When calculating the fly area we skip the first 10 seconds and ignore all frames after copulation initiation (the predicted sex in the `example_video_1-track.mat` and `example_video_1_JAABA/trx.mat` files, uses the area for the duration of tracking).
 
 By default flies need to "initiate courtship" before we will calculate an index. Flies need to perform any of the courtship-like behaviours for at least 3 seconds of a 6 second window (the facing behaviour is not used to assess courtship initiation). These indices are then from the courtship initiation until either 1. the flies copulate, 2. 10 minutes has passed since courtship initiation, or 3. we've reached the end of the tracking data, which ever occurs first.
 
