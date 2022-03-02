@@ -82,7 +82,8 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.
     message(paste0("Wrangling the Data..."))
     raw_data_spread <- raw_data %>%
         select(-Units, -Data_Source) %>%
-        spread("Feature","Value")
+        spread("Feature","Value") %>%
+        mutate(Fly_Id = as.factor(Fly_Id))
 
     # Calculate Indices Table
     #############################################

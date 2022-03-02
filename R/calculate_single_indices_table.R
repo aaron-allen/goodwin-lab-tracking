@@ -190,14 +190,14 @@ calculate_single_indices_table <- function(input,
         select(-Fly_Id)
 
     # Predict sex of flies using there size and the user supplied proportion of males
-    # join predicted sex tibble with indicies tibble
+    # join predicted sex tibble with indices tibble
     # Should the predict sex part be it's own function? probably ...
     if (predict_sex) {
         predicted_sex <- predict_sex_by_size(tracking_data = raw_data,
                                              proportion_male = prop_male,
                                              frame_rate = frame_rate) %>%
-            select(Arena, FlyId, pred_sex)
-        indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "Arena", "FlyId" = "FlyId") )
+            select(ArenaNumber, FlyId, pred_sex)
+        indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "ArenaNumber", "FlyId" = "FlyId") )
     }
 
 

@@ -72,7 +72,7 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log
         mutate(Fly_Id = as.factor(Fly_Id))
 
     message(paste0("Plotting the Data..."))
-    diagnostic_plots(input_data_table = alldata_plotting,save_path = paste0(OutputDirectory,"/",FileName,"/"))
+    diagnostic_plots(input_data_table = alldata_plotting,flies_per_arena=FliesPerArena,save_path = paste0(OutputDirectory,"/",FileName,"/"))
 
 
 #     },

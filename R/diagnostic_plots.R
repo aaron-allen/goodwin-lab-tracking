@@ -39,7 +39,7 @@
 
 
 
-diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
+diagnostic_plots <- function(input_data_table,flies_per_arena,save_path,slim_by=NULL) {
 
     library("data.table")
     library("tidyverse")
@@ -86,16 +86,25 @@ diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
         p_list[["area"]] <- single_arena_data %>%
             ggplot(aes(x = Frame, y = major_axis_len*minor_axis_len*pi/14.85/14.85, colour = Fly_Id)) +
                 geom_line(size = 0.5) +
-                ylab("Area (units?)") +
+                ylab("Area (px^2)") +
                 labs(title = paste0(unique(single_arena_data$Video_name),":   Arena_",i)) +
+                # ylim(0,20) +  # since I'm using pixel measurements and not mm, I need to remove this bound as 5 arena videos are off the chart
+                xlim(0,max(single_arena_data$Frame))
+        if (flies_per_arena == 2) {
+            p_list[["dist_to_other"]] <- single_arena_data %>%
+                ggplot(aes(x = Frame, y = dist_to_other, colour = Fly_Id)) +
+                geom_line(size = 0.5) +
+                ylab("Distance to Wall (mm)") +
                 ylim(0,20) +
                 xlim(0,max(single_arena_data$Frame))
-        p_list[["dist_to_other"]] <- single_arena_data %>%
-            ggplot(aes(x = Frame, y = dist_to_other, colour = Fly_Id)) +
+        } else {
+            p_list[["dist_to_wall"]] <- single_arena_data %>%
+                ggplot(aes(x = Frame, y = dist_to_wall, colour = Fly_Id)) +
                 geom_line(size = 0.5) +
                 ylab("Distance to Other (mm)") +
                 ylim(0,20) +
                 xlim(0,max(single_arena_data$Frame))
+        }
         p_list[["change_in_ori"]] <- single_arena_data %>%
             group_by(Fly_Id) %>%
             # mutate(change_in_ori = c(0,diff(ori))) %>%
@@ -105,12 +114,21 @@ diagnostic_plots <- function(input_data_table,save_path,slim_by=NULL) {
                 ylab("Change in Angle (rad)") +
                 ylim(-pi,pi) +
                 xlim(0,max(single_arena_data$Frame))
-        p_list[["facing_angle"]] <- single_arena_data %>%
-            ggplot(aes(x = Frame, y = facing_angle, colour = Fly_Id)) +
+        if (flies_per_arena == 2) {
+            p_list[["facing_angle"]] <- single_arena_data %>%
+                ggplot(aes(x = Frame, y = facing_angle, colour = Fly_Id)) +
                 geom_line(size = 0.5) +
                 ylab("Facing Angle (rad)") +
                 ylim(0,pi) +
                 xlim(0,max(single_arena_data$Frame))
+        } else {
+            p_list[["max_wing_ang"]] <- single_arena_data %>%
+                ggplot(aes(x = Frame, y = max_wing_ang, colour = Fly_Id)) +
+                geom_line(size = 0.5) +
+                ylab("Max. Wing Angle (rad)") +
+                ylim(0,20) +
+                xlim(0,max(single_arena_data$Frame))
+        }
         p_list[["vel"]] <- single_arena_data %>%
             #ggplot(aes(x = Frame, y = rollmean(x = vel, k = 200, fill = c(0,0,0), align = c("center")), colour = Fly_Id)) +
             ggplot(aes(x = Frame, y = smoothed_vel, colour = Fly_Id)) +
