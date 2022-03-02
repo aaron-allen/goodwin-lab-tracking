@@ -127,15 +127,15 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/CalculateIndicesError.
     source("../R/plot_jaaba_ethograms.R")
     message(paste0("Plotting ethograms..."))
 
-    FlyId <- unique(raw_data_spread$Fly_Id)
+    FlyId <- as.numeric(unique(raw_data_spread$Fly_Id))
     OddFly <- FlyId[FlyId %% 2 == 1]
 
     EthoFileName <- paste0(OutputDirectory,"/",FileName,"/Results/",FileName, "_Ethogram.pdf")
     pdf(EthoFileName,width=10,height=7,paper='a4r')
     for (P in OddFly){
-      Plot1 <- plot_jaaba_ethograms(raw_data_spread, P)
-      Plot2 <- plot_jaaba_ethograms(raw_data_spread, P+1)
-      print(plot_grid(Plot1,Plot2, ncol = 1))
+        Plot1 <- plot_jaaba_ethograms(raw_data_spread, P)
+        Plot2 <- plot_jaaba_ethograms(raw_data_spread, P+1)
+        print(plot_grid(Plot1,Plot2, ncol = 1))
     }
     dev.off()
 
