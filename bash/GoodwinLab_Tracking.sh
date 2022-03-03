@@ -68,23 +68,23 @@ csv_file="${ToBeTrackedDirectory}/list_of_videos.csv"
 if [ -s ${csv_file} ]; then
 	printf "There are videos to be tracked\n"
 
-	# System usage logger function
-	function system_usage_logger {
-	    printf "Timestamp\tCPU_percent\tLoad_average_15min\tRAM_MB\n" >> "${sys_use_log_file}"
-		sleep 5m
-	    while [ $(pgrep -fc "_video_tracking") -gt 0 ]
-	    do
-	        timestamp=$(date +%s)
-	        curr_cpu=$(top -bn 2 -d 0.01 | grep '^%Cpu' | tail -n 1 | awk '{print $2+$4+$6}')
-	        curr_load=$(uptime | awk '{print $12}' | cut -d "," -f 1)
-	        curr_ram=$(free -m | grep '^Mem:' | awk '{ print $3 }')
-	        printf "${timestamp}\t${curr_cpu}\t${curr_load}\t${curr_ram}\n" >> "${sys_use_log_file}"
-	        sleep 1m
-	    done
-	}
-	# Start logging system usage
-	touch "${sys_use_log_file}"
-	system_usage_logger &
+	# # System usage logger function
+	# function system_usage_logger {
+	#     printf "Timestamp\tCPU_percent\tLoad_average_15min\tRAM_MB\n" >> "${sys_use_log_file}"
+	# 	sleep 5m
+	#     while [ $(pgrep -fc "_video_tracking") -gt 0 ]
+	#     do
+	#         timestamp=$(date +%s)
+	#         curr_cpu=$(top -bn 2 -d 0.01 | grep '^%Cpu' | tail -n 1 | awk '{print $2+$4+$6}')
+	#         curr_load=$(uptime | awk '{print $12}' | cut -d "," -f 1)
+	#         curr_ram=$(free -m | grep '^Mem:' | awk '{ print $3 }')
+	#         printf "${timestamp}\t${curr_cpu}\t${curr_load}\t${curr_ram}\n" >> "${sys_use_log_file}"
+	#         sleep 1m
+	#     done
+	# }
+	# # Start logging system usage
+	# touch "${sys_use_log_file}"
+	# system_usage_logger &
 
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,6 +94,7 @@ if [ -s ${csv_file} ]; then
 	pkill MATLAB
 	printf "Killing all R processes...\n"
 	pkill R
+	pkill rsession
 	printf "Killing all ipython processes...\n"
 	pkill ipython
 	printf "Killing all Geneious processes...\n"
@@ -253,14 +254,29 @@ if [ -s ${csv_file} ]; then
 
 	# If running on my desktop, move the tracking results to the Tracker
 	if [[ "${current_machine}" == "mentok" ]]; then
+		printf "\n\n\n\n\n\n\n\n"
+		printf "####################################################\n"
+		printf "####################################################\n"
+		printf "####################################################\n\n"
+		printf 'Transfering results to Tracker ...\n\n\n'
 		ssh goodwintracking@goodwintracking.local "mkdir -p /mnt/LocalData/Tracking/${today}-Tracked"
-		scp -r "${OutputDirectory}/" "goodwintracking@goodwintracking.local:/mnt/LocalData/Tracking/${today}-Tracked/"
+		scp -r "${OutputDirectory}/" "goodwintracking@goodwintracking.local:/mnt/LocalData/Tracking/${today}-Tracked"
+		printf "\n\n####################################################\n"
+		printf "####################################################\n"
+		printf "####################################################\n"
+		printf "\n\n\n\n\n\n\n\n"
 	fi
 
 	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Move the input direstory to the archive synology for backup
 	printf "MOVING INPUT DIRECTORY TO ARCHIVE SYNOLOGY\n"
-	mv "${InputDirectory}/" "${ArchiveDirectory}/${today}/"
+	if [[ ! -z "$(ls -A ${InputDirectory}/)"  ]]; then
+		if [[ ! -s "${ArchiveDirectory}/${today}/"  ]]; then
+			mkdir  "${ArchiveDirectory}/${today}/"
+		fi
+		mv "${InputDirectory}/"* "${ArchiveDirectory}/${today}/"
+	fi
+
 
 	printf "All Done.\n"
 

@@ -67,8 +67,8 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log
     alldata_plotting <- alldata %>%
         select(-Units, -Data_Source) %>%
         spread("Feature","Value") %>%
-        select(Video_name, Frame, Fly_Id, Arena,
-               major_axis_len,minor_axis_len,dist_to_other,ori,facing_angle,vel,pos_x,pos_y,axis_ratio) %>%
+        # select(Video_name, Frame, Fly_Id, Arena,
+        #        major_axis_len,minor_axis_len,dist_to_other,ori,facing_angle,vel,pos_x,pos_y,axis_ratio) %>%
         mutate(Fly_Id = as.factor(Fly_Id))
 
     message(paste0("Plotting the Data..."))
