@@ -45,10 +45,10 @@ elif [[ "${current_machine}" == "mentok" ]]; then
 	printf "Running on Aaron's Desktop\n"
 	printf "##########################\n\n\n"
 	ToBeTrackedDirectory="/mnt/synology/ToBeTracked/VideosFromStations"
-	WorkingDirectory="/mnt/scratch/Tracking"
+	WorkingDirectory="/mnt/data/Tracking"
 	ArchiveDirectory="/mnt/synology/Archive/Tracked"
-	LogDirectory="/mnt/scratch/Tracking/_logs/tracking_logs/${today}_tracking_history.log"
-	sys_use_log_file="/mnt/scratch/Tracking/_logs/system_usage/${today}_system_usage.log"
+	LogDirectory="/mnt/data/Tracking/_logs/tracking_logs/${today}_tracking_history.log"
+	sys_use_log_file="/mnt/data/Tracking/_logs/system_usage/${today}_system_usage.log"
 else
 	printf "\n\n\n##########################\n"
 	printf "I don't know this computer ... \n"
@@ -179,7 +179,7 @@ if [ -s ${csv_file} ]; then
 
 		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
-		if [[ ${assay_type} == "courtship" ]]; then
+		if [[ ${assay_type} == "courtship" ]] || [[ ${assay_type} == "oviposition" ]]; then
 			# run single_video_tracking.sh
 			bash single_video_tracking.sh "${today}" \
 										  "${CodeDirectory}" \
@@ -205,11 +205,11 @@ if [ -s ${csv_file} ]; then
 
 		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
 		# to add an if statement here and run a different shell script to start Ctrax.
-		if [[ ${assay_type} == "oviposition" ]]; then
-			# run Ctrax_tracking.sh
-			printf "\n\n ... haven't coded this yet ... \n"
-		# 	bash ctrax_video_tracking.sh ... &
-		fi
+		# if [[ ${assay_type} == "oviposition" ]]; then
+		# 	# run Ctrax_tracking.sh
+		# 	printf "\n\n ... haven't coded this yet ... \n"
+		# # 	bash ctrax_video_tracking.sh ... &
+		# fi
 
 		# add some code for DLC?
 		if [[ ${assay_type} == "DLC" ]]; then
