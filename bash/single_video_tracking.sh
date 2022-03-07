@@ -144,7 +144,8 @@ printf "####################################################\n"
 printf "####################################################\n"
 printf "####################################################\n\n"
 printf "\n\n\nNow tracking: ${video_name} ...\n"
-matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+matlab -nodisplay -nosplash -r "try;
+                                FileName='${FileName}'; \
                                 OutputDirectory='${OutputDirectory}'; \
                                 video_type='${video_type}'; \
                                 track_start=${track_start}; \
@@ -154,7 +155,8 @@ matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
                                 flies_per_arena=${flies_per_arena}; \
                                 sex_ratio=${sex_ratio}; \
                                 addpath(genpath('${CodeDirectory}')); \
-                                AutoTracking"
+                                AutoTracking; \
+                                catch; end; quit"
 
 # Only run the optogenetic light detector if the video is an optogenetics experiment
 test_file="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
@@ -164,13 +166,15 @@ if [[ ${optogenetics_light} == "true" ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n"
     printf "####################################################\n\n"
     printf "\n\n\nDetecting optogenetic light ...\n"
-    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+    matlab -nodisplay -nosplash -r "try;
+                                    FileName='${FileName}'; \
                                     OutputDirectory='${OutputDirectory}'; \
                                     videoname='${video_name}'; \
                                     FPS=${fps} \
                                     tracking_duration=${tracking_duration}; \
                                     addpath(genpath('${CodeDirectory}')); \
-                                    script_detect_optogenetic_light"
+                                    script_detect_optogenetic_light; \
+                                    catch; end; quit"
 fi
 
 # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
@@ -182,10 +186,12 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n\n"
     printf "\n\n\nDetecting singleton flies ...\n"
     # Before attempting to run ApplyClassifiers, check for any rogue singletons
-    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+    matlab -nodisplay -nosplash -r "try;
+                                    FileName='${FileName}'; \
                                     OutputDirectory='${OutputDirectory}'; \
                                     addpath(genpath('${CodeDirectory}')); \
-                                    DeleteSingletonFlies"
+                                    DeleteSingletonFlies; \
+                                    catch; end; quit"
 
     printf "\n\n\n\n\n\n\n\n"
     printf "####################################################\n"
@@ -195,11 +201,13 @@ if [[ ${flies_per_arena} == 2 ]] && [[ -f "${test_file}" ]]; then
     # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
         ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
     # fi
-    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+    matlab -nodisplay -nosplash -r "try;
+                                    FileName='${FileName}'; \
                                     OutputDirectory='${OutputDirectory}'; \
                                     CodeDirectory='${CodeDirectory}'; \
                                     addpath(genpath('${CodeDirectory}')); \
-                                    ApplyClassifiers"
+                                    ApplyClassifiers; \
+                                    catch; end; quit"
 fi
 
 if [[ ${number_of_arenas} > 1 ]] && [[ -f "${test_file}" ]]; then
@@ -210,10 +218,12 @@ if [[ ${number_of_arenas} > 1 ]] && [[ -f "${test_file}" ]]; then
     printf "####################################################\n"
     printf "####################################################\n\n"
     printf "\n\n\nRe-assigning identities ...\n"
-    matlab -nodisplay -nosplash -r "FileName='${FileName}'; \
+    matlab -nodisplay -nosplash -r "try;
+                                    FileName='${FileName}'; \
                                     OutputDirectory='${OutputDirectory}'; \
                                     addpath(genpath('${CodeDirectory}')); \
-                                    script_reassign_identities"
+                                    script_reassign_identities; \
+                                    catch; end; quit"
 fi
 
 
