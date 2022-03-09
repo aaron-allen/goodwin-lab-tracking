@@ -42,8 +42,8 @@ disp('Now Tracking Videos');
 
 
 % set options (omit any or all to use default options)
-options.num_cores    = 1; %maxNumCompThreads;
-options.num_chunks   = 1; %options.num_cores.*2;
+options.num_cores    = 1; %maxNumCompThreads;      %
+options.num_chunks   = 1; %options.num_cores .* 2;   %
 options.max_minutes  = tracking_duration;
 options.save_JAABA   = true;
 options.save_xls     = false;
@@ -52,7 +52,14 @@ options.save_seg     = false;
 
 options.startframe   = track_start .* FPS;
 options.fr_samp      = 100;
-options.arena_r_mm   = 10;
+
+if assay_type == "courtship"
+    options.arena_r_mm   = 10;
+end
+if assay_type == "oviposition"
+    options.arena_r_mm   = 50;
+end
+
 options.n_flies      = flies_per_arena;
 
 options.force_all       = true;
