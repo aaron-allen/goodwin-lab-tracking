@@ -42,15 +42,15 @@ disp('Now Tracking Videos');
 
 
 % set options (omit any or all to use default options)
-options.num_cores    = 1; %maxNumCompThreads;      %
-options.num_chunks   = 1; %options.num_cores .* 2;   %
+options.num_cores    = 1; %maxNumCompThreads;
+options.num_chunks   = 1; %options.num_cores .* 2;
 options.max_minutes  = tracking_duration;
 options.save_JAABA   = true;
 options.save_xls     = false;
 options.save_seg     = false;
 
 
-options.startframe   = track_start .* FPS;
+options.startframe   = max(1, track_start .* FPS);
 options.fr_samp      = 100;
 
 if assay_type == "courtship"

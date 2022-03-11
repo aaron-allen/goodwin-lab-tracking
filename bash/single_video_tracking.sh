@@ -47,17 +47,18 @@ ToBeTrackedDirectory="${3}"
 WorkingDirectory="${4}"
 InputDirectory="${5}"
 OutputDirectory="${6}"
-user="${7}"
-video_name="${8}"
-video_type="${9}"
-fps="${10}"
-track_start="${11}"
-flies_per_arena="${12}"
-sex_ratio="${13}"
-number_of_arenas="${14}"
-arena_shape="${15}"
-assay_type="${16}"
-optogenetics_light="${17}"
+recording_date="${7}"
+user="${8}"
+video_name="${9}"
+video_type="${10}"
+fps="${11}"
+track_start="${12}"
+flies_per_arena="${13}"
+sex_ratio="${14}"
+number_of_arenas="${15}"
+arena_shape="${16}"
+assay_type="${17}"
+optogenetics_light="${18}"
 
 # Force variables to be lowercase
 video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
@@ -70,18 +71,23 @@ tracking_duration=15    # in minutes
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+if [[ -f "${InputDirectory}/${video_name}" ]]; then
+    FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
+    mkdir "${OutputDirectory}/${FileName}"
+    printf "Copying video files from Synology\n"
+    cp "${InputDirectory}/${video_name}" "${OutputDirectory}/${FileName}/"
 
-FileName=$(basename -a --suffix=."${video_type}" "${video_name}")
-mkdir "${OutputDirectory}/${FileName}"
-printf "Copying video files from Synology\n"
-cp "${InputDirectory}/${video_name}" "${OutputDirectory}/${FileName}/"
 
-
-# Before doing anything else, let's set up the directory structure in bash and not in the individual
-# other scripts.
-mkdir "${OutputDirectory}/${FileName}/Results"
-mkdir "${OutputDirectory}/${FileName}/Logs"
-mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
+    # Before doing anything else, let's set up the directory structure in bash and not in the individual
+    # other scripts.
+    mkdir "${OutputDirectory}/${FileName}/Results"
+    mkdir "${OutputDirectory}/${FileName}/Logs"
+    mkdir -p "${OutputDirectory}/${FileName}/Backups/${FileName}_JAABA/perframe/"
+else
+    printf "${video_name} does not exist ...\n"
+    printf "now exiting tracking ...\n"
+    exit 1
+fi
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -92,6 +98,7 @@ printf "ToBeTrackedDirectory=${ToBeTrackedDirectory}\n"
 printf "WorkingDirectory=${WorkingDirectory}\n"
 printf "InputDirectory=${InputDirectory}\n"
 printf "OutputDirectory=${OutputDirectory}\n"
+printf "recording_date=${recording_date}\n"
 printf "user=${user}\n"
 printf "video_name=${video_name}\n"
 printf "video_type=${video_type}\n"
@@ -140,7 +147,7 @@ if [ -z "${best_calib_file}" ]; then
 else
     printf "\n\n\n"
     printf "There is a matching calib file.\n"
-    printf "\tThe best match is: ${best_calib_file}\n\n"
+    printf "\tbest_calib_file=${best_calib_file}\n\n"
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -162,9 +169,10 @@ matlab -nodisplay -nosplash -r "try; \
                                 best_calib_file='${best_calib_file}'; \
                                 flies_per_arena=${flies_per_arena}; \
                                 sex_ratio=${sex_ratio}; \
+                                assay_type='${assay_type}'; \
                                 addpath(genpath('${CodeDirectory}')); \
                                 AutoTracking; \
-                                catch ME; getReport(ME); end; quit"
+                                catch; end; quit"
 
 tracking_worked="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ -f "${tracking_worked}" ]]; then
@@ -184,7 +192,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         tracking_duration=${tracking_duration}; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         script_detect_optogenetic_light; \
-                                        catch ME; getReport(ME); end; quit"
+                                        catch; end; quit"
     fi
 
     # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
@@ -201,7 +209,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         OutputDirectory='${OutputDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         DeleteSingletonFlies; \
-                                        catch ME; getReport(ME); end; quit"
+                                        catch; end; quit"
 
         printf "\n\n\n\n\n\n\n\n"
         printf "####################################################\n"
@@ -217,7 +225,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         CodeDirectory='${CodeDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         ApplyClassifiers; \
-                                        catch ME; getReport(ME); end; quit"
+                                        catch; end; quit"
     fi
 
     if [[ ${number_of_arenas} > 1 ]]; then
@@ -233,7 +241,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         OutputDirectory='${OutputDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         script_reassign_identities; \
-                                        catch ME; getReport(ME); end; quit"
+                                        catch; end; quit"
     fi
 
 
@@ -274,8 +282,8 @@ if [[ -f "${tracking_worked}" ]]; then
     elif [[ "${current_machine}" == "mentok" ]]; then
         remote_path="/mnt/synology"
     fi
-    mkdir -p "${remote_path}/Tracked/${user}/${today}"
-    cp -Rav "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${today}/"
+    mkdir -p "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked"
+    cp -Rav "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked/"
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 else
     printf "\n\n\n\n\n\n\n\n"

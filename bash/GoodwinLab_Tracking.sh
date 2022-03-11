@@ -129,7 +129,7 @@ if [ -s ${csv_file} ]; then
 	printf "" > "${ToBeTrackedDirectory}/list_of_videos.csv"
 
 	csv_file="${InputDirectory}/../list_of_videos.csv"
-	while IFS=',' read -r user video_name other_stuff;
+	while IFS=',' read -r recording_date user video_name other_stuff;
 	do
 	    printf "\n\nVideo Name:\t ${video_name}\n"
 	    if [ -f "${ToBeTrackedDirectory}/videos/${video_name}" ]; then
@@ -157,7 +157,8 @@ if [ -s ${csv_file} ]; then
 			"${csv_file}" >> "${csv_file}.bak"
 
 
-	while IFS=',' read -r user \
+	while IFS=',' read -r recording_date \
+							user \
 							video_name \
 							video_type \
 							fps \
@@ -187,6 +188,7 @@ if [ -s ${csv_file} ]; then
 										  "${WorkingDirectory}" \
 										  "${InputDirectory}" \
 										  "${OutputDirectory}" \
+										  "${recording_date}" \
 										  "${user}" \
 										  "${video_name}" \
 										  "${video_type}" \
