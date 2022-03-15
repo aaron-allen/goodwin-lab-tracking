@@ -40,14 +40,14 @@ meany_c = num2cell(meany);
 [trx(:).meany] = deal(meany_c{:});
 %determine number of rows and columns of chambers
 centroid = sortrows(calib.centroids, 1);
-numchambers = size(centroid,1);
-uniquecentroids = unique(centroid(:,1));
-numrows = size(uniquecentroids,1);
+numchambers = size(centroid, 1);
+uniquecentroids = unique(centroid(:, 1));
+numrows = size(uniquecentroids, 1);
 numcolumns = ceil(numchambers/numrows);
 %sort the chambers by row first, then within the row sort by column
-for c = 1: size(uniquecentroids)
+for c = 1:size(uniquecentroids)
     ychamber = uniquecentroids(c);
-    centroid(centroid(:,1) == ychamber,:) = sortrows(centroid(centroid(:,1) == ychamber,:),2);
+    centroid(centroid(:, 1) == ychamber, :) = sortrows(centroid(centroid(:, 1) == ychamber, :), 2);
 end
 
 
@@ -89,22 +89,21 @@ end
 end
 
 function id_new = assign_identity(chambers, nflies, nchambers)
-id_new = zeros(1,numel(chambers));
+id_new = zeros(1, numel(chambers));
 occupied_chambers = unique(chambers);
 
-nums = [1:nflies*nchambers];
-individuals = transpose(reshape(nums,[nflies,nchambers]));
+nums = [1:nflies * nchambers];
+individuals = transpose(reshape(nums, [nflies, nchambers]));
 for i = 1:numel(occupied_chambers)
-   
-        id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i),:);
-    
-end
-end
 
+    id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i), :);
+
+end
+end
 
 
 function startpos = left_right_assign(chambers, firstx, numchambs)
-%assigns startposition 'l' for left or 'r' for right to flies 
+%assigns startposition 'l' for left or 'r' for right to flies
 %according to their position in the first frame of the tracking
 startpos = {};
 for i = 1:numchambs
