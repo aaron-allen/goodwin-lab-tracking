@@ -14,18 +14,18 @@
 %inputdir must contain the following:
 %-a file named inputdir'-calibration.mat'
 %-a JAABA folder named inputdir'_JAABA'
-    %the JAABA folder must contain:
-    %-a file named trx.mat
-    %-a variable number of files named 'scores*.mat' (not necessary, but if
-    %they don't exist, only the trx file will be corrected)
+%the JAABA folder must contain:
+%-a file named trx.mat
+%-a variable number of files named 'scores*.mat' (not necessary, but if
+%they don't exist, only the trx file will be corrected)
 
 
 function reassign_identities(inputdir)
-    startdir=pwd;
-    JAABAfolder=strcat(inputdir,'_JAABA');
-    assign_chambers(inputdir);
-    cd(inputdir);
-    assign_score_identities(JAABAfolder,'ids.mat');
-    cd(startdir);
-    clear all;
+startdir = pwd;
+JAABAfolder = strcat(inputdir, '_JAABA');
+assign_chambers(inputdir);
+cd(inputdir);
+assign_score_identities(JAABAfolder, 'ids.mat');
+cd(startdir);
+clear all;
 end
