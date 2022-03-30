@@ -188,7 +188,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         FileName='${FileName}'; \
                                         OutputDirectory='${OutputDirectory}'; \
                                         videoname='${video_name}'; \
-                                        FPS=${fps} \
+                                        FPS=${fps}; \
                                         tracking_duration=${tracking_duration}; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         script_detect_optogenetic_light; \
@@ -282,6 +282,8 @@ if [[ -f "${tracking_worked}" ]]; then
     elif [[ "${current_machine}" == "mentok" ]]; then
         remote_path="/mnt/synology"
     fi
+
+    # printf "not moving right now ...\n"
     mkdir -p "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked"
     cp -Rav "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked/"
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------

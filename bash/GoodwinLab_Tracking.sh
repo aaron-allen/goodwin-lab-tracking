@@ -264,6 +264,8 @@ if [ -s ${csv_file} ]; then
 
 		# ssh goodwintracking@goodwintracking.local "mkdir -p /mnt/LocalData/Tracking/${today}-Tracked"
 		# scp -r "${OutputDirectory}/" "goodwintracking@goodwintracking.local:/mnt/LocalData/Tracking/${today}-Tracked"
+
+		# printf "not moving right now ...\n"
 		cp -rv "${OutputDirectory}/" "/mnt/tracker/Tracking/${today}-Tracked"
 
 		printf "\n\n####################################################\n"
@@ -279,6 +281,7 @@ if [ -s ${csv_file} ]; then
 		if [[ ! -s "${ArchiveDirectory}/${today}/"  ]]; then
 			mkdir  "${ArchiveDirectory}/${today}/"
 		fi
+		# printf "not moving right now ...\n"
 		mv "${InputDirectory}/"* "${ArchiveDirectory}/${today}/"
 	fi
 
