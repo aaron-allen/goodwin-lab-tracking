@@ -39,9 +39,11 @@
 
 
 
-library("data.table")
-library("tidyverse")
-library("zoo")
+suppressMessages(library("data.table"))
+suppressMessages(library("tidyverse"))
+suppressMessages(library("zoo"))
+
+
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]

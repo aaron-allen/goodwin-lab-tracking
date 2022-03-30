@@ -51,9 +51,12 @@
 
 
 
-library("data.table")
-library("tidyverse")
-library("cowplot")
+suppressMessages(library("data.table"))
+suppressMessages(library("tidyverse"))
+suppressMessages(library("cowplot"))
+
+
+
 
 OutputDirectory <- commandArgs(trailingOnly=T)[2]
 FileName <- commandArgs(trailingOnly=T)[3]

@@ -40,7 +40,7 @@
 plot_jaaba_ethograms <- function(input_Data,
                                  fly_id){
 
-    library("tidyverse")
+    suppressMessages(library("tidyverse"))
 
     ethogram_plot <- input_Data %>%
         filter(Fly_Id==fly_id) %>%

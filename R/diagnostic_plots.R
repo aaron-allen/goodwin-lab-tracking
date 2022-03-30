@@ -41,11 +41,11 @@
 
 diagnostic_plots <- function(input_data_table,flies_per_arena,save_path,slim_by=NULL) {
 
-    library("data.table")
-    library("tidyverse")
-    library("cowplot")
-    library("zoo")
-    
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("cowplot"))
+    suppressMessages(library("zoo"))
+
     # Values of +/-2pi are due to the fly's angle crossing the "zero" line and
     # don't represent 'true' large changes in angle. So I've reset anything
     # larger than 5 to 0, making the plot more informative to find the times

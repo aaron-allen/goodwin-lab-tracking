@@ -44,9 +44,9 @@
 
 
 extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FALSE) {
-    library("data.table")
-    library("tidyverse")
-    library("R.matlab")
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("R.matlab"))
 
     if ( .Platform$OS.type == "windows" ) {
         tracking_dir_path <- tracking_dir_path %>% stringr::str_replace_all(pattern = "\\\\", "/")
@@ -62,7 +62,7 @@ extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FAL
     my_track_data <- extract_track_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "-track.mat"))
     cat(paste0("    Now extracting feat data\n"))
     my_feat_data <- extract_feat_data(paste0(tracking_dir_path, vid_name, "/", vid_name, "-feat.mat"))
-    
+
     # test if there are any jaaba scores files to extract
     jaaba_path <- paste0(tracking_dir_path, vid_name, "/", vid_name, "_JAABA/")
     jaaba_scores_exist <- !purrr::is_empty(list.files(jaaba_path) %>% stringr::str_subset("scores_"))
@@ -70,16 +70,16 @@ extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FAL
         cat(paste0("    Now extracting jaaba data\n"))
         my_jaaba_data <- extract_jaaba_data(jaaba_path)
     }
-    
+
     cat(paste0("    Now merging all data\n"))
-    my_data <-dplyr::bind_rows(my_track_data,my_feat_data) 
+    my_data <-dplyr::bind_rows(my_track_data,my_feat_data)
     if (jaaba_scores_exist) {
         my_data <- dplyr::bind_rows(my_data,my_jaaba_data)
     }
-    my_data <- my_data %>% 
+    my_data <- my_data %>%
         dplyr::mutate(Video_name = vid_name,
-                      Arena = dplyr::if_else((Fly_Id %% flies_per_arena) == 0, 
-                                             Fly_Id/flies_per_arena, 
+                      Arena = dplyr::if_else((Fly_Id %% flies_per_arena) == 0,
+                                             Fly_Id/flies_per_arena,
                                              ceiling(Fly_Id/flies_per_arena))
                       ) %>%
         dplyr::group_by(Video_name, Fly_Id, Frame)
@@ -98,9 +98,9 @@ extract_all_data <- function(tracking_dir_path, flies_per_arena=2, save_data=FAL
 
 
 extract_track_data <- function(file_path) {
-    library("data.table")
-    library("tidyverse")
-    library("R.matlab")
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("R.matlab"))
 
     ufmf_track <- R.matlab::readMat(file_path)
 
@@ -165,9 +165,9 @@ extract_track_data <- function(file_path) {
 }
 
 extract_feat_data <- function(file_path) {
-    library("data.table")
-    library("tidyverse")
-    library("R.matlab")
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("R.matlab"))
 
     ufmf_feat <- R.matlab::readMat(file_path)
 
@@ -202,9 +202,9 @@ extract_feat_data <- function(file_path) {
 }
 
 extract_jaaba_data <- function(dir_path,raw = FALSE) {
-    library("data.table")
-    library("tidyverse")
-    library("R.matlab")
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("R.matlab"))
 
     i <- dplyr::if_else(raw, 1, 4)
     jaaba_scores_files <- list.files(dir_path) %>% stringr::str_subset("scores_") %>% stringr::str_subset("_id_corrected.mat")

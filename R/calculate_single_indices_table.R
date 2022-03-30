@@ -99,9 +99,9 @@ calculate_single_indices_table <- function(input,
                                         save_data = TRUE,
                                         save_path = NULL){
 
-    library("data.table")
-    library("tidyverse")
-    library("zoo")
+    suppressMessages(library("data.table"))
+    suppressMessages(library("tidyverse"))
+    suppressMessages(library("zoo"))
 
     if ( is.character(input) ) {
         if ( .Platform$OS.type == "windows" ) {
