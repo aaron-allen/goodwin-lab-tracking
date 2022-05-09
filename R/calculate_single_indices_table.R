@@ -148,8 +148,8 @@ calculate_single_indices_table <- function(input,
             CourtshipAndCopulation = if_else(MultitaskingWithCopulation>=1, 1, 0),
             CourtshipAndCopulationWthFacing = ifelse(MultitaskingWithCopulationWithFacing>=1, 1, 0),
             SmoothedCourtship = if_else((rollmean(Courtship, court_wind*frame_rate, fill = c(0,0,0), align = c("left")))>0.5, 1, 0),
-            SmoothedCopulation = if_else((rollmean(Copulation, cop_wind*frame_rate, fill = c(0,0,0), align = c("center")))>0.5, 1, 0),
-            CourtshipInitiation = which.max(SmoothedCourtship)/frame_rate
+            SmoothedCopulation = if_else((rollmean(Copulation, cop_wind*frame_rate, fill = c(0,0,0), align = c("center")))>0.5, 1, 0)#,
+            #CourtshipInitiation = which.max(SmoothedCourtship)/frame_rate
         ) %>%
         do(
         if(inc_cop)
@@ -186,7 +186,7 @@ calculate_single_indices_table <- function(input,
                 facing = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Facing)),
                 turning = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Turning)),
                 wing = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(WingGesture)),
-                time_to_init = unique(CourtshipInitiation),
+                #time_to_init = unique(CourtshipInitiation),
                 denominator = length(Frame)/frame_rate
         ) %>%
         select(-Fly_Id)
@@ -279,7 +279,8 @@ predict_sex_by_size <- function(tracking_data,
                   avg_area = mean(fly_area)
         )  %>%
         select(-Fly_Id) %>%
-        mutate(pred_sex = "?")
+        mutate(pred_sex = "?") %>% 
+        filter(avg_area > 0)
 
     if (proportion_male == 0) {
         predicted_sex <- predicted_sex %>% mutate(pred_sex = "F")
