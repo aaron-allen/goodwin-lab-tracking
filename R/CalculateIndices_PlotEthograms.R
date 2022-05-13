@@ -58,11 +58,11 @@ suppressMessages(library("cowplot"))
 
 
 
-OutputDirectory <- commandArgs(trailingOnly=T)[2]
-FileName <- commandArgs(trailingOnly=T)[3]
-FPS <- as.numeric(commandArgs(trailingOnly=T)[4])
-PropMale <- as.numeric(commandArgs(trailingOnly=T)[5])
-OptoLight <- as.logical(str_to_upper(commandArgs(trailingOnly=T)[6]))
+OutputDirectory <- commandArgs(trailingOnly = T)[2]
+FileName <- commandArgs(trailingOnly = T)[3]
+FPS <- as.numeric(commandArgs(trailingOnly = T)[4])
+PropMale <- as.numeric(commandArgs(trailingOnly = T)[5])
+OptoLight <- as.logical(str_to_upper(commandArgs(trailingOnly = T)[6]))
 
 
 

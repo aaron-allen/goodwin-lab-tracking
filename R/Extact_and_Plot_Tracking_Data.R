@@ -45,9 +45,9 @@ suppressMessages(library("zoo"))
 
 
 
-OutputDirectory <- commandArgs(trailingOnly=T)[2]
-FileName <- commandArgs(trailingOnly=T)[3]
-FliesPerArena <- as.numeric(commandArgs(trailingOnly=T)[4])
+OutputDirectory <- commandArgs(trailingOnly = T)[2]
+FileName <- commandArgs(trailingOnly = T)[3]
+FliesPerArena <- as.numeric(commandArgs(trailingOnly = T)[4])
 
 message(paste0("OutputDirectory = ",OutputDirectory))
 message(paste0("FileName = ",FileName))
@@ -55,7 +55,7 @@ message(paste0("FliesPerArena = ",FliesPerArena))
 
 
 
-LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log"))
+LogFile <- file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log"))
 # tryCatch({
 
 
@@ -63,7 +63,7 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log
     source("../R/diagnostic_plots.R")
 
     message(paste0("Reading the Data..."))
-    alldata <- extract_all_data(tracking_dir_path = paste0(OutputDirectory,"/",FileName,"/"),flies_per_arena=FliesPerArena,save_data = TRUE)
+    alldata <- extract_all_data(tracking_dir_path = paste0(OutputDirectory,"/",FileName,"/"),flies_per_arena = FliesPerArena,save_data = TRUE)
 
     message(paste0("Wrangling the Data..."))
     alldata_plotting <- alldata %>%
@@ -74,7 +74,7 @@ LogFile <-file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.log
         mutate(Fly_Id = as.factor(Fly_Id))
 
     message(paste0("Plotting the Data..."))
-    diagnostic_plots(input_data_table = alldata_plotting,flies_per_arena=FliesPerArena,save_path = paste0(OutputDirectory,"/",FileName,"/"))
+    diagnostic_plots(input_data_table = alldata_plotting,flies_per_arena = FliesPerArena,save_path = paste0(OutputDirectory,"/",FileName,"/"))
 
 
 #     },
