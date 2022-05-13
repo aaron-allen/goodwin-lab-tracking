@@ -59,6 +59,7 @@ number_of_arenas="${15}"
 arena_shape="${16}"
 assay_type="${17}"
 optogenetics_light="${18}"
+station="${19}"
 
 # Force variables to be lowercase
 video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
@@ -290,6 +291,10 @@ if [[ -f "${tracking_worked}" ]]; then
 else
     printf "\n\n\n\n\n\n\n\n"
     printf "Tracking failed ...\n"
+    failed_tracking_list="/mnt/data/Tracking/_logs/failed_tracking/${today}-failed_tracking.log"
+    touch "${failed_tracking_list}"
+    printf "${recording_date},${user},${video_name},mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+        >> "${failed_tracking_list}"
 fi
 
 
