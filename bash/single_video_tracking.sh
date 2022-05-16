@@ -173,7 +173,7 @@ matlab -nodisplay -nosplash -r "try; \
                                 assay_type='${assay_type}'; \
                                 addpath(genpath('${CodeDirectory}')); \
                                 AutoTracking; \
-                                catch; end; quit"
+                                catch err; disp(getReport(err,'extended')); end; quit
 
 tracking_worked="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ -f "${tracking_worked}" ]]; then
@@ -193,7 +193,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         tracking_duration=${tracking_duration}; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         script_detect_optogenetic_light; \
-                                        catch; end; quit"
+                                        catch err; disp(getReport(err,'extended')); end; quit
     fi
 
     # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
@@ -209,8 +209,9 @@ if [[ -f "${tracking_worked}" ]]; then
                                         FileName='${FileName}'; \
                                         OutputDirectory='${OutputDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
+                                        FliesPerArena="${flies_per_arena}"; \
                                         DeleteSingletonFlies; \
-                                        catch; end; quit"
+                                        catch err; disp(getReport(err,'extended')); end; quit
 
         printf "\n\n\n\n\n\n\n\n"
         printf "####################################################\n"
@@ -226,7 +227,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         CodeDirectory='${CodeDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         ApplyClassifiers; \
-                                        catch; end; quit"
+                                        catch err; disp(getReport(err,'extended')); end; quit
     fi
 
     if [[ ${number_of_arenas} > 1 ]]; then
@@ -242,7 +243,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         OutputDirectory='${OutputDirectory}'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         script_reassign_identities; \
-                                        catch; end; quit"
+                                        catch err; disp(getReport(err,'extended')); end; quit
     fi
 
 

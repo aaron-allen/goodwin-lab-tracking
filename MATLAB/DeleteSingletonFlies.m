@@ -54,31 +54,37 @@ load([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat']);
 % Determining the average number of flies per chamber
 disp('Counting flies per chamber')
 TotalFlies = 0;
+TotalValidChambers = 0;
 for F = 1:size(trk.flies_in_chamber,2)
     TotalFlies = TotalFlies + size(trk.flies_in_chamber{F},2);
+    if size(trk.flies_in_chamber{F},2) > 0
+        TotalValidChambers = TotalValidChambers + 1;
+    end
 end
-FliesPerChamber = TotalFlies/size(trk.flies_in_chamber,2);
+FliesPerChamber = TotalFlies/TotalValidChambers;
 fprintf('Average number of flies per chamber is %f.\n',FliesPerChamber);
 
 if (1 < FliesPerChamber) && (FliesPerChamber < 2)
     disp('The number of flies differs between chambers');
-    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
-             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_2_pre_deletesingleton.mat']);
 
     % Create a logical array of the location of the singleton flies
     disp('Creating logical array of the location of the singleton flies');
     LM = [];
     for N = 1:size(trk.flies_in_chamber,2)
-        if size(trk.flies_in_chamber{N},2) == 1
-            LM = [LM, 1];
-        else
-            LM = [LM, 0, 0];
+        if ~isempty(trk.flies_in_chamber{N})
+            if size(trk.flies_in_chamber{N},2) ~= FliesPerArena
+                LM = [LM, 1];
+            else
+                LM = [LM, 0, 0];
+            end
         end
     end
-    LM = boolean(LM);
+    LM = logical(LM);
 
     % deleting single fly trx data
     disp('Deleting row(s) in trx file');
+    copyfile([OutputDirectory '/' FileName '/' FileName '/' FileName '_JAABA/trx.mat'], ...
+             [OutputDirectory '/' FileName '/Backups/' FileName '_JAABA/trx--backup_2_pre_deletesingleton.mat']);
     for N = 1:size(trk.flies_in_chamber,2)
         if size(trk.flies_in_chamber{N},2) == 1
             trx([trx.id]==trk.flies_in_chamber{N}) = [];
