@@ -42,8 +42,8 @@ disp('Now Tracking Videos');
 
 
 % set options (omit any or all to use default options)
-options.num_cores    = 1; %maxNumCompThreads;
-options.num_chunks   = 1; %options.num_cores .* 2;
+options.num_cores    = 1; % maxNumCompThreads;          %
+options.num_chunks   = 1; % options.num_cores .* 2;     %
 options.max_minutes  = tracking_duration;
 options.save_JAABA   = true;
 options.save_xls     = false;
@@ -62,10 +62,10 @@ end
 
 options.n_flies      = flies_per_arena;
 
-options.force_all       = true;
-options.force_calib     = true;
-options.force_tracking  = true;
-options.force_features  = true;
+options.force_all       = true;     %false;  %
+options.force_calib     = true;     %false;  %
+options.force_tracking  = true;     %false;  %
+options.force_features  = true;     %false;  %
 
 
 options.f_parent_calib  = ['parent_calib_files/' best_calib_file];
