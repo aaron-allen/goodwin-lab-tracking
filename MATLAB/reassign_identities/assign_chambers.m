@@ -103,7 +103,7 @@ nums = [1:nflies * nchambers];
 individuals = transpose(reshape(nums, [nflies, nchambers]));
 for i = 1:numel(occupied_chambers)
     
-    id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i), :);
+    id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i), 1:size(id_new(chambers == occupied_chambers(i)),2));
     
 end
 end
