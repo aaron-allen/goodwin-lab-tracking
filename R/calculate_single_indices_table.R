@@ -191,15 +191,20 @@ calculate_single_indices_table <- function(input,
         ) %>%
         select(-Fly_Id)
 
+    
     # Predict sex of flies using there size and the user supplied proportion of males
     # join predicted sex tibble with indices tibble
     # Should the predict sex part be it's own function? probably ...
     if (predict_sex) {
-        predicted_sex <- predict_sex_by_size(tracking_data = raw_data,
-                                             proportion_male = prop_male,
-                                             frame_rate = frame_rate) %>%
-            select(ArenaNumber, FlyId, pred_sex)
-        indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "ArenaNumber", "FlyId" = "FlyId") )
+        tryCatch({
+            predicted_sex <- predict_sex_by_size(tracking_data = raw_data,
+                                                 proportion_male = prop_male,
+                                                 frame_rate = frame_rate) %>%
+                select(ArenaNumber, FlyId, pred_sex)
+            indices <- left_join(indices, predicted_sex, by = c("ArenaNumber" = "ArenaNumber", "FlyId" = "FlyId") )
+        } , error = function(e) {
+            message(paste0("    Predict Sex: ", e))
+        } )
     }
 
 
@@ -266,7 +271,11 @@ predict_sex_by_size <- function(tracking_data,
         ) %>%
         do(
             if(remove_copulation)
-                slice(., 1:if_else(sum(is_close, na.rm = TRUE)==0, n(), which.max(is_close)))
+                # using ifelse() and not if_else():
+                # if_else() seems to have an issue if is_close is only NAs, and then the which.max() returns
+                # nothing and causes an error. But if the is_close is only NAs then sum(is_close) will be
+                # zero so we shouldn't care what which.max(is_close) is ...
+                slice(., 1:ifelse(sum(is_close, na.rm = TRUE)==0, n(), which.max(is_close)))
         ) %>%
         mutate(
             fly_area = pi * major_axis_len * minor_axis_len
