@@ -1,6 +1,8 @@
 
 printf "$(date)\n"
 today=$(date +%Y%m%d-%H%M%S)
+# today="20220709-113159"
+
 
 # setting up a variable with todays date and making a folder for the modified courtship videos
 CodeDirectory=$( dirname "$PWD" )
@@ -33,9 +35,12 @@ fi
 
 
 InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
-OutputDirectory="/mnt/data/Tracking/retrack"
-new_settings_file="/mnt/data/Tracking/retrack/new_settings.txt"
+OutputDirectory="/mnt/data/Tracking/retrack/2022-07-19"
+new_settings_file="${OutputDirectory}/new_settings.txt"
 mkdir -p "${OutputDirectory}/_tracking_logs"
+
+# Set the AutoTracking.m script force recalc to FALSE
+sed -i 's/= true;     %false;  %/= false;  %true;     %/g' ../MATLAB/AutoTracking.m
 
 while IFS=',' read -r recording_date \
 						user \
@@ -117,6 +122,8 @@ do
 	sleep 10m
 done
 
+# Reset the AutoTracking.m script
+sed -i 's/= false;  %true;     %/= true;     %false;  %/g' ../MATLAB/AutoTracking.m
 
 
 # If running on my desktop, move the tracking results to the Tracker
