@@ -92,7 +92,9 @@ ids = struct('id_old', id_old, 'id_new', id_new, 'chambers', chambers);
 save('ids', 'ids');
 save(trxfile_new, 'trx');
 save(calibfile_new, 'calib');
-
+calibfilename_old = strrep(calibfile, '.mat', '_old.mat');
+movefile(calibfile, calibfilename_old);
+copyfile(calibfile_new, calibfile);
 cd(startdir);
 clear all;
 end
