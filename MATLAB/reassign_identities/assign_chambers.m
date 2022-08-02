@@ -21,6 +21,7 @@ startdir = pwd;
 cd(inputdir);
 % calibfile=strcat(inputdir,'-calibration.mat');
 calibfile = '../calibration.mat';
+calibfile_new = strrep(calibfile,'.mat', '_id_corrected.mat');
 JAABAfolder = strcat(inputdir, '_JAABA');
 trxfile = fullfile(JAABAfolder, 'trx.mat');
 trxfile_new = strrep(trxfile, '.mat', '_id_corrected.mat');
@@ -67,6 +68,16 @@ firstx = cellfun(@(f) f(1, 1), x);
 
 chambers = arrayfun(@(f) assign_one(f, maxy_chambers, miny_chambers, maxx_chambers, minx_chambers, numchambers), trx);
 startpos = left_right_assign(chambers, firstx, numchambers);
+valid_chambers = calib.valid_chambers;
+
+for i = 1:length(valid_chambers)
+    if ismember(i,chambers)
+        valid_chambers(i) = 1;
+    else valid_chambers(i) = 0;
+    end
+end
+
+calib.valid_chambers = valid_chambers;
 
 
 id_new = assign_identity(chambers, calib.n_flies, numchambers);
@@ -80,6 +91,7 @@ trx = nestedSortStruct(trx, 'id');
 ids = struct('id_old', id_old, 'id_new', id_new, 'chambers', chambers);
 save('ids', 'ids');
 save(trxfile_new, 'trx');
+save(calibfile_new, 'calib');
 
 cd(startdir);
 clear all;
