@@ -125,11 +125,22 @@ printf "####################################################\n\n"
 # add some code logic to sort out the optimal "template" calibration files
 # based on the imported variables.
 if [[ ${assay_type} == "courtship" ]]; then
+    # The recalculating of the parent calibration file doesn't seem to adjust
+    # pixel dimension of the masks. Since Station A camera is a different
+    # resolution this was leading to errors with videos recorded on Station A,
+    # but attempting tracking with parent calibration files made for Stations
+    # B and C.
+    if [[ ${station} == "a" ]]; then
+        station_mod="stata"
+    else
+        station_mod="statbc"
+    fi
     best_calib_file=$(ls ../MATLAB/parent_calib_files/ \
         | grep "${video_type}" \
         | grep "${flies_per_arena}fly" \
         | grep "${number_of_arenas}arena" \
         | grep "${arena_shape}" \
+        | grep "${station_mod}" \
         | grep "${assay_type}")
 fi
 if [[ ${assay_type} == "oviposition" ]]; then
