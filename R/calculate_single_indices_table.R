@@ -186,7 +186,7 @@ calculate_single_indices_table <- function(input,
                 facing = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Facing)),
                 turning = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(Turning)),
                 wing = if_else(court_init & sum(SmoothedCourtship) == 0, 0, 100*mean(WingGesture)),
-                time_to_init = unique(CourtshipInitiation),
+                time_to_init = if_else(sum(SmoothedCourtship) == 0, 900, unique(CourtshipInitiation)),
                 denominator = length(Frame)/frame_rate
         ) %>%
         select(-Fly_Id)
