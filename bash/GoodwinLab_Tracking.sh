@@ -87,30 +87,30 @@ if [ -s ${csv_file} ]; then
 	system_usage_logger &
 
 
-	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
-	# add bit to kill any processes that might interfer with tracking, like
-	# matlab, geneious, python, R, etc.
-	printf "\n\nKilling all MATLAB processes...\n"
-	pkill MATLAB
-	printf "Killing all R processes...\n"
-	pkill R
-	pkill rsession
-	printf "Killing all ipython processes...\n"
-	pkill ipython
-	printf "Killing all Geneious processes...\n"
-	# Geneious doesn't show up as Geneious in top/pgrep/etc, it shows up as java, but killing anything java seems a bit poor form...
-	# So we'll feed the pid into a ps call with a more detailed output and grep for Geneious.
-	pgrep java | \
-	while read -r java_pid ; do
-    	printf "\tChecking if java pid = ${java_pid} is a Geneious instance.\n"
-		if ps -Flww -p ${java_pid} | grep -q "Geneious"; then
-		    printf "\tIt is! Kill it!\n"
-			pkill ${java_pid}
-		else
-		    printf "\tMust be some other java application, so let it be.\n"
-		fi
-    done
-	# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+	# # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+	# # add bit to kill any processes that might interfer with tracking, like
+	# # matlab, geneious, python, R, etc.
+	# printf "\n\nKilling all MATLAB processes...\n"
+	# pkill MATLAB
+	# printf "Killing all R processes...\n"
+	# pkill R
+	# pkill rsession
+	# printf "Killing all ipython processes...\n"
+	# pkill ipython
+	# printf "Killing all Geneious processes...\n"
+	# # Geneious doesn't show up as Geneious in top/pgrep/etc, it shows up as java, but killing anything java seems a bit poor form...
+	# # So we'll feed the pid into a ps call with a more detailed output and grep for Geneious.
+	# pgrep java | \
+	# while read -r java_pid ; do
+    # 	printf "\tChecking if java pid = ${java_pid} is a Geneious instance.\n"
+	# 	if ps -Flww -p ${java_pid} | grep -q "Geneious"; then
+	# 	    printf "\tIt is! Kill it!\n"
+	# 		pkill ${java_pid}
+	# 	else
+	# 	    printf "\tMust be some other java application, so let it be.\n"
+	# 	fi
+    # done
+	# # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	InputDirectory="${ToBeTrackedDirectory}/../NowTracking/videos"
 	OutputDirectory="$WorkingDirectory/${today}-Tracked"
