@@ -97,6 +97,7 @@ When Pylon first opens, you will not see anything from the camera, but you shoul
 
 ![Pylon_open](/docs/images/pylon_open.png)
 
+
 First you will need to "start" the software connection to the Camera. Once you select the camera, the "toggle switch" just below the `File` menu item will change from grey to red.
 
 ![Select_camera](/docs/images/pylon_select_camera_arrow.png)
@@ -106,6 +107,21 @@ To start the connection to the camera, click on the "toggle switch". It will cha
 ![Toggle_on](/docs/images/pylon_toggle_camera_on_arrow.png)
 
 After selecting the camera, the lower left pane will also populate with information and settings for the camera.
+
+
+#### Where's the Camera ?!?!
+
+If you open Basler's Pylon Viewer and you can't see the 'Devices' pane, or the layout looks weird for any reason, you'll want to reset it. These panes are customizable and can be reshaped and closed. This will happen from time to time accidentally and you just need to reset the window pane layout to get everything back the way it was.
+
+![Devices_gone](/docs/images/basler_sidebar_missing.png)
+
+To reset the layout, click on the 'Window' item in the menu bar and then click 'Reset Window Layout'.
+
+![Reset_layout](/docs/images/basler_reset_window.png)
+
+Once clicked the window panes will reset to default and you'll be good to go. Now just select your camera and toggle it on, as before.
+
+![Select_camera](/docs/images/basler_select_camera.png)
 
 
 #### Load Camera Settings:
