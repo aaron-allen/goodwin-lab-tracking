@@ -54,7 +54,7 @@ numcolumns = ceil(numchambers/numrows);
 for c = 1:numrows
     first_in_row = newrow_starts(c);
     last_in_row = newrow_starts(c+1) -1 ;
-    
+
     centroid(first_in_row:last_in_row, :) = sortrows(centroid(first_in_row:last_in_row, :), 2);
 end
 
@@ -116,9 +116,9 @@ occupied_chambers = unique(chambers);
 nums = [1:nflies * nchambers];
 individuals = transpose(reshape(nums, [nflies, nchambers]));
 for i = 1:numel(occupied_chambers)
-    
+
     id_new(chambers == occupied_chambers(i)) = individuals(occupied_chambers(i), 1:size(id_new(chambers == occupied_chambers(i)),2));
-    
+
 end
 end
 
@@ -131,7 +131,7 @@ for i = 1:numchambs
     firstxi = firstx(chambers == i);
     if numel(firstxi) == 2
         if firstxi(1) < firstxi(2)
-            
+
             startpos{(size(startpos, 1) + 1), 1} = {'l'};
             startpos{(size(startpos, 1) + 1), 1} = {'r'};
         else
@@ -141,6 +141,6 @@ for i = 1:numchambs
     elseif numel(firstxi) == 1
         startpos{(size(startpos, 1) + 1), 1} = {'l'};
     end
-    
+
 end
 end

@@ -128,6 +128,11 @@ if [[ -d "${full_path}" ]]; then
                 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
                 ### need to convert Strand-Camera mkv files to constant frame rate videos
                 printf "\n\n\n################################################\n"
+
+                # Get the codec of the video in case it's not h264
+                my_codec=$( ffprobe "${full_path}/${video_name}" 2>&1 | grep "Video: " | cut -d ',' -f1 | awk '{ print $4 }' )
+
+
                 printf "ffmpeg starting\n\n"
                 ffmpeg \
                     -hide_banner \
