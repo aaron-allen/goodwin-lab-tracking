@@ -180,7 +180,7 @@ if [ -s ${csv_file} ]; then
 
 		printf "\tNow tracking ${user}'s video ${video_name}\n"
 
-		if [[ ${assay_type} == "courtship" ]] || [[ ${assay_type} == "oviposition" ]]; then
+		if [[ ${assay_type} == "courtship" ]] || [[ ${assay_type} == "optomotor" ]] || [[ ${assay_type} == "oviposition" ]]; then
 			# run single_video_tracking.sh
 			bash single_video_tracking.sh "${today}" \
 										  "${CodeDirectory}" \
