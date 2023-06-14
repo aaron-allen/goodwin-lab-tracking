@@ -90,7 +90,7 @@ if isnan(num_reps)
     errordlg('You must enter a numeric value','Invalid Input','modal')
     uicontrol(hObject)
     return
-    
+
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -220,7 +220,7 @@ if isnan(light_on)
     errordlg('You must enter a numeric value','Invalid Input','modal')
     uicontrol(hObject)
     return
-    
+
 end
 
 
@@ -251,7 +251,7 @@ if isnan(light_off)
     errordlg('You must enter a numeric value','Invalid Input','modal')
     uicontrol(hObject)
     return
-    
+
 end
 
 
@@ -312,7 +312,7 @@ if isnan(frequency)
     errordlg('You must enter a numeric value','Invalid Input','modal')
     uicontrol(hObject)
     return
-    
+
 end
 
 
@@ -347,7 +347,7 @@ if isnan(on_time)
     errordlg('You must enter a numeric value','Invalid Input','modal')
     uicontrol(hObject)
     return
-    
+
 end
 
 
@@ -414,10 +414,10 @@ disp('run button pressed')
 disp('Did you turn the backlight on?')
 IRonbutton=findobj('Tag','IR_on');
 if get(IRonbutton,'userdata')
-    
+
 set(gcbo,'userdata',1);
 else
-   
+
    default_comport = '/dev/ttyACM0';
     com = findobj('Tag','edit2');
 
@@ -517,23 +517,23 @@ switch lamp;
         stimpin=str2double(stimpingreen);
         if isnan (stimpin)
             stimpin = default_stimpin_green;
-            
+
         end
     case 'red' % User selects red lamp.
         stimpin = str2double(stimpinred);
         if isnan (stimpin)
             stimpin = default_stimpin_red;
-            
-            
+
+
         end
     case 'optogenetic backlight' % User selects red lamp.
         stimpin = str2double(stimpinoptobacklight);
         if isnan (stimpin)
             stimpin = default_stimpin_opto;
-            
-            
+
+
         end
-        
+
 end
 if isnan(stimpinIRbacklight)
     stimpinIRbacklight = default_stimpin_IR;
@@ -579,13 +579,13 @@ set(stopbutton,'userdata',0);
 %This is pin2 on the arduino board and is connected to the infrared
 %indicator LED
 if off_first
-    
+
     disp 'light will be off first';
-    
-    
+
+
     for n=1:numcycl
         set(handles.edit8, 'String', n);
-        
+
         %turn light off
         stimPin=stimpin-21; fwrite(arduino, stimPin+24, 'uint8');
         %turn infrared off
@@ -616,7 +616,7 @@ if off_first
     end
 else
     disp 'light will be on first';
-    
+
     for n=1:numcycl
         set(handles.edit8, 'String', n);
         pin=2; state=true; fwrite(arduino, [132, pin, state], 'uint8');
@@ -638,7 +638,7 @@ else
         pin=2; state=false; fwrite(arduino, [132, pin, state], 'uint8');
         %wait for specified off time - leave light off
         offround=0;
-        
+
         while offround<lightoffrounds
             if get(stopbutton,'userdata') % stop condition
                 break;
@@ -647,7 +647,7 @@ else
             offround=offround+1;
         end
         pause (lightoffrest);
-        
+
     end
     runbutton=findobj('Tag','pushbutton1');
     set(runbutton,'userdata',0);
@@ -677,7 +677,7 @@ for n=1:10
     disp (n);
     set(handles.edit8, 'String', n);
     pause(1);
-    
+
 end
 
 set(handles.figure1, 'pointer', oldpointer)

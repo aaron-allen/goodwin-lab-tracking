@@ -191,7 +191,7 @@ calculate_single_indices_table <- function(input,
         ) %>%
         select(-Fly_Id)
 
-    
+
     # Predict sex of flies using there size and the user supplied proportion of males
     # join predicted sex tibble with indices tibble
     # Should the predict sex part be it's own function? probably ...
