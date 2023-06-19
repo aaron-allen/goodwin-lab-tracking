@@ -124,14 +124,19 @@ extract_track_data <- function(file_path) {
     }
 
     # flies.in.chamber
-    for (i in seq_along(ufmf_track[["trk"]][[3]])) {
-        if (i == 1) {
-            fly_ids <- list()
+    if (dim(ufmf_track[["trk"]][[2]])[[1]] == 1) {
+        fly_ids <- tibble::tibble(Arena = 1,
+                                  Fly_Id = 1)
+    } else {
+        for (i in seq_along(ufmf_track[["trk"]][[3]])) {
+            if (i == 1) {
+                fly_ids <- list()
+            }
+            fly_ids[[i]] <- tibble::tibble(Arena = rep(i,length(ufmf_track[["trk"]][[3]][[i]][[1]][1,])),
+                                           Fly_Id = ufmf_track[["trk"]][[3]][[i]][[1]][1,])
         }
-        fly_ids[[i]] <- tibble::tibble(Arena = rep(i,length(ufmf_track[["trk"]][[3]][[i]][[1]][1,])),
-                                       Fly_Id = ufmf_track[["trk"]][[3]][[i]][[1]][1,])
+        fly_ids <- dplyr::bind_rows(fly_ids)
     }
-    fly_ids <- dplyr::bind_rows(fly_ids)
 
     # data
     for (i in seq_along(track_names)) {
