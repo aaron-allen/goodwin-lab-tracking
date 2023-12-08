@@ -204,23 +204,6 @@ if [ -s ${csv_file} ]; then
 				"${OutputDirectory}/_tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
 				&
 		fi
-
-
-		# If Olivia ends up going with Ctrax for the oviposition assay (which might work nicely due to the non fixed number of flies..?..), It might be good
-		# to add an if statement here and run a different shell script to start Ctrax.
-		# if [[ ${assay_type} == "oviposition" ]]; then
-		# 	# run Ctrax_tracking.sh
-		# 	printf "\n\n ... haven't coded this yet ... \n"
-		# # 	bash ctrax_video_tracking.sh ... &
-		# fi
-
-		# add some code for DLC?
-		if [[ ${assay_type} == "DLC" ]]; then
-			# run Ctrax_tracking.sh
-			printf "\n\n ... haven't coded this yet ... \n"
-		# 	bash DLC_video_tracking.sh ... &
-		fi
-
 		sleep 2s    # 2 second lag to allow single_video_tracking to start
 
 		# Set a different cut off depending on which computer is running the pipeline

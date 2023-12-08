@@ -191,6 +191,52 @@ matlab -nodisplay -nosplash -r "try; \
 tracking_worked="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ -f "${tracking_worked}" ]]; then
 
+
+    #
+    if [[ ${optogenetics_light} == "true" ]]; then
+        printf "\n\n\n\n\n\n\n\n"
+        printf "####################################################\n"
+        printf "####################################################\n"
+        printf "####################################################\n\n"
+        printf "\n\n\nDetecting optomotor indicator light ...\n"
+
+        # Cut the top left corner of the video to a 192x192 pixel square
+        # to speed up the optomotor indicator light detection
+        ffmpeg \
+            -hide_banner \
+            -nostdin \
+            -hwaccel cuvid \
+            -c:v h264_cuvid \
+            -hwaccel_output_format cuda \
+            -extra_hw_frames 4 \
+            -i "${OutputDirectory}/${FileName}/${video_name}" \
+            -vf "crop=192:192:0:0" \
+            -c:v h264_nvenc \
+            -tune ull \
+            -rc cbr \
+            -preset p7 \
+            -multipass 1 \
+            -y \
+            "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
+
+
+
+        matlab -nodisplay -nosplash -r "try; \
+                                        FileName='${FileName}'; \
+                                        OutputDirectory='${OutputDirectory}'; \
+                                        videoname='${video_name}'; \
+                                        FPS=${fps}; \
+                                        tracking_duration=${tracking_duration}; \
+                                        addpath(genpath('${CodeDirectory}')); \
+                                        alt_detect_led_indicator_light; \
+                                        catch err; disp(getReport(err,'extended')); end; quit"
+    fi
+
+
+
+
+
+
     # Only run the optogenetic light detector if the video is an optogenetics experiment
     if [[ ${optogenetics_light} == "true" ]]; then
         printf "\n\n\n\n\n\n\n\n"

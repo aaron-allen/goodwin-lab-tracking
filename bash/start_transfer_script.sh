@@ -104,7 +104,7 @@ if [[ -d "${full_path}" ]] && [[ ${min_col} == ${max_col} ]] && [[ ${target_col}
 else
     printf "\nStill can't find the directory ...\n"
     printf "\t(or there is something wrong with your settings file ... )\n"
-    printf "Probably best to find Aaron or Annika ...\n\n"
+    printf "Probably best to find Aaron ...\n\n"
     sleep infinity
     return
 fi

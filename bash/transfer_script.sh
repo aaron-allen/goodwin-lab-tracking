@@ -171,6 +171,27 @@ if [[ -d "${full_path}" ]]; then
                 printf "${vid_dir},${user},${video_name:: -4}.mp4,mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
                     >> "${tobetracked_list_file}"
                 rm "${full_path}/${video_name:: -4}.mp4"
+
+
+                # If optomotor assay, then also transfer the batch run directory to the GoodwinGroup Synology.
+                if [[ "${assay_type}" == "optomotor" ]]; then
+                    # Check if the batch run directory exists
+                    opto_path="/mnt/data/videos/${user_name}/Optomotor/Batch_Runs"
+                    if [[ -d "${opto_path}/${video_name:: -4}" ]]; then
+                        # Check that destination directory exists
+                        destination_dir="/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/Optomotor/Batch_Runs/${video_name:: -4}"
+                        if [[ ! -d "${destination_dir}/" ]]; then
+                            mkdir -p "${destination_dir}/"
+                        fi
+                        # Transfer batch run directory
+                        printf "Copying ${video_name:: -4} to ...\n"
+                        printf "    GoodwinGroup:\n"
+                        cp -r "${opto_path}/${video_name:: -4}/" "${destination_dir}/"
+                    else
+                        printf "Can't find the batch run directory for ${video_name:: -4}.\n"
+                    fi
+                fi
+
             fi
         done < "${full_path}/${settings_file}.bak"
         rm "${full_path}/${settings_file}.bak"
@@ -180,6 +201,6 @@ if [[ -d "${full_path}" ]]; then
     fi
 else
     printf "\nStill can't find your local recording folder ...\n"
-    printf "Probably best to find Aaron or Annika ...\n\n"
+    printf "Probably best to find Aaron ...\n\n"
     sleep infinity
 fi
