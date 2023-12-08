@@ -25,19 +25,23 @@
 
 
 
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
+# Define function to print a bunch of space to make the log files easier for me to parse
+function print_heading () {
+    printf "\n\n\n\n\n\n\n\n"
+    printf "####################################################\n"
+    printf "####################################################\n"
+    printf "####################################################\n\n"
+}
 
+
+
+print_heading
 
 printf "$(date)\n"
 printf "Start tracking video ...\n\n\n\n"
 
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
+
+print_heading
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Inherit/import/accept variables:
@@ -114,11 +118,7 @@ printf "optogenetics_light=${optogenetics_light}\n"
 printf "tracking_duration=${tracking_duration}\n"
 printf "FileName=${FileName}\n"
 
-
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
+print_heading
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -168,10 +168,7 @@ fi
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
+print_heading
 printf "\n\n\nNow tracking: ${video_name} ...\n"
 matlab -nodisplay -nosplash -r "try; \
                                 FileName='${FileName}'; \
@@ -191,77 +188,52 @@ matlab -nodisplay -nosplash -r "try; \
 tracking_worked="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ -f "${tracking_worked}" ]]; then
 
-
-    #
+    # Only run the optogenetic/indicator light detector if the video has and indicator LED
     if [[ ${optogenetics_light} == "true" ]]; then
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n\n"
-        printf "\n\n\nDetecting optomotor indicator light ...\n"
 
-        # Cut the top left corner of the video to a 192x192 pixel square
-        # to speed up the optomotor indicator light detection
-        ffmpeg \
-            -hide_banner \
-            -nostdin \
-            -hwaccel cuvid \
-            -c:v h264_cuvid \
-            -hwaccel_output_format cuda \
-            -extra_hw_frames 4 \
-            -i "${OutputDirectory}/${FileName}/${video_name}" \
-            -vf "crop=192:192:0:0" \
-            -c:v h264_nvenc \
-            -tune ull \
-            -rc cbr \
-            -preset p7 \
-            -multipass 1 \
-            -y \
-            "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
+        if [[ ${assay_type} == "optomotor" ]]; then
+            print_heading
+            printf "\n\n\nDetecting optomotor indicator light ...\n"
 
+            # Cut the top left corner of the video to a 320x320 pixel square
+            # to speed up the optomotor indicator light detection
+            ffmpeg \
+                -hide_banner \
+                -nostdin \
+                -i "${OutputDirectory}/${FileName}/${video_name}" \
+                -vf "crop=320:320:0:0" \
+                -c:v h264_nvenc \
+                "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
 
+            matlab -nodisplay -nosplash -r "try; \
+                                            FileName='${FileName}'; \
+                                            OutputDirectory='${OutputDirectory}'; \
+                                            addpath(genpath('${CodeDirectory}')); \
+                                            alt_detect_led_indicator_light; \
+                                            catch err; disp(getReport(err,'extended')); end; quit"
+        fi
 
-        matlab -nodisplay -nosplash -r "try; \
-                                        FileName='${FileName}'; \
-                                        OutputDirectory='${OutputDirectory}'; \
-                                        videoname='${video_name}'; \
-                                        FPS=${fps}; \
-                                        tracking_duration=${tracking_duration}; \
-                                        addpath(genpath('${CodeDirectory}')); \
-                                        alt_detect_led_indicator_light; \
-                                        catch err; disp(getReport(err,'extended')); end; quit"
-    fi
+        # Run old indicator light script for courtship videos
+        if [[ ${assay_type} == "courtship" ]]; then
+            print_heading
+            printf "\n\n\nDetecting optogenetic light ...\n"
+            matlab -nodisplay -nosplash -r "try; \
+                                            FileName='${FileName}'; \
+                                            OutputDirectory='${OutputDirectory}'; \
+                                            videoname='${video_name}'; \
+                                            FPS=${fps}; \
+                                            tracking_duration=${tracking_duration}; \
+                                            addpath(genpath('${CodeDirectory}')); \
+                                            script_detect_optogenetic_light; \
+                                            catch err; disp(getReport(err,'extended')); end; quit"
+        fi
 
-
-
-
-
-
-    # Only run the optogenetic light detector if the video is an optogenetics experiment
-    if [[ ${optogenetics_light} == "true" ]]; then
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n\n"
-        printf "\n\n\nDetecting optogenetic light ...\n"
-        matlab -nodisplay -nosplash -r "try; \
-                                        FileName='${FileName}'; \
-                                        OutputDirectory='${OutputDirectory}'; \
-                                        videoname='${video_name}'; \
-                                        FPS=${fps}; \
-                                        tracking_duration=${tracking_duration}; \
-                                        addpath(genpath('${CodeDirectory}')); \
-                                        script_detect_optogenetic_light; \
-                                        catch err; disp(getReport(err,'extended')); end; quit"
     fi
 
     # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
     # were trained with.
     if [[ ${flies_per_arena} == 2 ]]; then
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n\n"
+        print_heading
         printf "\n\n\nDetecting singleton flies ...\n"
         # Before attempting to run ApplyClassifiers, check for any rogue singletons
         matlab -nodisplay -nosplash -r "try; \
@@ -272,10 +244,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                         DeleteSingletonFlies; \
                                         catch err; disp(getReport(err,'extended')); end; quit"
 
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n\n"
+        print_heading
         printf "\n\n\nApplying classifiers ...\n"
         # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
             ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
@@ -292,10 +261,7 @@ if [[ -f "${tracking_worked}" ]]; then
     if [[ ${number_of_arenas} > 1 ]]; then
         # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
         # are in arena 2, etc...
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n\n"
+        print_heading
         printf "\n\n\nRe-assigning identities ...\n"
         matlab -nodisplay -nosplash -r "try; \
                                         FileName='${FileName}'; \
@@ -307,10 +273,7 @@ if [[ -f "${tracking_worked}" ]]; then
 
 
     # if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
+        print_heading
         printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
         Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
     # fi
@@ -320,10 +283,7 @@ if [[ -f "${tracking_worked}" ]]; then
     # Only calculate indices if there are 2 flies per arena
     extracted_data="${OutputDirectory}/${FileName}/Results/${FileName}_ALLDATA_R.csv.gz"
     if [[ ${flies_per_arena} == 2 ]] && [[ -f "${extracted_data}" ]]; then
-        printf "\n\n\n\n\n\n\n\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
-        printf "####################################################\n"
+        print_heading
         printf "\n\n\nCalculating indices and plotting ethograms ...\n"
         Rscript ../R/CalculateIndices_PlotEthograms.R --args "${OutputDirectory}" "${FileName}" "${fps}" "${sex_ratio}" "${optogenetics_light}"
     fi
@@ -332,10 +292,7 @@ if [[ -f "${tracking_worked}" ]]; then
 
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Move the resulting tracking results to the Synology in each users folder
-    printf "\n\n\n\n\n\n\n\n"
-    printf "####################################################\n"
-    printf "####################################################\n"
-    printf "####################################################\n\n"
+    print_heading
     printf "\n\n\nMoving tracking results to the Synology\n"
     current_machine=$(hostname)
     if [[ "${current_machine}" == "goodwintracking" ]]; then
@@ -359,10 +316,7 @@ fi
 
 
 
-printf "\n\n\n\n\n\n\n\n"
-printf "####################################################\n"
-printf "####################################################\n"
-printf "####################################################\n\n"
+print_heading
 
 
 printf "\n\n\nDone tracking video.\n"

@@ -1,5 +1,19 @@
+
+% add our MATLAB code to path if its not there already
+check = which('AutoTracking');
+if isempty(check)
+    parentdir = fileparts(mfilename('fullpath'));
+    addpath(genpath(parentdir));
+end
+
+
+% The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
+% Do I need to change directory?
+cd ([OutputDirectory '/' FileName]);
+
+
 % Specify the video file name
-videoFileName = 'your_video.mp4';
+videoFileName = [FileName '--indicator_led.mp4'];
 
 % Create a VideoReader object
 videoReader = VideoReader(videoFileName);
@@ -8,7 +22,7 @@ videoReader = VideoReader(videoFileName);
 numFrames = videoReader.NumberOfFrames;
 
 % Specify the region of interest (ROI) where the LED light is expected
-roiRect = [1, 1, 50, 50]; % [x, y, width, height]
+roiRect = [1, 1, 320, 320]; % [x, y, width, height]
 
 % Threshold for detecting bright pixels
 brightnessThreshold = 200;
@@ -24,25 +38,21 @@ for frameIndex = 1:numFrames
     % Read the current frame
     currentFrame = read(videoReader, frameIndex);
 
-    % Convert the frame to grayscale on GPU if available
+    % 1. Convert the frame to grayscale on GPU if available
+    % 2. Extract the ROI on GPU if available
+    % 3. Threshold the ROI to find bright pixels on GPU if available
+    % 4. Set LED state for the current frame
     if useGPU
         grayFrame = gpuArray(rgb2gray(currentFrame));
+        roi = gpuArray(imcrop(grayFrame, roiRect));
+        binaryMask = roi > brightnessThreshold;
+        ledState(frameIndex) = any(gather(binaryMask(:)));
     else
         grayFrame = rgb2gray(currentFrame);
-    end
-
-    % Extract the ROI on GPU if available
-    if useGPU
-        roi = gpuArray(imcrop(grayFrame, roiRect));
-    else
         roi = imcrop(grayFrame, roiRect);
+        binaryMask = roi > brightnessThreshold;
+        ledState(frameIndex) = any(binaryMask(:));
     end
-
-    % Threshold the ROI to find bright pixels on GPU if available
-    binaryMask = roi > brightnessThreshold;
-
-    % Set LED state for the current frame
-    ledState(frameIndex) = any(binaryMask(:));
 end
 
 % Release the GPU resources
@@ -51,6 +61,10 @@ if useGPU
 end
 
 % Write LED state to CSV file
-csvFileName = 'led_state.csv';
+csvFileName = [FileName '--led_state.csv']
 csvwrite(csvFileName, ledState);
 disp(['LED state saved to ' csvFileName]);
+
+
+
+% exit
