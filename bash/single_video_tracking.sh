@@ -24,6 +24,15 @@
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+# I removed my non conda, local install of R, so have to use one of the conda versions for now.
+printf "Loading conda environment ...\n"
+source /home/aaron/miniconda3/etc/profile.d/conda.sh
+conda activate base
+conda activate R4_cbrg
+
+
+
+
 
 # Define function to print a bunch of space to make the log files easier for me to parse
 function print_heading () {
@@ -275,7 +284,7 @@ if [[ -f "${tracking_worked}" ]]; then
     # if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
         print_heading
         printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
-        Rscript ../R/Extact_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+        Rscript ../R/Extract_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
     # fi
 
 

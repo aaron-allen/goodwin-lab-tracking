@@ -67,4 +67,4 @@ disp(['LED state saved to ' csvFileName]);
 
 
 
-% exit
+exit
