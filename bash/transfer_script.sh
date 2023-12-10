@@ -179,14 +179,14 @@ if [[ -d "${full_path}" ]]; then
                     opto_path="/mnt/data/videos/${user_name}/Optomotor/Batch_Runs"
                     if [[ -d "${opto_path}/${video_name:: -4}" ]]; then
                         # Check that destination directory exists
-                        destination_dir="/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/Optomotor/Batch_Runs/${video_name:: -4}"
+                        destination_dir="/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/Optomotor/Batch_Runs/"
                         if [[ ! -d "${destination_dir}/" ]]; then
                             mkdir -p "${destination_dir}/"
                         fi
                         # Transfer batch run directory
                         printf "Copying ${video_name:: -4} to ...\n"
                         printf "    GoodwinGroup:\n"
-                        cp -r "${opto_path}/${video_name:: -4}/" "${destination_dir}/"
+                        cp -r "${opto_path}/${video_name:: -4}" "${destination_dir}/"
                     else
                         printf "Can't find the batch run directory for ${video_name:: -4}.\n"
                     fi
