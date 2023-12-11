@@ -284,7 +284,7 @@ if [[ -f "${tracking_worked}" ]]; then
     # if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
         print_heading
         printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
-        Rscript ../R/Extract_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}"
+        Rscript ../R/Extract_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}" "${assay_type}" "${optogenetics_light}"
     # fi
 
 

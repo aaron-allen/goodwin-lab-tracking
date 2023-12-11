@@ -48,6 +48,8 @@ suppressMessages(library("zoo"))
 OutputDirectory <- commandArgs(trailingOnly = T)[2]
 FileName <- commandArgs(trailingOnly = T)[3]
 FliesPerArena <- as.numeric(commandArgs(trailingOnly = T)[4])
+AssayType <- commandArgs(trailingOnly = T)[5])
+IndicatorLight <- as.logical(str_to_upper(commandArgs(trailingOnly = T)[6]))
 
 message(paste0("OutputDirectory = ",OutputDirectory))
 message(paste0("FileName = ",FileName))
@@ -74,7 +76,11 @@ LogFile <- file(paste0(OutputDirectory,"/",FileName,"/Logs/ExtractDataR_Error.lo
         mutate(Fly_Id = as.factor(Fly_Id))
 
     message(paste0("Plotting the Data..."))
-    diagnostic_plots(input_data_table = alldata_plotting,flies_per_arena = FliesPerArena,save_path = paste0(OutputDirectory,"/",FileName,"/"))
+    diagnostic_plots(input_data_table = alldata_plotting,
+                     flies_per_arena = FliesPerArena,
+                     assay_type = AssayType,
+                     indicator_light = IndicatorLight,
+                     save_path = paste0(OutputDirectory,"/",FileName,"/"))
 
 
 #     },
