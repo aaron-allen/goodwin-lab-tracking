@@ -48,7 +48,7 @@ suppressMessages(library("zoo"))
 OutputDirectory <- commandArgs(trailingOnly = T)[2]
 FileName <- commandArgs(trailingOnly = T)[3]
 FliesPerArena <- as.numeric(commandArgs(trailingOnly = T)[4])
-AssayType <- commandArgs(trailingOnly = T)[5])
+AssayType <- commandArgs(trailingOnly = T)[5]
 IndicatorLight <- as.logical(str_to_upper(commandArgs(trailingOnly = T)[6]))
 
 message(paste0("OutputDirectory = ",OutputDirectory))
