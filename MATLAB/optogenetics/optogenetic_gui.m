@@ -418,7 +418,7 @@ if get(IRonbutton,'userdata')
 set(gcbo,'userdata',1);
 else
 
-   default_comport = '/dev/ttyACM0';
+    default_comport = '/dev/ttyACM0';
     com = findobj('Tag','edit2');
 
 

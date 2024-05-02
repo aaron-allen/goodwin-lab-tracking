@@ -3,6 +3,7 @@
 
 # Table of contents:
 
+
 <!-- TOC START min:1 max:4 link:true asterisk:false update:true -->
 - [**Goodwin Lab User Guide**](#goodwin-lab-user-guide)
 - [Table of contents:](#table-of-contents)
@@ -54,7 +55,7 @@ This _"user guide"_ is intended to aid the members of the Gooodwin Lab to use th
 The _"pipeline"_ can accommodate our usual 20 arena chambers. You can also adjust the camera to zoom into 5 of the 20 arenas, or a single arena.
 
 Here we show an example still from one of our 20 arena chambers.
-![Example Video Still](/docs/images/video_still--20arena_example.png)
+![Example Video Still](../docs/images/video_still--20arena_example.png)
 
 ## Caution:
 
@@ -81,30 +82,30 @@ If you are planning on running an optogenetics experiment, please book Station B
 
 First, login with the `Recoding` user name. Once you login, you will see the following:
 
-![Desktop](/docs/images/desktop.png)
+![Desktop](../docs/images/desktop.png)
 
 
 ### Double Check Camera Settings:
 
 It is important to double check the camera settings before you start recording. Different assay require different configurations. To check and change the camera settings, open Basler's "Pylon Viewer" software.
 
-![Open_pylon](/docs/images/desktop_pylon_arrow.png)
+![Open_pylon](../docs/images/desktop_pylon_arrow.png)
 
 
 #### Connecting to the Camera:
 
 When Pylon first opens, you will not see anything from the camera, but you should see the camera listed in the upper left box labelled `Devices` under `USB`. Station-A will have the camera `Basler acA1920-155um` camera, and Station-B and Station-C will both have a `Basler acA2440-75um` camera.
 
-![Pylon_open](/docs/images/pylon_open.png)
+![Pylon_open](../docs/images/pylon_open.png)
 
 
 First you will need to "start" the software connection to the Camera. Once you select the camera, the "toggle switch" just below the `File` menu item will change from grey to red.
 
-![Select_camera](/docs/images/pylon_select_camera_arrow.png)
+![Select_camera](../docs/images/pylon_select_camera_arrow.png)
 
 To start the connection to the camera, click on the "toggle switch". It will change colour to green, and a tab with the same name of the camera will open in the right pane. It still won't display what the camera is seeing, as we haven't started a stream yet.
 
-![Toggle_on](/docs/images/pylon_toggle_camera_on_arrow.png)
+![Toggle_on](../docs/images/pylon_toggle_camera_on_arrow.png)
 
 After selecting the camera, the lower left pane will also populate with information and settings for the camera.
 
@@ -113,32 +114,32 @@ After selecting the camera, the lower left pane will also populate with informat
 
 If you open Basler's Pylon Viewer and you can't see the 'Devices' pane, or the layout looks weird for any reason, you'll want to reset it. These panes are customizable and can be reshaped and closed. This will happen from time to time accidentally and you just need to reset the window pane layout to get everything back the way it was.
 
-![Devices_gone](/docs/images/basler_sidebar_missing.png)
+![Devices_gone](../docs/images/basler_sidebar_missing.png)
 
 To reset the layout, click on the 'Window' item in the menu bar and then click 'Reset Window Layout'.
 
-![Reset_layout](/docs/images/basler_reset_window.png)
+![Reset_layout](../docs/images/basler_reset_window.png)
 
 Once clicked the window panes will reset to default and you'll be good to go. Now just select your camera and toggle it on, as before.
 
-![Select_camera](/docs/images/basler_select_camera.png)
+![Select_camera](../docs/images/basler_select_camera.png)
 
 
 #### Load Camera Settings:
 
-_"User Set"s_ allow for pre-defined parameters for the camera such as number of x and y pixels, frames per second (fps), etc. Before we start a live stream from the camera we want to load a _"User Set"_. For standard courtship assay experiments load `User Set 1`. For oviposition assay experiments load `User Set 2`.
+_"User Set"s_ allow for pre-defined parameters for the camera such as number of x and y pixels, frames per second (fps), etc. Before we start a live stream from the camera we want to load a _"User Set"_. For standard courtship assay experiments load `User Set 1`. For FlyBowl arena experiments load `User Set 2`. And for Optomotor arena assays load ` User Set 3`.
 
 To load a _"User Set"_, click on the  `User Set Control` option in the lower left panel. To choose an option, click on the dropdown menu next to `User Set Selector`.
 
-![user set params](/docs/images/pylon_user_set_arrows.png)
+![user set params](../docs/images/pylon_user_set_arrows.png)
 
 Select the appropriate _"User Set"_ from the dropdown menu. In this case we show selecting `User Set 1` for standard courtship assays.
 
-![user set select](/docs/images/pylon_user_set_dropdown.png)
+![user set select](../docs/images/pylon_user_set_dropdown.png)
 
 To load these settings click on the `Execute` button next to `User Set Load`.
 
-![user set select](/docs/images/pylon_user_set_load.png)
+![user set select](../docs/images/pylon_user_set_load.png)
 
 At this point your parameters should be loaded. It is good to double check that the settings are correct. We will be able to see if the parameters are correct once we start a live stream from the camera.
 
@@ -157,7 +158,7 @@ Before we start a live preview/stream from the camera, we will need to turn on t
 
 Since we can not see the light emitted by the IR backlight, it is very easy forget to turn the IR backlight off. To avoid the issue of leaving the backlight on for prolonged, we use an outlet timer switch.
 
-![backlight_timer](/docs/images/backlight_timer.png)
+![backlight_timer](../docs/images/backlight_timer.png)
 
 To turn the backlight on, hold down the green `START/STOP` button for a second (or two), until you hear a click and the green light will eluminate under the `15min` label. To increase the time click the `START/STOP` button. Each click will advance the time to the next doubling. It should be noted that these times are approximate. If you are going to record an hour long video, set the timer to `2h` to ensure it doesn't turn off before your video is done.
 
@@ -165,37 +166,32 @@ To turn the backlight on, hold down the green `START/STOP` button for a second (
 
 The light intensity for Station-B's backlight and the optogenetic light are controlled via this controller, which has to be plugged into the outlet timer switch.
 
-![backlight_contr](/docs/images/backlight_controler.jpg)
+![backlight_contr](../docs/images/backlight_controler_2.jpg)
 
 To set its intensity, first select the channel by pressing the 'ch' button. The channel (1 or 2) is the first number displayed on the controller in front of the dot. Channel 1 corresponds to the optogenetic light and channel 2 corresponds to the IR backlight.
 
-![backlight_channel](/docs/images/backlight_controler_channel.jpg)
+![backlight_channel](../docs/images/backlight_controler_channel_2.jpg)
 
-Then set the intensity using the up and down buttons. The intensity ranges from 0 to 255. It is displayed after the dot.
+Backlight intensity can be set using the up and down buttons. The intensity ranges from 0 to 255. It is displayed after the dot. Please leave this set to `158` and only adjust if you know what you are doing. If you are recording any of the standard video setups and this value isn't set to `158`, change it back to this value before proceding.
 
-![backlight_intensity](/docs/images/backlight_controler_intensity.jpg)
+![backlight_intensity](../docs/images/backlight_controler_intensity_2.jpg)
 
-If only the backlight is used and no optogentic stimulation is required, it is possible to use the constant-on-adapter instead of running the backlight from the matlab script. The constatnt-on-adapter has to be attached in place of the cable that is usually connected to the arduino.
-
-![constant_on](/docs/images/constant_on_adapter.jpg)
-
-![cable_arduino](/docs/images/backlight_controler_cable.jpg)
 
 #### Station-B's Backlight and Optogenetics GUI:
 
 For Station-B, the _"on/off"_ state and timings of both the backlight and the optogenetic light are controlled using MATLAB. Open the MATLAB script called `optogenetic_gui.m` and run it by pressing the 'run' button in the 'Editor' tab.
 
-![matlab_script](/docs/images/matlab.png)
+![matlab_script](../docs/images/matlab.png)
 
 This will bring up the GUI.
 
-![matlab_script](/docs/images/optogenetic_gui.png)
+![matlab_script](../docs/images/optogenetic_gui.png)
 
 Set all the numbers to the desired values. To start, you can press the 'set default values' button, which will set everything to default values. Afterwards, adjust the numbers to suit your experiment. Don't change the Advanced settings unless you have a good reason to do so.
 
 If you are using the backlight, select 'optogenetic backlight' from the 'colour of optogenetic light' dropdown menu.
 
-![dropdown](/docs/images/dropdown_menu.png)
+![dropdown](../docs/images/dropdown_menu.png)
 
 
 To switch on the backlight, press the 'on' button under IR backlight. To switch it off, press the 'off' button. If you are running both the backlight and the optogenetic light, switch on the IR light first before pressing the 'run' button.
@@ -203,7 +199,7 @@ To switch on the backlight, press the 'on' button under IR backlight. To switch 
 
 If you are performing an optogenetic experiment, place the IR indicator light on the RIGHT of your chamber as shown in the picture. The IR filter in front of the camera will not let the optogenetic light pass through, therefore you will not be able to see when the lights come on in the video. The indicator light comes on at the same time as the optogenetic light and is used to determine when the optogenetic light was on. If you place it on the right side of the chamber, between the top 10 and the bottom 10 chambers, it will automatically be detected by the tracking. Please be careful not to obstruct any of the chambers.
 
-![indicator](/docs/images/IR_indicator.jpg)
+![indicator](../docs/images/IR_indicator.jpg)
 
 To start the optogenetic lights, press the green 'run' button. They will automatically switch off after the end of your protocol. If you need to stop them before the end of the protocol, you can press the red 'stop' button.
 
@@ -212,15 +208,15 @@ To start the optogenetic lights, press the green 'run' button. They will automat
 **Warning** - there is a bug in Basler's Pylon software and you can not start a video stream immediately. Select the `Stream Parameters` Category in the lower left panel. You then need to increase the `Maximum Tr...` (Maximum Transfer Size) from a value of `262144` to anything higher by clicking on the up arrowhead. Here I show setting it to `262148`, but realistically it just needs to be anything other than the default when opening Pylon Viewer.
 
 <!-- replace the stream params image so be able to see the full Maximum Transfer Size -->
-![Stream_params](/docs/images/pylon_stream_params_arrows.png)
+![Stream_params](../docs/images/pylon_stream_params_arrows.png)
 
 Once you have changed the `Maximum Transfer Size` you can start a live video stream by selecting the video camera icon at the top.
 
-![Start_stream](/docs/images/pylon_start_stream_arrow.png)
+![Start_stream](../docs/images/pylon_start_stream_arrow.png)
 
-After selecting the video camera icon, the live stream (preview) will start in the right pane. The camera setting information such as frames per second, x any y pixels, etc can be seen just below the stream. Courtship assays (`User Set 1`) should be `25 fps`, and oviposition assays (`User Set 2`) should be `2 fps`. Station-A camera should have a `1800 x 1200` pixels, and Station-B and Station-C should have `2400 x 1600` pixels.
+After selecting the video camera icon, the live stream (preview) will start in the right pane. The camera setting information such as frames per second, x any y pixels, etc can be seen just below the stream. All `User Sets`s should be  `25 fps`. For `User Set 1` Station-A camera should have a `1800 x 1200` pixels, and Station-B and Station-C should have `2400 x 1600` pixels. For `User Set 2` and `User Set 3` Station-B and Station-C should have `2400 x 2040` pixels. Station-A is currently not set up for `User Set 2` and `User Set 3` but will be soon, once the new camera comes in.
 
-![Stream_started](/docs/images/pylon_stream_started.png)
+![Stream_started](../docs/images/pylon_stream_started.png)
 
 **_Navigation:_**
 - [Back to top](#top)
@@ -235,7 +231,7 @@ After selecting the video camera icon, the live stream (preview) will start in t
 
 Now you can start a stream to check for framing of the video. The edges of all the arenas you want to be tracked need to be visible. Ensure that the framing does not cut off any of the arenas. Below we show an image where the arenas 10 and 20 are cropped on their right sides. Avoid this sort of issue.
 
-![Cropped arena](/docs/images/pylon_clipped_edge.png)
+![Cropped arena](../docs/images/pylon_clipped_edge.png)
 
 #### Backlight Intensity:
 
@@ -243,11 +239,11 @@ It is important that the light intensity is set appropriately in order to get ac
 
 Here we show an image while hovering the cursor the left side of the arena 8 (2nd row from the top, 3rd arena from the left). The intensity value can be seen below the video frame labelled `Mono`.
 
-![Max light](/docs/images/pylon_backlight_255.png)
+![Max light](../docs/images/pylon_backlight_255.png)
 
 For the lower bound of the light intensity, hovering the cursor over one of the bolt heads is usually the darkest.
 
-![Min light](/docs/images/pylon_backlight_0.png)
+![Min light](../docs/images/pylon_backlight_0.png)
 
 
 Adjusting the aperture in this way prevents clipping (either the brightest spot stuck on 255 or the darkest spot stuck on 0) and ensures that we will be recording all the data that we can, without washing anything out. We adjust this by the aperture of the camera, and not by the intensity knob of the backlight to ensure maximum [depth of field](https://en.wikipedia.org/wiki/Depth_of_field). If the depth of field is too shallow and someone has inappropriately adjusted the camera such that its sensor is not parallel to the arenas, then not all flies will be in focus and tracking errors may occur.
@@ -275,18 +271,18 @@ We will now be using "Strand-Camera" software to record our behaviour videos. Mo
 
 To start a recording session click the `Record` icon in the side bar (the one with a video camera and a fly).
 
-![launch_strand](/docs/images/launch_strand_camera.png)
+![launch_strand](../docs/images/launch_strand_camera.png)
 
 
 After launching, you will be prompted to enter your user name. This is the same as it appears in the `videos` directory. Type in your username (mind your capitalizations) and press `enter`.
 
-![strand_username](/docs/images/strand_cam_username.png)
+![strand_username](../docs/images/strand_cam_username.png)
 
 Once you have entered you username, the script will automatically generate a new folder named with todays date (`<YYY-MM-DD>`) in your videos folder. For example, if I (Aaron) ran this script on January 25th 2022, it would create the following folder: `/mnt/local_data/videos/Aaron/2022-01-25/`. Once this folder is created, Strand-Camera will launch.
 
 "Strand Camera" runs in a web browser and some of the configuration settings can be changed within this interface. At the top of the screen is a "Live view" of the camera.
 
-![strand_username](/docs/images/strand_cam_launched.png)
+![strand_username](../docs/images/strand_cam_launched.png)
 
 ### Record a Video:
 
@@ -294,20 +290,20 @@ You will then be able to record videos from this web interface. For now, we are 
 
 Before we start recording, we need to change a few of the default options in the `MKV Recording Options` section. Stand-Camera defaults to using the `VP8` codec and a bitrate of `1000`.
 
-![default_codec](/docs/images/strand_cam_codec_default.png)
+![default_codec](../docs/images/strand_cam_codec_default.png)
 
-But we want to change this to the `H264` codec and a bitrate of `10000`.
+But we want to change this to the `H264` codec and a bitrate of `10000`. If the `H264` option isn't there - DO NOT RECORD - as the recording will not take advantage of the GPU and will likely drop frames.
 
-![set_codec](/docs/images/strand_cam_codec_set.png)
+![set_codec](../docs/images/strand_cam_codec_set.png)
 
 To start the recording, click the red, circular, button next to `Record MKV file`. Don't worry about the `%Y%m%d_%H%M%S.%f` bit next to the `Saving movie " ... "`, that's normal. The videos will be named appropriately; something like `movie20220215_105331.409348403.mkv`.
 
-![start_record](/docs/images/strand_cam_start_record.png)
+![start_record](../docs/images/strand_cam_start_record.png)
 
 
 To stop the recording click the red, square, button. Strand-Camera does not have a recording length option, so you will have to manually stop the recording of each video.
 
-![stop_record](/docs/images/strand_cam_stop_record.png)
+![stop_record](../docs/images/strand_cam_stop_record.png)
 
 
 
@@ -338,11 +334,11 @@ Once you have finished recording, you can simply close the web browser and the t
 
 In order to track your videos, you need to generate a _"settings"_ file with a list of [parameters](#settings-file-description) our pipeline and the tracking software require. This is a plain text file that can be created and edited in the application "Text Editor". Open "Text Editor" and add the information for your videos.
 
-![settings_file_make](/docs/images/settings_file_make.png)
+![settings_file_make](../docs/images/settings_file_make.png)
 
 Once you have entered your information, you'll need to save this text file in the same folder as your videos. Click the save button, select the `data` folder in the side bar, and navigate to your video folder where you just recorded your videos. You can name this file how ever you'd like.
 
-![settings_file_save](/docs/images/settings_file_save.png)
+![settings_file_save](../docs/images/settings_file_save.png)
 
 Alternatively, you can copy an existing settings file in from a previous recording session into your current video folder and edit it.
 
@@ -359,7 +355,7 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 - `sex_ratio`: The proportion of male flies per arena (one male and one female would be 0.5, two males and one female would be 0.67, all females would be 0, etc).
 - `number_of_arenas`: How many whole arenas are visible in the video (default for courtship is 20, but may also be 1 or 5). **NB:** not the number of arenas with flies in them.
 - `arena_shape`: Either "circle" or "rectangle".
-- `assay_type`: This will be "courtship" for the most part, but potentially "oviposition" or "phototaxis" as we add support for other behaviours.
+- `assay_type`: This will be "courtship" for the most part, but potentially "optomotor" or "flybowl", and even "oviposition" or "phototaxis" as we add support for other behaviours.
 - `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and tracking should attempt detection of it.
 - `recording_station`: Which station was used. Either A, B, or C. This is only for documentation purposes and to keep track of any issues.
 
@@ -373,7 +369,7 @@ The settings file should only have a line for each video. Do not have an empty l
 
 Once you have made/edited your settings file, you can start transferring your videos by clicking on the "Transfer" (green up arrow). This will start a script that will prompt you for information. It will first ask for your name, then recording folder, and finally the name of your settings file. If these values have been entered properly and there isn't any issues with your settings file, then the transfer will start automatically. This window will close once the transfer is complete. **Do not** close this window before it is done transferring. If there is any errors (typos etc), the script will prompt you with what it thinks is wrong. Double check what it suggests, close the window, and start again.
 
-![transfer_start](/docs/images/transfer_start.png)
+![transfer_start](../docs/images/transfer_start.png)
 
 This transfer script copies your videos to 3 separate locations. First it copies all the videos in the directory (and not just the ones in the settings file) to the `GoodwinGroup` Synology. You can find the folder of the days videos in a folder called `BehaviourVideos` in your user folder (I realize this sentence isn't very clear ...). For example, if I `Aaron`, transferred videos that were recorded on `2022-02-11`, then I would find them in `GoodwinGroup/Aaron/BehaviourVideos/2022-02-11/...`. Secondly, the script copies all your videos in the specified folder to an archive directory, just in case needed. Lastly, the script transcodes, cuts, and transfers the videos specified in the settings file to the `ToBeTracked` Synology. This is where the automated scheduled _"pipeline"_ will look for videos once a week.
 
@@ -521,7 +517,7 @@ A compressed csv file containing all the data extracted from the `example_video_
 A series of A4 pdf plots showing some of the raw tracking data. This can be used to quickly visually inspect how well the tracking performed. Contains 2 pages per arena that contained flies.
 
 An example of the "Area" diagnostic plot for fly Id 1 and 2 in arena 1.
-![Fly Area](/docs/images/diagnostic_plots--area.png)
+![Fly Area](../docs/images/diagnostic_plots--area.png)
 
 **_Navigation:_**
 - [Back to top](#top)
@@ -534,7 +530,7 @@ A series of A4 pdf plots showing the results of the JAABA annotated behaviours f
 
 An example of the ethogram plot for a fly can be seen below. This shows the JAABA predictions for the 6 scored courtship behaviours, and copulation. A verticle black line is drawn if JAABA predicted that the fly performed the behaviour for that frame.
 
-![Ethogram](/docs/images/ethogram--example.png)
+![Ethogram](../docs/images/ethogram--example.png)
 
 **_Navigation:_**
 - [Back to top](#top)
@@ -586,12 +582,12 @@ By default flies need to "initiate courtship" before we will calculate an index.
 
 When we run `reassign_identities`, the arenas are re-numbered from left to right, and then top to bottom. The arenas are numbered in this fashion whether there are flies in the arena or not. An example of the arena numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
 
-![Arena Numbering](/docs/images/video_still--arena_numbering.png)
+![Arena Numbering](../docs/images/video_still--arena_numbering.png)
 
 
 When we run `reassign_identities`, the fly Ids are re-numbered such that the flies in arena 1 are 1 to `flies_per_arena`. The fly Ids in arena 2 are re-numbered `flies_per_arena + 1` to `2 x flies_per_arena`, and so on. The fly Ids are numbered in this fashion whether there are flies in the arena or not. An example of the fly numbering can be seen below for one of our courtship chambers with `number_of_arenas` = 20 with `flies_per_arena` = 2.
 
-![Fly Numbering](/docs/images/video_still--fly_numbering.png)
+![Fly Numbering](../docs/images/video_still--fly_numbering.png)
 
 **_Navigation:_**
 - [Back to top](#top)
