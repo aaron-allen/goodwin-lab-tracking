@@ -25,6 +25,22 @@ if [[ $(pgrep -fc "start_transfer_script.sh") -gt 0 ]]; then
 fi
 
 
+# Run nvidia-smi (and capture its output) to check to see if the GPU is available
+output=$(nvidia-smi)
+exit_code=$?
+
+# Check the exit code
+if [ $exit_code -eq 0 ]; then
+    printf "GPU driver detected.\n"
+else
+    printf "\n\n\n\n\n\n"
+    printf "\e[1;31mERROR! - Can't find the GPU driver!\e[0m\n"
+    printf "\t1. Sorry, but you can't record righ now. Please go find Aaron to help sort out this issue.\n\n\n\n"
+    sleep infinity
+    return
+fi
+
+
 
 printf "
 Good [morning/afternoon/eveing],

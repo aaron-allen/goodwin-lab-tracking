@@ -35,6 +35,20 @@ function transfer_function () {
     video="${1}"
     in_dir="${2}"
     to_dir="${3}"
+    user_name= "${4}"
+
+    # Check if the file size is zero
+    if [[ ! -s "${in_dir}/${video}" ]]; then
+        printf "\n\n\n\n\n\n"
+        printf "\e[1;31mERROR!! - The file '${video}' is empty! \e[0m\n"
+        printf "Something has gone wrong with recording or transcoding. Find Aaron for help ...\n\n"
+        printf "(if you are seeing this window on a new day, please let ${user_name} know that something has gone wrong with their video transfer) ...\n\n"
+        sleep infinity
+        return
+    else
+        printf "The file '${video}' has a non-zero size. Continuing with the transfer ...\n\n"
+    fi
+
     mkdir -p "${to_dir}/"
     printf "\tCopying ${video} ...\n"
     cp "${in_dir}/${video}" "${to_dir}/"
@@ -71,9 +85,9 @@ if [[ -d "${full_path}" ]]; then
             fi
             printf "Copying ${file} to ...\n"
             printf "  Archive:\n"
-            transfer_function "${file}" "${full_path}" "/mnt/synology/Archive/FromStations/${user_name}/${vid_dir}"
+            transfer_function "${file}" "${full_path}" "/mnt/synology/Archive/FromStations/${user_name}/${vid_dir}" "${user_name}"
             printf "  GoodwinGroup:\n"
-            transfer_function "${file}" "${full_path}" "/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}"
+            transfer_function "${file}" "${full_path}" "/mnt/synology/GoodwinGroup/${user_name}/BehaviourVideos/${vid_dir}" "${user_name}"
         done
     else
         printf "The Synology is not mounted.\n...\n\t... go find Aaron ...\n\n"
@@ -167,7 +181,7 @@ if [[ -d "${full_path}" ]]; then
                 # Transfer video and append info to list file
                 printf "Copying ${video_name:: -4}.mp4 to ...\n"
                 printf "  ToBeTracked:\n"
-                transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}"
+                transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}" "${user_name}"
                 printf "${vid_dir},${user},${video_name:: -4}.mp4,mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
                     >> "${tobetracked_list_file}"
                 rm "${full_path}/${video_name:: -4}.mp4"
