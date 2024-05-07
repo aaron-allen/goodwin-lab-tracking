@@ -26,8 +26,6 @@ full_path="/mnt/data/videos/${user_name}/${vid_dir}"
 tobetracked_vid_dir="/mnt/synology/ToBeTracked/VideosFromStations/videos"
 tobetracked_list_file="/mnt/synology/ToBeTracked/VideosFromStations/list_of_videos.csv"
 
-tracking_duration=15    # in minutes
-ff_t_stop=$(( ${tracking_duration} * 60 ))   # convert to seconds for ffmpeg
 
 
 # Define the transfer function
@@ -115,8 +113,12 @@ if [[ -d "${full_path}" ]]; then
     							arena_shape \
     							assay_type \
     							optogenetics_light \
-    							station;
+    							station \
+                                stop_time;
         do
+            # Set default value for stop_time, in case it is not provided (to allow for backwards compatibility with old settings files)
+            stop_time=${stop_time:-900}
+            
             # Force variables to be lowercase
             video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
             arena_shape=$(printf "${arena_shape}" | tr '[:upper:]' '[:lower:]')
@@ -157,7 +159,7 @@ if [[ -d "${full_path}" ]]; then
                     -extra_hw_frames 4 \
                     -ss "${start_time}.000" \
                     -i "${full_path}/${video_name}" \
-                    -t "${ff_t_stop}.000" \
+                    -t "${stop_time}.000" \
                     -filter:v fps="${fps}" \
                     -c:v h264_nvenc \
                     -tune ull \
@@ -182,7 +184,7 @@ if [[ -d "${full_path}" ]]; then
                 printf "Copying ${video_name:: -4}.mp4 to ...\n"
                 printf "  ToBeTracked:\n"
                 transfer_function "${video_name:: -4}.mp4" ${full_path} "${tobetracked_vid_dir}" "${user_name}"
-                printf "${vid_dir},${user},${video_name:: -4}.mp4,mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+                printf "${vid_dir},${user},${video_name:: -4}.mp4,mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station},${stop_time}\n" \
                     >> "${tobetracked_list_file}"
                 rm "${full_path}/${video_name:: -4}.mp4"
 

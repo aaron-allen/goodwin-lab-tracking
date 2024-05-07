@@ -358,6 +358,7 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 - `assay_type`: This will be "courtship" for the most part, but potentially "optomotor" or "flybowl", and even "oviposition" or "phototaxis" as we add support for other behaviours.
 - `optogenetics_light`: "true" or "false". Whether the optogenetics indication light was used, and tracking should attempt detection of it.
 - `recording_station`: Which station was used. Either A, B, or C. This is only for documentation purposes and to keep track of any issues.
+- `tracking_stop_time_in_seconds`: The time (in seconds) that you want tracking to STOP for your video, counting from the `tracking_start_time_in_seconds`, and not from the start of the video.
 
 An example line for a settings file:
 

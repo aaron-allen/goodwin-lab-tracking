@@ -128,6 +128,42 @@ printf "tracking_duration=${tracking_duration}\n"
 printf "FileName=${FileName}\n"
 
 print_heading
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+# The LED indicator light detection script requires the GPU to be available, so we need to check if the GPU driver is detected.
+
+if [[ ${assay_type} == "optomotor" ]]; then
+
+    # Run nvidia-smi (and capture its output) to check to see if the GPU is available
+    output=$(nvidia-smi)
+    exit_code=$?
+
+    # Check the exit code
+    if [ $exit_code -eq 0 ]; then
+        printf "GPU driver detected.\n"
+    else
+        printf "\n\n\n\n\n\n"
+        printf "\e[1;31mERROR! - Can't find the GPU driver!\e[0m\n"
+        printf "\n\n\n\n"
+        exit
+    fi
+fi
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------

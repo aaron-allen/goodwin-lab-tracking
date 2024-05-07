@@ -25,6 +25,24 @@ fi
 
 
 
+# Run nvidia-smi (and capture its output) to check to see if the GPU is available
+output=$(nvidia-smi)
+exit_code=$?
+
+# Check the exit code
+if [ $exit_code -eq 0 ]; then
+    printf "GPU driver detected.\n"
+else
+    printf "\n\n\n\n\n\n"
+    printf "\e[1;31mERROR! - Can't find the GPU driver!\e[0m\n"
+    printf "\t1. Sorry, but you can't transfer righ now. Please go find Aaron to help sort out this issue.\n\n\n\n"
+    sleep infinity
+    return
+fi
+
+
+
+
 printf "
 Good [morning/afternoon/eveing],
 This script will start transfering your videos to the Synology in order
@@ -73,13 +91,17 @@ fi
 
 # Double check that the maximum number of columns in the settings file matches the example_settings_file
 if [[ ${target_col} != ${max_col} ]]; then
-    printf "\n\nWARNING! Your settings file has a different number of columns then expected.\n"
-    printf "Open the user guide on GitHub and check that you are not missing anything.\n\n"
-    printf "\t(Ctrl-Click the link below ...)\n"
-    printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n\n"
-    printf "\tDouble check the above is correct, then close this window and start again ...\n\n"
-    sleep infinity
-    return
+    if [[ $((target_col - 1)) -eq ${max_col} ]]; then
+        printf "\n\nYour settings file is short 1 column. I'll assume that it is simply missing the new variable of tracking end time, and continue.\n"
+    else
+        printf "\n\nWARNING! Your settings file has a different number of columns then expected.\n"
+        printf "Open the user guide on GitHub and check that you are not missing anything.\n\n"
+        printf "\t(Ctrl-Click the link below ...)\n"
+        printf "\t(https://github.com/aaron-allen/goodwin-lab-tracking/blob/main/docs/goodwin_lab_user_guide.md#video-transfer)\n\n"
+        printf "\tDouble check the above is correct, then close this window and start again ...\n\n"
+        sleep infinity
+        return
+    fi
 fi
 
 # Double check that every video name in the supplied setting file can be found in the supplied directory
