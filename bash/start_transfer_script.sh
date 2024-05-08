@@ -119,7 +119,8 @@ done < "${full_path}/${settings_file}"
 
 
 # I don't think we need this if statement with the above while statement, but oh well... I'll leave it for now.
-if [[ -d "${full_path}" ]] && [[ ${min_col} == ${max_col} ]] && [[ ${target_col} == ${max_col} ]]; then
+# if [[ -d "${full_path}" ]] && [[ ${min_col} == ${max_col} ]] && [[ ${target_col} == ${max_col} ]]; then
+if [[ -d "${full_path}" ]]; then
     printf "\nWe will now start transfering your videos ...\n\n"
     bash ${code_path}/bash/transfer_script.sh "${user_name}" "${vid_dir}" "${settings_file}" 2>&1 | \
         tee -a "/mnt/data/_logs/transfer_logs/${today}_${user_name}_transfer.log"
