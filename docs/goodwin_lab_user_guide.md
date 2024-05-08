@@ -362,7 +362,7 @@ The settings file is a comma separated values plain text file (*.txt) where the 
 
 An example line for a settings file:
 
-`Aaron,my_test_video.mkv,mkv,25,13,2,0.5,20,circle,courtship,false,c`
+`Aaron,my_test_video.mkv,mkv,25,13,2,0.5,20,circle,courtship,false,c,900`
 
 The settings file should only have a line for each video. Do not have an empty line at the start, and do not have an empty line at the end.
 
