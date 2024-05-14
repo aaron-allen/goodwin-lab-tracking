@@ -169,7 +169,8 @@ if [ -s ${csv_file} ]; then
 							arena_shape \
 							assay_type \
 							optogenetics_light \
-							station;
+							station \
+							stop_time;
 	do
 		# Force variables to be lowercase
 		video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')

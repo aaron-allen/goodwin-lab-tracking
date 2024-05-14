@@ -418,7 +418,7 @@ if get(IRonbutton,'userdata')
 set(gcbo,'userdata',1);
 else
 
-   default_comport = '/dev/ttyACM0';
+    default_comport = '/dev/ttyACM1';
     com = findobj('Tag','edit2');
 
 
@@ -443,7 +443,7 @@ default_stimpin_green = 24;
 default_stimpin_red =28;
 default_stimpin_opto = 22;
 default_stimpin_IR = 4;
-default_comport = '/dev/ttyACM0';
+default_comport = '/dev/ttyACM1';
 default_freq = 50;
 default_onTime = 10;
 default_lighton = 30;
@@ -714,7 +714,7 @@ set(runbutton,'userdata',0);
 
 
 disp('IR light on')
-default_comport = '/dev/ttyACM0';
+default_comport = '/dev/ttyACM1';
 com = findobj('Tag','edit2');
 if isempty(com.UserData)
     comport = default_comport;
