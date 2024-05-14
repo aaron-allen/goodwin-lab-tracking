@@ -26,7 +26,7 @@
 
 # I removed my non conda, local install of R, so have to use one of the conda versions for now.
 printf "Loading conda environment ...\n"
-source /home/aaron/miniconda3/etc/profile.d/conda.sh
+source /home/aaron/miniforge3/etc/profile.d/conda.sh
 conda activate base
 conda activate R4_cbrg
 
@@ -197,6 +197,16 @@ matlab -nodisplay -nosplash -r "try; \
 tracking_worked="${OutputDirectory}/${FileName}/${FileName}/${FileName}-track.mat"
 if [[ -f "${tracking_worked}" ]]; then
 
+    # Plot mask from calib file
+    matlab -nodisplay -nosplash -r "try; \
+                                    FileName='${FileName}'; \
+                                    OutputDirectory='${OutputDirectory}'; \
+                                    addpath(genpath('${CodeDirectory}')); \
+                                    plot_mask; \
+                                    catch err; disp(getReport(err,'extended')); end; quit"
+
+
+
     # Only run the optogenetic/indicator light detector if the video has and indicator LED
     if [[ ${optogenetics_light} == "true" ]]; then
 
@@ -204,19 +214,23 @@ if [[ -f "${tracking_worked}" ]]; then
             print_heading
             printf "\n\n\nDetecting optomotor indicator light ...\n"
 
-            # Cut the top left corner of the video to a 320x320 pixel square
+
+
+            # Cut the top left corner of the video to a m x m pixel square
             # to speed up the optomotor indicator light detection
+            number_of_pixels=480
             ffmpeg \
                 -hide_banner \
                 -nostdin \
                 -i "${OutputDirectory}/${FileName}/${video_name}" \
-                -vf "crop=320:320:0:0" \
+                -vf "crop=${number_of_pixels}:${number_of_pixels}:0:0" \
                 -c:v h264_nvenc \
                 "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
 
             matlab -nodisplay -nosplash -r "try; \
                                             FileName='${FileName}'; \
                                             OutputDirectory='${OutputDirectory}'; \
+                                            NumberOfPixels='${number_of_pixels}'; \
                                             addpath(genpath('${CodeDirectory}')); \
                                             alt_detect_led_indicator_light; \
                                             catch err; disp(getReport(err,'extended')); end; quit"

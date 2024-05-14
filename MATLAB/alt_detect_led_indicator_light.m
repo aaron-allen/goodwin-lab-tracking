@@ -22,7 +22,7 @@ videoReader = VideoReader(videoFileName);
 numFrames = videoReader.NumberOfFrames;
 
 % Specify the region of interest (ROI) where the LED light is expected
-roiRect = [1, 1, 320, 320]; % [x, y, width, height]
+roiRect = [1, 1, NumberOfPixels, NumberOfPixels]; % [x, y, width, height]
 
 % Threshold for detecting bright pixels
 brightnessThreshold = 200;
