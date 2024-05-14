@@ -28,7 +28,7 @@ roiRect = [1, 1, NumberOfPixels, NumberOfPixels]; % [x, y, width, height]
 brightnessThreshold = 200;
 
 % Use GPU if available
-useGPU = true;
+% useGPU = true;
 
 % Initialize an array to store LED state for each frame
 ledState = zeros(numFrames, 1);

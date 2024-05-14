@@ -133,34 +133,17 @@ print_heading
 
 
 
-
-
-
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-# The LED indicator light detection script requires the GPU to be available, so we need to check if the GPU driver is detected.
-
+# For some reason the autochamber detection witht the optomotor videos always detects a chamber that is much larger
+# than the actuall arena. While playing around it seems that when setting it to 2 arenas if finds the one correct
+# arena and no others - no clue why this is the case. But for now we'll have the users enter "2 arenas" and I'll add
+# a bit of code here that increments by one if they forget and left it set to "1 arena".
 if [[ ${assay_type} == "optomotor" ]]; then
-
-    # Run nvidia-smi (and capture its output) to check to see if the GPU is available
-    output=$(nvidia-smi)
-    exit_code=$?
-
-    # Check the exit code
-    if [ $exit_code -eq 0 ]; then
-        printf "GPU driver detected.\n"
-    else
-        printf "\n\n\n\n\n\n"
-        printf "\e[1;31mERROR! - Can't find the GPU driver!\e[0m\n"
-        printf "\n\n\n\n"
-        exit
+    if [[ ${number_of_arenas} == "1" ]]; then
+        number_of_arenas=2
     fi
 fi
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 
 
 
@@ -211,7 +194,6 @@ fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 print_heading
 printf "\n\n\nNow tracking: ${video_name} ...\n"
@@ -251,22 +233,40 @@ if [[ -f "${tracking_worked}" ]]; then
             printf "\n\n\nDetecting optomotor indicator light ...\n"
 
 
+            # Run nvidia-smi (and capture its output) to check to see if the GPU is available
+            output=$(nvidia-smi)
+            exit_code=$?
+            if [ $exit_code -eq 0 ]; then
+                printf "GPU driver detected.\n"
+                useGPU="true"
+            fi
 
             # Cut the top left corner of the video to a m x m pixel square
             # to speed up the optomotor indicator light detection
             number_of_pixels=480
-            ffmpeg \
-                -hide_banner \
-                -nostdin \
-                -i "${OutputDirectory}/${FileName}/${video_name}" \
-                -vf "crop=${number_of_pixels}:${number_of_pixels}:0:0" \
-                -c:v h264_nvenc \
-                "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
+            if [[ ${useGPU} == "true" ]]; then
+                ffmpeg \
+                    -hide_banner \
+                    -nostdin \
+                    -i "${OutputDirectory}/${FileName}/${video_name}" \
+                    -vf "crop=${number_of_pixels}:${number_of_pixels}:0:0" \
+                    -c:v h264_nvenc \
+                    "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
+            else
+                ffmpeg \
+                    -hide_banner \
+                    -nostdin \
+                    -i "${OutputDirectory}/${FileName}/${video_name}" \
+                    -vf "crop=${number_of_pixels}:${number_of_pixels}:0:0" \
+                    -c:v copy \
+                    "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4"
+            fi
 
             matlab -nodisplay -nosplash -r "try; \
                                             FileName='${FileName}'; \
                                             OutputDirectory='${OutputDirectory}'; \
                                             NumberOfPixels='${number_of_pixels}'; \
+                                            useGPU = strcmpi(${useGPU}, 'true'); \
                                             addpath(genpath('${CodeDirectory}')); \
                                             alt_detect_led_indicator_light; \
                                             catch err; disp(getReport(err,'extended')); end; quit"
