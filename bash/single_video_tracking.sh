@@ -243,7 +243,7 @@ if [[ -f "${tracking_worked}" ]]; then
 
             # Cut the top left corner of the video to a m x m pixel square
             # to speed up the optomotor indicator light detection
-            number_of_pixels=480
+            number_of_pixels=800
             if [[ ${useGPU} == "true" ]]; then
                 ffmpeg \
                     -hide_banner \
@@ -266,7 +266,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                             FileName='${FileName}'; \
                                             OutputDirectory='${OutputDirectory}'; \
                                             NumberOfPixels='${number_of_pixels}'; \
-                                            useGPU = strcmpi(${useGPU}, 'true'); \
+                                            useGPU = ${useGPU}; \
                                             addpath(genpath('${CodeDirectory}')); \
                                             alt_detect_led_indicator_light; \
                                             catch err; disp(getReport(err,'extended')); end; quit"
