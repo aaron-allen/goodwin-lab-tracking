@@ -231,6 +231,16 @@ extract_jaaba_data <- function(dir_path,raw = FALSE) {
             if (iii == 1) {
                 jaaba_scores_ind <- list()
             }
+            
+            # I don't know if something changed, or we didn't account for this in the reassign identities, or I
+            # just didn't consider it before when extracting data the data, but it seems for the JAABA data, if
+            # a chamber is empty in the "middle" of the order then there is a NULL table in the the readMat data.
+            # So I've added this bit to check if it is NULL, and if so, then to skip to the next step in the 
+            # iteration.
+            if (is.null(jaaba_scores_file[["allScores"]][[i]][[iii]])) {
+                next
+            }
+            
             jaaba_scores_ind[[iii]] <- tibble::tibble(Frame = 1:length(jaaba_scores_file[["allScores"]][[i]][[iii]][[1]][1,]),
                                                       Fly_Id = iii,
                                                       Feature = jaaba_behaviour,

@@ -1,4 +1,3 @@
-
 % add our MATLAB code to path if its not there already
 check = which('AutoTracking');
 if isempty(check)
@@ -6,24 +5,17 @@ if isempty(check)
     addpath(genpath(parentdir));
 end
 
+%%
 
 % The variable "OutputDirectory" and "FileName" are passed to the script when running from bash
 % Do I need to change directory?
 cd ([OutputDirectory '/' FileName]);
 
 
-
-% Define the path to the video file
-videoFilePath = [FileName '.mp4'];
-
-% Read the video file
-videoObj = VideoReader(videoFilePath);
-
-% Read the first frame
-firstFrame = readFrame(videoObj);
-
-% Load your mask array (assuming it has the same dimensions as the frame)
-load('calibration.mat')
+videoFilePath = [FileName '.mp4'];                          % Define the path to the video file
+videoObj = VideoReader(videoFilePath);                      % Read the video file
+firstFrame = readFrame(videoObj);                           % Read the first frame
+load('calibration.mat')                                     % Load the calibration data
 maskArray = calib.full_mask; 
 
 % Resize the mask array if necessary to match the frame size
@@ -57,6 +49,10 @@ subplot(3, 1, 3);
 imshow(overlayedImage);
 title('Overlay');
 
+
+
+%%
+
 % Create the "Results" subfolder if it doesn't exist
 if ~exist('Results', 'dir')
     mkdir('Results');
@@ -68,6 +64,6 @@ pdfFilePath = ['Results/', FileName, '--auto_detected_chambers.pdf'];
 saveas(gcf, pdfFilePath);
 
 
-
+%%
 
 exit

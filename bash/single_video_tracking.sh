@@ -270,6 +270,8 @@ if [[ -f "${tracking_worked}" ]]; then
                                             addpath(genpath('${CodeDirectory}')); \
                                             alt_detect_led_indicator_light; \
                                             catch err; disp(getReport(err,'extended')); end; quit"
+
+            mv "${video_name:: -4}--indicator_led.mp4" "${OutputDirectory}/${FileName}/Backups/"
         fi
 
         # Run old indicator light script for courtship videos

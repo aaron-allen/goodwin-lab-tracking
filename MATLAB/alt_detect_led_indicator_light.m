@@ -11,7 +11,6 @@ videoFileName = [OutputDirectory, '/', FileName, '/', FileName, '--indicator_led
 videoReader = VideoReader(videoFileName);                                  % Create a VideoReader object
 numFrames = videoReader.NumberOfFrames;                                    % Get video properties
 brightnessThreshold = 254;                                                 % Threshold for detecting bright pixels
-minBrightPixels = 1000;                                                    % Minimum number of bright pixels to consider LED on
 ledState = zeros(numFrames, 1);                                            % Initialize an array to store LED state for each frame
 
 % Initialize variables to store indices with lowest and highest sums
@@ -48,7 +47,7 @@ for frameIndex = 1:numFrames
         binaryMask = grayFrame > brightnessThreshold;
         ledSum(frameIndex) = sum(binaryMask(:), "all");
     end
-    ledState(frameIndex) = ledSum(frameIndex) > minBrightPixels;
+    % ledState(frameIndex) = ledSum(frameIndex) > minBrightPixels;
     
 
     % Check if this sum is the lowest or highest encountered so far
@@ -66,6 +65,14 @@ for frameIndex = 1:numFrames
         highestFrame = grayFrame;
     end
 end
+
+
+%% 
+
+% Use K-means clustering to determine the theshold between LED on and off
+[idx, centroids] = kmeans(ledSum', 2);                                     % Perform K-means clustering
+minBrightPixels = mean(centroids);                                         % Calculate the midpoint between centroids
+ledState = ledSum > minBrightPixels;                                       % Binarize the ledSum array
 
 %% 
 
@@ -111,7 +118,7 @@ title(sprintf('Binarized Frame with Highest Sum\n(Threshold: >%d)', brightnessTh
 % Plot line graph of ledSum
 subplot(4, 2, [5, 6]);
 plot(ledSum);
-ylim([-200, 10000]); 
+ylim([-400, max(highestSum * 1.2, 10000)]); 
 minBrightPixelsLine = refline(0, minBrightPixels);
 minBrightPixelsLine.Color = 'r';
 minBrightPixelsLine.LineStyle = '--';
@@ -129,29 +136,37 @@ ylabel('ledState');
 title('Line Graph of ledState');
 
 
+% Add an overall title at the top of the page
+sgtitle(FileName);
+
+
+
+%% 
+
 % Create the "Results" subfolder if it doesn't exist
-if ~exist('Results', 'dir')
-    mkdir('Results');
+if ~exist([OutputDirectory, '/', FileName, '/Results/'], 'dir')
+    mkdir([OutputDirectory, '/', FileName, '/Results/']);
 end
 
 % Save the plot as a PDF in the "Results" subfolder
 pdfFilePath = [OutputDirectory, '/', FileName, '/Results/', FileName, '--led_indicator_plots.pdf'];
 saveas(gcf, pdfFilePath);
-%% 
+disp(['LED plots saved to ' pdfFilePath]);
 
-
-
-
-% Release the GPU resources
-if useGPU
-    reset(gpuDevice);
-end
 
 % Write LED state to CSV file
 csvFileName = [OutputDirectory, '/', FileName, '/Results/', FileName, '--led_state.csv'];
 csvwrite(csvFileName, ledState);
 disp(['LED state saved to ' csvFileName]);
 
+
+
+%%
+
+% Release the GPU resources
+if useGPU
+    reset(gpuDevice);
+end
 
 %% 
 
