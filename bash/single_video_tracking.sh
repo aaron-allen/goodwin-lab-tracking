@@ -158,11 +158,16 @@ fi
 # resolution this was leading to errors with videos recorded on Station A,
 # but attempting tracking with parent calibration files made for Stations
 # B and C.
-if [[ ${station} == "a" ]]; then
-    station_mod="stata"
-else
-    station_mod="statbc"
-fi
+# if [[ ${station} == "a" ]]; then
+#     station_mod="stata"
+# else
+#     station_mod="statbc"
+# fi
+
+
+# We are updating the Station A camera to match B and C, so I'm now going to use ffprobe
+# to get the resolution of the video and use that to find the best calibration file.
+video_resolution=$( ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "${OutputDirectory}/${FileName}/${video_name}" )
 
 if [[ ${assay_type} == "courtship" ]] || [[ ${assay_type} == "optomotor" ]] ; then
     best_calib_file=$(ls ../MATLAB/parent_calib_files/ \
@@ -170,16 +175,20 @@ if [[ ${assay_type} == "courtship" ]] || [[ ${assay_type} == "optomotor" ]] ; th
         | grep "${flies_per_arena}fly" \
         | grep "${number_of_arenas}arena" \
         | grep "${arena_shape}" \
-        | grep "${station_mod}" \
+        | grep "${video_resolution}" \
         | grep "${assay_type}")
 fi
-if [[ ${assay_type} == "oviposition" ]]; then
-    best_calib_file=$(ls ../MATLAB/parent_calib_files/ \
-        | grep "${video_type}" \
-        | grep "${number_of_arenas}arena" \
-        | grep "${arena_shape}" \
-        | grep "${assay_type}")
-fi
+
+
+
+## Don't think I need this anymore
+# if [[ ${assay_type} == "oviposition" ]]; then
+#     best_calib_file=$(ls ../MATLAB/parent_calib_files/ \
+#         | grep "${video_type}" \
+#         | grep "${number_of_arenas}arena" \
+#         | grep "${arena_shape}" \
+#         | grep "${assay_type}")
+# fi
 
 
 if [ -z "${best_calib_file}" ]; then
@@ -192,6 +201,11 @@ else
     printf "\tbest_calib_file=${best_calib_file}\n\n"
 fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
