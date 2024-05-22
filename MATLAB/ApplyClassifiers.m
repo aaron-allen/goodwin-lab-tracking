@@ -19,7 +19,7 @@ end
 
 % this is not as clean as above, but might clean up later.
 addpath(genpath('../../JAABA/perframe'));
-JABFiles = [CodeDirectory '/MATLAB/JABsFromFlyTracker/JABfilelist.txt'];
+JABFiles = [CodeDirectory '/MATLAB/JABsFromFlyTracker/' JABFileList];
 wingJAB = [CodeDirectory '/MATLAB/JABsFromFlyTracker/WingGesture.jab'];
 
 

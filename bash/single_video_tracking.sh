@@ -305,6 +305,21 @@ if [[ -f "${tracking_worked}" ]]; then
 
     fi
 
+    # Apply Optomotor specific classifiers
+    if [[ ${assay_type} == "optomotor" ]]; then
+        print_heading
+        printf "\n\n\nApplying optomotor classifiers ...\n"
+        matlab -nodisplay -nosplash -r "try; \
+                                        FileName='${FileName}'; \
+                                        OutputDirectory='${OutputDirectory}'; \
+                                        CodeDirectory='${CodeDirectory}'; \
+                                        JABFileList='JABfilelist__optomotor.txt'; \
+                                        addpath(genpath('${CodeDirectory}')); \
+                                        ApplyClassifiers; \
+                                        catch err; disp(getReport(err,'extended')); end; quit"
+    fi
+
+
     # Only run ApplyClassifiers if there are 2 flies per arena, as that is what the jab files
     # were trained with.
     if [[ ${flies_per_arena} == 2 ]]; then
@@ -314,26 +329,29 @@ if [[ -f "${tracking_worked}" ]]; then
         matlab -nodisplay -nosplash -r "try; \
                                         FileName='${FileName}'; \
                                         OutputDirectory='${OutputDirectory}'; \
-                                        addpath(genpath('${CodeDirectory}')); \
                                         FliesPerArena="${flies_per_arena}"; \
+                                        addpath(genpath('${CodeDirectory}')); \
                                         DeleteSingletonFlies; \
                                         catch err; disp(getReport(err,'extended')); end; quit"
 
         print_heading
         printf "\n\n\nApplying classifiers ...\n"
         # if [[ ! -f "${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt" ]]; then
-            ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
+        #     ls -d -1 ${CodeDirectory}/MATLAB/JABsFromFlyTracker/*.jab > ${CodeDirectory}/MATLAB/JABsFromFlyTracker/JABfilelist.txt
         # fi
         matlab -nodisplay -nosplash -r "try; \
                                         FileName='${FileName}'; \
                                         OutputDirectory='${OutputDirectory}'; \
                                         CodeDirectory='${CodeDirectory}'; \
+                                        JABFileList='JABfilelist.txt'; \
                                         addpath(genpath('${CodeDirectory}')); \
                                         ApplyClassifiers; \
                                         catch err; disp(getReport(err,'extended')); end; quit"
     fi
 
-    if [[ ${number_of_arenas} > 1 ]]; then
+    # Since the auto chamber detection is not working for the optomotor videos, but there is actually only one
+    # chamber, we'll skip the re-assigning of identities for the optomotor videos.
+    if [[ ${number_of_arenas} > 1 ]] && [[ ${assay_type} != "optomotor" ]] ; then
         # Re-assign the identities of the flies such that fly 1 and 2 are in arena 1, fly 3 and 4
         # are in arena 2, etc...
         print_heading
