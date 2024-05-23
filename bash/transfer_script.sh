@@ -33,7 +33,7 @@ function transfer_function () {
     video="${1}"
     in_dir="${2}"
     to_dir="${3}"
-    user_name= "${4}"
+    user_name="${4}"
 
     # Check if the file size is zero
     if [[ ! -s "${in_dir}/${video}" ]]; then

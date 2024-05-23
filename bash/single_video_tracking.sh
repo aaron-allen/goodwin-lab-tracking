@@ -73,6 +73,7 @@ arena_shape="${16}"
 assay_type="${17}"
 optogenetics_light="${18}"
 station="${19}"
+stop_time="${20}"
 
 # Force variables to be lowercase
 video_type=$(printf "${video_type}" | tr '[:upper:]' '[:lower:]')
@@ -203,7 +204,10 @@ fi
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+# Save the settings to a settings.txt file in the output directory for easier re-use.
+touch "${OutputDirectory}/${FileName}/settings.txt"
+printf "${recording_date},${user},${video_name},mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station},${stop_time}\n" \
+    >> "${OutputDirectory}/${FileName}/settings.txt"
 
 
 
@@ -285,7 +289,7 @@ if [[ -f "${tracking_worked}" ]]; then
                                             alt_detect_led_indicator_light; \
                                             catch err; disp(getReport(err,'extended')); end; quit"
 
-            mv "${video_name:: -4}--indicator_led.mp4" "${OutputDirectory}/${FileName}/Backups/"
+            mv "${OutputDirectory}/${FileName}/${video_name:: -4}--indicator_led.mp4" "${OutputDirectory}/${FileName}/Backups/"
         fi
 
         # Run old indicator light script for courtship videos
@@ -365,11 +369,10 @@ if [[ -f "${tracking_worked}" ]]; then
     fi
 
 
-    # if [[ ${flies_per_arena} == 2 ]] && [[ ${number_of_arenas} == 20 ]]; then
-        print_heading
-        printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
-        Rscript ../R/Extract_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}" "${assay_type}" "${optogenetics_light}"
-    # fi
+    # Extract tracking data to a .csv file
+    print_heading
+    printf "\n\n\nExtracting tracking data and plotting diagnotic plots ...\n"
+    Rscript ../R/Extract_and_Plot_Tracking_Data.R --args "${OutputDirectory}" "${FileName}" "${flies_per_arena}" "${assay_type}" "${optogenetics_light}"
 
 
 
@@ -398,12 +401,21 @@ if [[ -f "${tracking_worked}" ]]; then
     mkdir -p "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked"
     cp -Rav "${OutputDirectory}/${FileName}" "${remote_path}/Tracked/${user}/${recording_date}-Recorded/${today}-Tracked/"
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    # Make successful tracking list
+    printf "\n\n\n\n\n\n\n\n"
+    successful_tracking_list="/mnt/data/Tracking/_logs/failed_tracking/${today}-successful_tracking.log"
+    touch "${successful_tracking_list}"
+    printf "${recording_date},${user},${video_name},mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station},${stop_time}\n" \
+        >> "${successful_tracking_list}"
+
+
 else
     printf "\n\n\n\n\n\n\n\n"
     printf "Tracking failed ...\n"
     failed_tracking_list="/mnt/data/Tracking/_logs/failed_tracking/${today}-failed_tracking.log"
     touch "${failed_tracking_list}"
-    printf "${recording_date},${user},${video_name},mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station}\n" \
+    printf "${recording_date},${user},${video_name},mp4,${fps},0,${flies_per_arena},${sex_ratio},${number_of_arenas},${arena_shape},${assay_type},${optogenetics_light},${station},${stop_time}\n" \
         >> "${failed_tracking_list}"
 fi
 

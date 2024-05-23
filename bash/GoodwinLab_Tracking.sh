@@ -201,7 +201,8 @@ if [ -s ${csv_file} ]; then
 										  "${arena_shape}" \
 										  "${assay_type}" \
 										  "${optogenetics_light}" \
-										  "${station}">> \
+										  "${station}" \
+										  "${stop_time}">> \
 				"${OutputDirectory}/_tracking_logs/${today}_${user_name}_${video_name}_tracking.log" 2>&1 \
 				&
 		fi

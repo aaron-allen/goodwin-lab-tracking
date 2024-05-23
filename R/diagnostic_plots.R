@@ -83,7 +83,7 @@ diagnostic_plots <- function(input_data_table,flies_per_arena,assay_type,indicat
             filter(Arena == i)
 
         if (assay_type == "optomotor" & indicator_light) {
-            indicator_light_frames <- read_csv( paste0(OutputDirectory,"/",FileName,"/",FileName,"--led_state.csv"), col_names = "LED_state") %>% rowid_to_column(var = "Frame")
+            indicator_light_frames <- read_csv( paste0(OutputDirectory,"/",FileName,"/Results/",FileName,"--led_state.csv"), col_names = "LED_state") %>% rowid_to_column(var = "Frame")
             single_arena_data <- left_join(x = single_arena_data, y = indicator_light_frames, by = "Frame")
         }
 
